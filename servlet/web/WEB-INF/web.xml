@@ -34,4 +34,25 @@
         <servlet-name>HiServlet</servlet-name>
         <url-pattern>/hiServlet</url-pattern>
     </servlet-mapping>
+
+    <!--配置CatServlet-->
+    <servlet>
+        <servlet-name>CatServlet</servlet-name>
+        <servlet-class>com.servlet.homework.CatServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CatServlet</servlet-name>
+        <url-pattern>/cat</url-pattern>
+    </servlet-mapping>
+
+    <!--配置DogServlet-->
+    <servlet>
+        <servlet-name>DogServlet</servlet-name>
+        <servlet-class>com.servlet.homework.DogServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DogServlet</servlet-name>
+        <url-pattern>/dog</url-pattern>
+    </servlet-mapping>
+
 </web-app>

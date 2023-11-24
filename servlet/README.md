@@ -123,7 +123,7 @@ public class HelloServlet implements Servlet {
     <servlet-mapping>
         <!--告诉服务器，当前配置的地址给那个 Servlet 使用-->
         <servlet-name>HelloServlet</servlet-name>
-        <!--对外提供访问 Servlet 地址为 `http://ip[域名]:port/过程路径/helloServlet`，/不能少，否则访问不到-->
+        <!--对外提供访问 Servlet 地址为 `http://ip[域名]:port/工程路径/helloServlet`，/不能少，否则访问不到-->
         <url-pattern>/helloServlet</url-pattern>
     </servlet-mapping>
 </web-app>
@@ -292,4 +292,54 @@ public class TestAnnotationServlet extends HttpServlet {
     }
 }
 ```
+
+### Servlet urlPattern配置
+
+```java
+/***
+ * 1. 精确匹配
+ * 配置路径：@WebServlet("ok/zs")
+ * 访问servlet：localhost:8080/servlet/ok/zs
+ * 2. 目录匹配
+ * 配置路径：@WebServlet("ok/*")
+ * 访问servlet：localhost:8080/servlet/ok/aa   /ok/bb  ok/aa/cc...
+ * 3. 扩展名匹配
+ * 配置路径：@WebServlet("*.action") 注意：不允许带 /，否则Tomcat会报错
+ * 访问servlet：localhost:8080/servlet/zs.action 或 localhost:8080/servlet/ls.action
+ * 4. 任意匹配
+ * 配置路径：@WebServlet("/")    @WebServlet("/*")
+ * 访问servlet：localhost:8080/servlet/aa  /bb     /cc.cpp 任意都可以...
+ * 提醒： / 和 /* 的配置会匹配所有的请求，比较麻烦，要避免。会覆盖掉Toncat的默认配置，无法访问static资源
+ */
+```
+
+注意事项和使用细节
+1. 当Servlet配置了 `/` ，会覆盖tomcat的 `DefaultServlet` (tomcat/conf/web.xml)，当其他的url-pattern都匹配不上市，都会走这个Servlet。
+   这样可以拦截到其它静态资源。
+   ```xml
+     <!-- The default servlet for all web applications, that serves static     -->
+     <!-- resources.  It processes all requests that are not mapped to other   -->
+     <!-- servlets with servlet mappings (defined either here or in your own   -->
+     <!-- web.xml file).  This servlet supports the following initialization   -->
+     <!-- parameters (default values are in square brackets):                  -->
+       <servlet>
+        <servlet-name>default</servlet-name>
+        <servlet-class>org.apache.catalina.servlets.DefaultServlet</servlet-class>
+        <init-param>
+            <param-name>debug</param-name>
+            <param-value>0</param-value>
+        </init-param>
+        <init-param>
+            <param-name>listings</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+   ```
+2. 当Servlet配置了 `/*` ，表示可以匹配任意访问路径
+3. **优先级遵守**：精确路径("/ok/aa") > 目录路径("/ok/*") > 扩展名路径("*cpp") > `/*` > `/`
+
+### Servlet-阶段课后作业
+
+
 
