@@ -54,5 +54,64 @@
         <servlet-name>DogServlet</servlet-name>
         <url-pattern>/dog</url-pattern>
     </servlet-mapping>
+    
+    <!--配置DBServlet-->
+    <servlet>
+        <servlet-name>DBServlet</servlet-name>
+        <servlet-class>com.servlet.DBServlet</servlet-class>
+        <!--配置信息,而非硬编码到程序-->
+        <init-param>
+            <param-name>username</param-name>
+            <param-value>charlie</param-value>
+        </init-param>
+        <init-param>
+            <param-name>pwd</param-name>
+            <param-value>123456</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DBServlet</servlet-name>
+        <url-pattern>/db</url-pattern>
+    </servlet-mapping>
 
+    <!--配置ServletContext_-->
+    <servlet>
+        <servlet-name>ServletContext_</servlet-name>
+        <servlet-class>com.servlet.servletcontext.ServletContext_</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ServletContext_</servlet-name>
+        <url-pattern>/servletContext_</url-pattern>
+    </servlet-mapping>
+
+    <!--OrderServlet配置-->
+    <servlet>
+        <servlet-name>OrderServlet</servlet-name>
+        <servlet-class>com.servlet.servletcontext.OrderServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>OrderServlet</servlet-name>
+        <url-pattern>/orderServlet</url-pattern>
+    </servlet-mapping>
+
+    <!--PayServlet配置-->
+    <servlet>
+        <servlet-name>PayServlet</servlet-name>
+        <servlet-class>com.servlet.servletcontext.PayServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PayServlet</servlet-name>
+        <url-pattern>/payServlet</url-pattern>
+    </servlet-mapping>
+
+    <!--配置整个网站的信息-->
+    <context-param>
+        <param-name>website</param-name>
+        <param-value>https://www.flyhenan.net</param-value>
+    </context-param>
+    <context-param>
+        <param-name>career</param-name>
+        <param-value>荷兰刺史</param-value>
+    </context-param>
+    
 </web-app>

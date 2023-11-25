@@ -1,6 +1,6 @@
 # Servlet
 
-![动态WEB开发核心](img/img.png)
+![动态WEB开发核心](imgs/img.png)
 
 ## 什么是Servlet
 
@@ -131,9 +131,9 @@ public class HelloServlet implements Servlet {
 
 ### 浏览器访问Servlet的流程
 
-![浏览器访问Servlet的流程](img/img_1.png)
+![浏览器访问Servlet的流程](imgs/img_1.png)
 
-![浏览器访问Servlet流程](img/img_2.png)
+![浏览器访问Servlet流程](imgs/img_2.png)
 
 ### Servlet生命周期
 
@@ -142,7 +142,7 @@ public class HelloServlet implements Servlet {
 2. `service()`处理浏览器请求阶段
 3. `destroy()`终止阶段
 
-![浏览器请求Servlet流程示意图](img/img_3.png)
+![浏览器请求Servlet流程示意图](imgs/img_3.png)
 
 - 初始化阶段
 
@@ -168,7 +168,7 @@ public class HelloServlet implements Servlet {
 
 ### 通过继承HttpServlet开发Servlet
 
-![HttpServlet继承关系图](img/img_4.png)
+![HttpServlet继承关系图](imgs/img_4.png)
 
 1. 编写一个类继承 `HttpServlet` 类
 2. 根据需求重写 `doGet` 和 `doPost` 方法
@@ -339,7 +339,277 @@ public class TestAnnotationServlet extends HttpServlet {
 2. 当Servlet配置了 `/*` ，表示可以匹配任意访问路径
 3. **优先级遵守**：精确路径("/ok/aa") > 目录路径("/ok/*") > 扩展名路径("*cpp") > `/*` > `/`
 
-### Servlet-阶段课后作业
+## ServletConfig
 
+### ServletConfig基本介绍
+
+1. ServletConfig类是为Servlet程序配置信息的类
+2. Servlet对象和ServletConfig对象都是由Tomcat负责创建
+3. Servlet程序默认是第1次访问的时候创建,ServletConfig在Servlet程序创建时,就创建了一个对应的ServletConfig对象
+
+### ServletConfig类能干什么
+
+1. 获取 Servlet 程序的 servlet-name 的
+2. 获取初始化参数 init-param
+3. 获取 ServletContext 对象
+
+### ServletConfig应用实例
+
+> 需求:编写 `DBServlet.java` 完成如下功能
+> 1. 在 web.xml 配置连接 mysql 的用户名和密码
+> 2. 在 DBServlet 执行 doGet()/doPost() 时，可以获取到 web.xml 配置的用户名和密码
+
+![思路分析](imgs/img_5.png)
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+   <!--配置DBServlet-->
+   <servlet>
+      <servlet-name>DBServlet</servlet-name>
+      <servlet-class>com.servlet.DBServlet</servlet-class>
+      <!--配置信息,而非硬编码到程序-->
+      <init-param>
+         <param-name>username</param-name>
+         <param-value>charlie</param-value>
+      </init-param>
+      <init-param>
+         <param-name>pwd</param-name>
+         <param-value>123456</param-value>
+      </init-param>
+   </servlet>
+   <servlet-mapping>
+      <servlet-name>DBServlet</servlet-name>
+      <url-pattern>/db</url-pattern>
+   </servlet-mapping>
+</web-app>
+```
+
+```java
+package com.servlet;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+public class DBServlet extends HttpServlet {
+    /***
+     * ServletConfig config 使用流程
+     * 1. 当DBServlet对象初始化时,Tomcat会同时创建一个 ServletConfig对象
+     * 2. 这是如果 DBServlet init() 方法中调用 super.init(config);
+     * 3. 会调用父类 GenericServlet
+     *     public void init(ServletConfig config) throws ServletException {
+     *         this.config = config;    // 把Tomcat创建的ServletConfig对象赋给 GenericServlet的属性 config
+     *         this.init();
+     *     }
+     * 4. 因此如果重写 init() 方法,记得如果在其它方法通过 getServletConfig() 方法获取 ServletConfig
+     *      ,则一定记得要调用 super.init(config); 否则,GenericServlet的config为默认值 null
+     *
+     * @param config
+     * @throws ServletException
+     */
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 在 DBServlet 执行 doGet()/doPost() 时，可以获取到 web.xml 配置的用户名和密码
+        // OOP -> 通过现有的方法或对象来搞定
+        // DBServlet的父类GenericServlet有 getServletConfig()方法
+        /**
+         * 1. getServletConfig() 方法是 GenericServlet
+         * 2. 返回的 servletConfig 对象是 private transient ServletConfig config;
+         * 3. 当一个属性被 transient 修饰,表示该属性不会被串行化(有些重要信息,不希望保存到文件)
+         */
+        ServletConfig servletConfig = getServletConfig();
+        String username = servletConfig.getInitParameter("username");
+        String pwd = servletConfig.getInitParameter("pwd");
+        System.out.println("初始化参数username= " + username);
+        System.out.println("初始化参数pwd= " + pwd);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
+    }
+}
+```
+
+## ServletContext
+
+### 为什么需要ServletContext
+
+1. 需求:当我们希望统计某个web应用中所有Servlet被访问的次数时,该怎么办?
+2. 方案1-DB
+   ![img.png](imgs/img_6.png)
+3. 方案2-ServletContext
+   ![img_1.png](imgs/img_7.png)
+
+### ServletContext基本介绍
+
+![ServletContext](imgs/img_8.png)
+
+1. ServletContext是一个接口(interface),表示Servlet上下文对象
+2. 一个WEB工程,只有一个ServletContext对象实例
+3. ServletContext对象是在web工程启动的时候创建,在web工程停止时销毁
+4. ServletContext对象可以通过ServletContext.getServletContext()方法获得对ServletContext对象的引用,
+   也可以通过 `this.getServletContext()` 来获得其对象的引用
+5. 由于一个WEB应用中所有Servlet共享同一个ServletContext对象,因此Servlet对象之间可以通过ServletContext对象
+   来实现多个Servlet间通讯,ServletContext对象通常也被称之为**域对象**
+
+### ServletContext功能
+
+1. 获取 `web.xml` 中配置的上下文参数 `context-param` [信息和整个web应用相关,而不是属于某个Servlet]
+2. 获取当前的工程路径,格式如 `/servlet` 或 `/http`
+3. 获取工程捕获后在服务器硬盘上的绝对路径,如 `E:\javaweb\servlet\out\production\servlet\com\servlet\annotation\OkServlet.class`
+4. 像Map一样存取数据,多个Servlet共享数据
+
+### ServletContext应用实例
+
+#### 实例1
+
+1. 获取 `web.xml` 中配置的上下文参描述 context-param
+2. 获取当前的工程路径，格式: `/工程路径`
+3.  获取工程部署后在服务器硬盘上的绝对路径
+
+```
+web.xml中网站信息配置
+    <!--配置整个网站的信息-->
+    <context-param>
+        <param-name>website</param-name>
+        <param-value>https://www.flyhenan.net</param-value>
+    </context-param>
+    <context-param>
+        <param-name>career</param-name>
+        <param-value>荷兰刺史</param-value>
+    </context-param>
+```
+
+```java
+package com.servlet.servletcontext;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+public class ServletContext_ extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 获取web.xml中context-param
+        // 1. 获取ServletContext对象
+        ServletContext servletContext = getServletContext();
+        // 2. 获取context-param参数
+        String website = servletContext.getInitParameter("website");
+        String career = servletContext.getInitParameter("career");
+        // 3. 获取当前工程路径,如 /servlet
+        String contextPath = servletContext.getContextPath();
+        // 4. 获取项目发布后,在硬盘中真正的工作路径
+        // / 表示项目(发布后)的 根路径 E:\javaweb\servlet\out\artifacts\servlet_war_exploded
+        String realPath = servletContext.getRealPath("/");
+
+        System.out.println("website= " + website);              // website= https://www.flyhenan.net
+        System.out.println("career= " + career);                // career= 荷兰刺史
+        System.out.println("项目路径:" + contextPath);           // 项目路径:/servlet
+        System.out.println("项目发布后的绝对路径:" + realPath);    // 项目发布后的绝对路径:E:\javaweb\servlet\out\artifacts\servlet_war_exploded\
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
+    }
+}
+```
+
+### 实例2
+
+1.  完成一个简单的网站访问次数计数器
+2. 浏览器通过 `/servlet/orderServlet` 和 `/sservlet/payServlet` 访问时显示访问次数,每访问一次增加一次访问次数
+
+> 实现了工具类 `WebUtils`
+
+```java
+package com.servlet.servletcontext;
+
+import javax.servlet.ServletContext;
+
+public class WebUtils {
+    public static Integer visitCount(ServletContext servletContext) {
+        // 从servletContext获取 visit_count 属性 k-v
+        // 判断 visit_count是否为null
+        Object visitCount = servletContext.getAttribute("visit_count");
+        if (visitCount == null) {   // 如果为null,说明是第一次访问
+            servletContext.setAttribute("visit_count", 1);  // "visit_count" - Integer
+            visitCount = 1; // 自动装箱
+        } else {
+            // 去除visitCount属性的值 + 1
+            visitCount = Integer.parseInt(visitCount + "") + 1;
+            servletContext.setAttribute("visit_count", visitCount);
+        }
+
+        return Integer.parseInt(visitCount + "");
+    }
+}
+```
+
+```java
+package com.servlet.servletcontext;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+public class OrderServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 获取到ServletContext对象
+        ServletContext servletContext = getServletContext();
+//        System.out.println("OrderServlet的servletContext:" + servletContext +
+//                "\n运行类型:" + servletContext.getClass()); // 运行类型:class org.apache.catalina.core.ApplicationContextFacade
+
+        // 从servletContext获取 visit_count 属性 k-v
+        // 判断 visit_count是否为null
+//        Object visitCount = servletContext.getAttribute("visit_count");
+//        if (visitCount == null) {   // 如果为null,说明是第一次访问
+//            servletContext.setAttribute("visit_count", 1);  // "visit_count" - Integer
+//            visitCount = 1; // 自动装箱
+//        } else {
+//            // 去除visitCount属性的值 + 1
+//            visitCount = Integer.parseInt(visitCount + "") + 1;
+//            servletContext.setAttribute("visit_count", visitCount);
+//        }
+
+        Integer visit_count = WebUtils.visitCount(servletContext);
+
+        // 输出提示
+        resp.setContentType("text/html;charset=utf-8");
+        PrintWriter writer = resp.getWriter();
+        writer.println("<h1>该网站被访问的次数是" + visit_count + "</h1>");
+        writer.flush();
+        writer.close();
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
+    }
+}
+```
+
+## HttpServletRequest
 
 
