@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--通过get请求获取my.css-->
+    <link rel="stylesheet" href="css/my.css">
+    <!--通过get请求获取my.js-->
+    <script type="text/javascript" src="js/my.js"></script>
+    <title>用户登录</title>
+</head>
+<body>
+<h1>用户登录</h1>
+<!--给LoginServlet发出GET/POST请求提交表单-->
+<form action="http://localhost:8080/http/login" method="post">
+    u: <input type="text" name="username"/><br/>
+    p: <input type="password" name="pwd"/><br/>
+    <input type="submit" value="用户登录"> <input type="reset" value="清空">
+</form>
+
+<h1>GET请求演示</h1>
+<a href="http://www.baidu.com">goto百度</a><br/>
+<!--通过get请求获取my.js-->
+<img src="imgs/ikun.png"/>
+</body>
+</html>
