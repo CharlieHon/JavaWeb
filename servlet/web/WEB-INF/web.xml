@@ -114,4 +114,13 @@
         <param-value>荷兰刺史</param-value>
     </context-param>
     
+    <!--配置HttpServletRequest-->
+    <servlet>
+        <servlet-name>HttpServletRequestMethods</servlet-name>
+        <servlet-class>com.servlet.request.HttpServletRequestMethods</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>HttpServletRequestMethods</servlet-name>
+        <url-pattern>/requestMethods</url-pattern>
+    </servlet-mapping>
 </web-app>
