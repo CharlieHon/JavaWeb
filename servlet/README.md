@@ -635,6 +635,8 @@ public class OrderServlet extends HttpServlet {
 
 ### HttpServletRequest应用实例
 
+[HttpServletRequestMethods](src/com/servlet/request/HttpServletRequestMethods.java)
+
 ```java
 package com.servlet.request;
 
@@ -734,3 +736,78 @@ public class HttpServletRequestMethods extends HttpServlet {
 ### 请求转发实现
 
 ![请求转发示意图](imgs/img_12.png)
+
+### 请求转发注意事项和细节
+
+1. 浏览器地址不会变化(地址会保留在第1个servlet的url)
+2. 在同一次HTTP请求中，进行多次转发，仍然是一次HTTP请求
+3. 在同一次HTTP请求中，进行多次转发，多个Servlet可以共享request域/对象的数据(因为始终是同一个request对象)
+4. 可以转发到 `WEB-INF` 目录下
+5. 不能访问当前WEB工程外的资源
+6. 因为浏览器地址栏会停留在第一个Servlet，如果此时刷新页面，会再次发出请求(并且会带数据)，所以在支付页面情况下，
+   不要使用请求转发，否则会造成重复支付。
+
+## HttpServletResponse
+
+### HttpServletResponse介绍
+
+1. 每次Http请求，Tomcat会创建一个 `HttpServletRespnse` 对象传递给Servlet程序去使用。
+2. `HttpServletRequest`表示请求过来的信息，`HttpServletRespnse`表示所有响应的信息，如果需要设置返回给客户端的信息，
+   通过 `HttpServletRespnse` 对象来进行设置即可。
+   - `getStatus`：设置响应的状态码
+   - `setHeader()`：设置响应头的k-v
+   - `getWriter()`
+   - `getOutputStream()`
+
+![HttpServletResponse类图](imgs/img_13.png)
+
+### 向客户端返回数据方法
+
+1. 字节流 `getOutputStream()`：常用于下载(处理二进制数据)
+2. 字符流 `getWriter()`：常用于回传字符串
+3. 细节：两个流同时只能使用一个。使用了字节流，就不能使用字符流，反之亦然，否则就会报错。
+
+### 向客户端返回数据注意事项和细节
+
+1. 处理中文乱码问题-方案1
+   ```
+   // 设置服务器字符集
+   resp.setCharacterEndocing("utf-8");
+   // 通过响应头，设置浏览器也是用UTF-8字符集，而且类型是text/html
+   resp.setHeader("Context-TYpe", "text/html;charset=utf-8");
+   ```
+2. 处理中文乱码问题-方案2
+   ```
+   // 会设置服务器和客户端都用utf-8字符字，还设置了响应头
+   // 要在获取流对象(getWriter)之前调用才有效
+   resp.setContextType("text/html;charset=utf-8");
+   PrintWriter writer = resp.getWriter();
+   ```
+
+### 请求重定向介绍
+
+> 请求重定向是指：一个web资源收到客户端请求后，通知客户端去访问另外一个资源。
+
+![请求重定向示意图](imgs/img_14.png)
+
+[请求重定向实例1](src/com/servlet/response/DownServlet.java)|[请求重定向实例2](src/com/servlet/response/DownServletNew.java)
+
+#### 请求重定向注意事项和细节
+
+1. 最佳应用场景：网站迁移。比如原域名 `www.test.com` 迁移到 `www.test.cn`，到那时百度抓取的还是原地址
+2. 浏览器地址会发生变化，本质是两次http请求
+3. 不能共享Request域中的数据，本质是两次http请求，会生成两个HttpServletRequest对象
+4. 不能重定向到 `/WEB-INF` 下的资源
+5. 可以重定向到WEB工程以外的资源，比如到百度网站 `http://www.baidu.com`
+6. 重定向有两种方式，推荐使用第1种
+   ```
+     // 第二种重定向的写法
+     resp.setStatus(302);
+     resp.setHeader("Location", "/servlet/downServletNew");
+   ```
+7. **动态获取到 `application context`**
+   ![application context](imgs/img_15.png)
+   `String contextPath = getServletContext().getContextPath();    // /servlet`
+
+[作业案例：支付页面](src/com/servlet/response/homework/MyPayServlet.java)
+

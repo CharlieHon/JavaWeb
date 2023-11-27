@@ -123,4 +123,71 @@
         <servlet-name>HttpServletRequestMethods</servlet-name>
         <url-pattern>/requestMethods</url-pattern>
     </servlet-mapping>
+
+    <!--请求转发配置CheckServlet和ManageServlet-->
+    <servlet>
+        <servlet-name>CheckServlet</servlet-name>
+        <servlet-class>com.servlet.request.CheckServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CheckServlet</servlet-name>
+        <url-pattern>/checkServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ManageServlet</servlet-name>
+        <servlet-class>com.servlet.request.ManageServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ManageServlet</servlet-name>
+        <url-pattern>/manageServlet</url-pattern>
+    </servlet-mapping>
+
+    <!--练习题配置-->
+    <servlet>
+        <servlet-name>RegisterServlet</servlet-name>
+        <servlet-class>com.servlet.request.homework.RegisterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RegisterServlet</servlet-name>
+        <url-pattern>/registerServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ComputerServlet</servlet-name>
+        <servlet-class>com.servlet.request.homework.ComputerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ComputerServlet</servlet-name>
+        <url-pattern>/computerServlet</url-pattern>
+    </servlet-mapping>
+
+    <!--请求重定向实例配置-->
+    <servlet>
+        <servlet-name>DownServlet</servlet-name>
+        <servlet-class>com.servlet.response.DownServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DownServlet</servlet-name>
+        <url-pattern>/downServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>DownServletNew</servlet-name>
+        <servlet-class>com.servlet.response.DownServletNew</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DownServletNew</servlet-name>
+        <url-pattern>/downServletNew</url-pattern>
+    </servlet-mapping>
+
+    <!--重定向作业配置-->
+    <servlet>
+        <servlet-name>MyPayServlet</servlet-name>
+        <servlet-class>com.servlet.response.homework.MyPayServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MyPayServlet</servlet-name>
+        <url-pattern>/myPayServlet</url-pattern>
+    </servlet-mapping>
 </web-app>
