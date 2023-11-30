@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>b.html</title>
+    <!-- 老韩解读
+    1. 如果没有<base href="http://localhost:10000/hspedu_servlet/">
+    2. 当点击 返回 a.html 超链接，将会以当前浏览器的地址为路径来确定 路径
+    3. 如果增加了<base href="http://localhost:10000/hspedu_servlet/">
+    4. 将以 base 指定的 href 的地址为路径，来确定 超链接的路径
+    -->
+    <!--<base href="http://localhost:10000/hspedu_servlet/">-->
+
+<!--    使用base标签来确定
+    1. <base href="http://localhost:8080/webpath/">
+    2. 标识的含义就是当前这个页面访问所有的资源都是以此作为参考
+    3. `webpath/` 最后带上 / 表示路径，不带则表示资源
+    4. 此时不能在使用相对路径
+-->
+<!--    <base href="http://localhost:8080/webpath/">-->
+<!--    上面方法可以简化为以下
+    1. base 标签是由浏览器进行解析
+    2. 浏览器在解析到第一个 / 时候，会解析成 http://localhost:8080/
+    3. 浏览器解析 href="/webpath/"  =>  href="http://localhost:8080/webpath/"
+    4. 浏览器解析 <a href="a.html">返回 a.html~(base方法)</a> ，参考 base => 最后
+        href="http://localhost:8080/webpath/webpath/a.html"
+-->
+    <base href="/webpath/">
+
+</head>
+<body>
+<h1>这是/d1/d2/b.html</h1>
+<!--<a href="../../a.html">返回 a.html~(相对路径方法)</a><br/>-->
+<a href="a.html">返回 a.html~(base方法)</a>
+<!--
+    返回 a.html 文件
+    1. 相对路径 => 使用前面的相对路径 http://localhost:8080/webpath/d1/d2/
+    2. 因此相对路径为 ../../a.html => http://localhost:8080/webpath/  +  a.html
+    3. 相对路径会让项目相互调用关系变得复杂
+    4. 使用 base 标签解决
+-->
+</body>
+</html>
