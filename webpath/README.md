@@ -194,5 +194,64 @@ public class Servlet03 extends HttpServlet {
 > 3. 如果路径前没有 `/`，并且在浏览器解析，则以浏览器当前的地址来去掉资源部份，作为一个相对路径。
 > 4. 路径最后有没有 `/`。如果最后有 `/` 表示路径，如果没有则表示资源
 
+- 使用重定向方式
 
+```java
+package com.charlie.servlet.homework;
 
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@WebServlet(urlPatterns = {"/myServlet02"})
+public class MyServlet02 extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("MyServlet02 重定向方式....");
+        // 通过重定向来定位 /views/user/user.html
+        /*
+        1. 重定向发生在浏览器
+        2. 写法1：http://localhost:8080/webpath/views/user/user.html
+        3. 写法2：views/user/user.html 浏览器当前资源为登录界面 http://localhost:8080/webpath/login.html
+            则该写法为 http://localhost:8080/webpath/ 拼接上 views/user/user.html
+        4. 写法3：/webpath/views/user/user.html    其中 / 解析为 http://localhost:8080/
+        5. 推荐写法 contextPath + "/views/user/user.html"
+         */
+        String contextPath = getServletContext().getContextPath();
+        resp.sendRedirect(contextPath + "/views/user/user.html");
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
+    }
+}
+```
+
+## WEB工程路径优化
+
+- 动态获取工程名 `application context`，如 `/webpath`
+- 使用 `jsp/thymeleaf` 加入标签，动态获取即可
+
+```jsp
+<%--
+  Created by IntelliJ IDEA.
+  User: HX
+  Date: 2023/11/30
+  Time: 19:30
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java"  isELIgnored="false" %>
+<html>
+  <head>
+    <title>$Title$</title>
+  </head>
+  <body>
+<%-- /webpath --%>
+  $END$ 动态地获取到工程路径： <%=request.getContextPath()%>
+  </body>
+</html>
+```
