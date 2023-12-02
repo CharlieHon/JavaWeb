@@ -15,7 +15,7 @@ public class UserUIServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println("UserUIServlet 被调用...");
         Cookie[] cookies = req.getCookies();
-        Cookie cookie = CookieUtils.readCookieByName("username", cookies);
+        Cookie cookie = CookieUtils.readCookieByName("loginUser", cookies);
         String userName = "";
         if (cookie != null) {
             userName = cookie.getValue();

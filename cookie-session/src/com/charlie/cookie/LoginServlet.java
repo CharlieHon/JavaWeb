@@ -20,7 +20,9 @@ public class LoginServlet extends HttpServlet {
         String respContext = null;
         if ("charlie".equals(username) && "123456".equals(pwd)) {
             respContext = "<h1>登录成功</h1>";
-            userNameCookie = new Cookie("username", username);
+            userNameCookie = new Cookie("loginUser", username);
+            // 设置该cookie的生命周期，3天
+            userNameCookie.setMaxAge(3600 * 24 * 3);
             resp.addCookie(userNameCookie);
         } else {
             respContext = "<h1>登录失败</h1>";
