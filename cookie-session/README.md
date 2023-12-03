@@ -579,3 +579,13 @@ public class DecoderCookie extends HttpServlet {
 ## session经典案例：防止非法进入管理页面
 
 ![案例示意图](imgs/img_10.png)
+
+案例说明:
+1. 只要密码为666666且用户名不为空,就认为登录成功
+2. 如果验证成功,则进入管理页面 `ManageServlet.java`,否则进入 `error.html`
+3. 如果用户直接访问 `ManageServlet.java`,重定向到 `userlogin.html`
+
+- 用户登录界面:[userlogin.html](web/userlogin.html)
+- 验证Servlet:[LoginCheckServlet.java](src/com/charlie/session/homework/LoginCheckServlet.java)
+- 管理Servlet:[ManageServlet.java](src/com/charlie/session/homework/ManageServlet.java)
+- 登录失败界面:[error.html](web/error.html)
