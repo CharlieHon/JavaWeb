@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="jasper-el">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/web/WEB-INF/lib/jasper-el.jar!/" />
+      <root url="jar://$PROJECT_DIR$/web/WEB-INF/lib/jsp-api.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
