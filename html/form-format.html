@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>表单格式化</title>
+</head>
+<body>
+<!--使用表格排版表单内容-->
+<h1>用户提交的信息</h1>
+<form action="ok.html" method="post">
+    <table>
+        <tr>
+            <td>用户名称：</td>
+            <td><input type="text" name="username"></td>
+        </tr>
+        <tr>
+            <td>用户密码：</td>
+            <td><input type="password" name="pwd1"></td>
+        </tr>
+        <tr>
+            <td>确认密码：</td>
+            <td><input type="password" name="pwd2"></td>
+        </tr>
+        <tr>
+            <td>请选择你喜欢的运动项目：</td>
+            <td>
+                <input type="checkbox" name="sport" value="篮球">篮球&nbsp;
+                <input type="checkbox" name="sport" value="足球">足球&nbsp;
+                <input type="checkbox" name="sport" value="乒乓球" checked>乒乓球
+            </td>
+        </tr>
+        <tr>
+            <td>请选择你的性别：</td>
+            <td>
+                <input type="radio" name="gender" value="male">男&nbsp;
+                <input type="radio" name="gender" value="female">女
+            </td>
+        </tr>
+        <tr>
+            <td>请选中你喜欢的城市：</td>
+            <td>
+                <select name="city">
+                    <option value="成都">成都</option>
+                    <option value="北京">北京</option>
+                    <option value="上海">上海</option>
+                </select><br/>
+            </td>
+        </tr>
+        <tr>
+            <td>自我鉴定：</td>
+            <td><textarea name="comment" rows="6" cols="10"></textarea></td>
+        </tr>
+        <tr>
+            <td>选择你的文件(头像)</td>
+            <td><input type="file" name="head"></td>
+        </tr>
+        <tr>
+            <td><input type="submit" value="提交"></td>
+            <td><input type="reset" value="重置"></td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>
