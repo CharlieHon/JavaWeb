@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>选择器的优先级说明</title>
+<!--    优先级顺序
+    1. 行内样式 > id选择器 > class选择器 > 元素选择器
+    2. 指定的范围越小，优先级越高
+-->
+    <style type="text/css">
+        h1 {
+            color: red;
+        }
+        #id1, #id2, #id3 {
+            text-align: center;
+            color: yellow;
+        }
+        .cls1, .cls2, .cls3 {
+            text-align: right;
+            color: rgb(210,55,150);
+            border: 1px dashed green;
+        }
+
+    </style>
+</head>
+<body>
+<h1 style="color: cyan" id="id1">选择器的优先级说明</h1>
+<div id="id2" class="cls1">九州大地</div>
+<p class="cls2">一人为大世界同</p>
+<span style="color: #ff7d44; text-align: center" id="id3" class="cls3">黄帝，颛顼，帝喾，尧，舜</span>
+</body>
+</html>

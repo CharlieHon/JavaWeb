@@ -1,0 +1,12 @@
+div {
+    width: 200px;
+    height: 100px;
+    background-color: brown;
+
+    font-size: 20px;
+    /*font-weight: bold;*/
+    font-family: 华文琥珀;
+}
+span {
+    border: 1px solid blue;
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>超链接去掉下划线</title>
+<!--
+    1. decoration ： 修饰
+
+-->
+    <style type="text/css">
+        a {
+            text-decoration: none;
+        }
+        /* table, tr, td 表示组合选择器
+         即 三者都用统一的样式指定，可以提高复用性
+         - table 为外边框
+         - tr 为单元格横线
+         */
+        table, tr, td{
+            border: 1px solid black;
+            width: 300px;
+            height: 20px;
+            /* 将边框合并为一条线 */
+            border-collapse: collapse;
+
+            /*文本内容相对于div块居中*/
+            text-align: center;
+            /*div块在浏览器页面居中*/
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+<a href="http://fanyi.baidu.com">百度翻译</a><br/>
+<table>
+    <tr>
+        <td colspan="3">星期一菜谱</td>
+    </tr>
+    <tr>
+        <td rowspan="2">素菜</td>
+        <td>12</td>
+        <td>12</td>
+    </tr>
+    <tr>
+        <td>12</td>
+        <td>12</td>
+    </tr>
+    <tr>
+        <td rowspan="2">荤菜</td>
+        <td>12</td>
+        <td>12</td>
+    </tr>
+    <tr>
+        <td>12</td>
+        <td>12</td>
+    </tr>
+</table>
+</body>
+</html>
