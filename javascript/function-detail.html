@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>函数使用注意事项和细节</title>
+    <script type="text/javascript">
+        /*
+        1. JS函数的重载会覆盖掉上一次的定义
+        2. 当调用 f1() 时，起始调用的是 f1(name)
+        3. 如果在调用 f1(name) 时，如果没有传入实参，那么这个name就是 undefined
+         */
+        function f1() {
+            console.log("ok, f1()");
+        }
+        function f1(name) { // 覆盖了前面的定义
+            console.log("hi, " + name);
+        }
+        f1();   // hi, undefined
+
+        /*
+        2. 函数的arguments 隐形参数(作用域在 function 函数内)
+        (1) 隐形参数：在function函数中不需要定义，可以直接用来获取所有参数的变量
+        (2) 隐形参数类似于java的可变参数一样  public void fun(int ...args)
+        (3) js中隐形参数跟java的可变参数一样，操作类似于数组
+         */
+        function f2() {
+            // 遍历函数的 argument 隐形参数，是数组形式
+            // 提示：如果我们希望通过 console.log 输出对象的数据，使用 , 链接而非 +
+            console.log("arguments=" + arguments);  // argument=[object Arguments]
+            console.log("arguments=", arguments);   // arguments= Arguments(3) [10, 20, 30]
+            console.log(typeof arguments);  // object
+            console.log(arguments.length);  // 3
+        }
+        f2(10, 20, 30);
+
+        /*
+        3. (1) 如果函数有形参，在传入实参的时候，仍然按照顺序匹配
+           (2) 如果有匹配上，就赋值给它，如果没有匹配上，也无所谓
+           (3) 仍然会把所有的实参，赋值给 arguments
+            (4) 如果形参个数大于实参个数，则该形参的值为 `undefined`
+         */
+        function f3(n) {
+            console.log("n=" + n);  // n=1
+            console.log("arguments:", arguments);   // arguments: Arguments(4) [1, 2, 3, 4]
+        }
+        f3(1, 2, 3, 4);
+        f3();   // 实参个数小于形参，n=undefined
+    </script>
+</head>
+<body>
+
+</body>
+</html>

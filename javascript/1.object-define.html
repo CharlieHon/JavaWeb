@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>自定义对象</title>
+    <script type="text/javascript">
+        // 自定义对象方法1
+        // person是一个空对象，没有自定义的函数和属性
+        var person = new Object();
+        console.log(typeof person); // object
+        // 增加一个属性name
+        person.name = "Tom";
+        // 增加一个属性
+        person.age = 21;
+        // 增加函数
+        person.say = function () {
+            // 这里的this就是当前的person对象
+            console.log("person的信息：" + this.name + " " + this.age);
+        }
+        // 调用
+        console.log("name=" + person.name);
+        // 访问方法
+        person.say();
+        // 如果没有定义某个属性，而直接使用，就会出现变量提升，显示undefined
+        console.log("address=" + person.address);    // undefined
+        // 调用未定义的方法则会报错
+        // person.eat();   // 报错
+    </script>
+</head>
+<body>
+
+</body>
+</html>

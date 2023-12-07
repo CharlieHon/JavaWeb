@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>将函数赋值给变量</title>
+    <script type="text/javascript">
+      // 可以理解为 f1 指向了函数
+      var f1 = function(name) {
+        console.log("hi~" + name);
+      }
+      console.log(typeof f1); // function
+      f1("Tom"); // 调用函数
+      var f2 = f1;
+      f2("Jack");
+
+      var f3 = function(n1, n2) {
+        return n1 + n2;
+      }
+      console.log(f3(1, 1));  // 2
+    </script>
+</head>
+<body>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>逻辑运算符注意事项和使用细节</title>
+    <script type="text/javascript">
+        var name = "Bruce";
+        if (name) {
+            console.log(name);  // Bruce
+        }
+        a = null;
+        if (!a) {
+            console.log('a=' + a);  // a=null
+        }
+        // `0`, `null`, `""(空串)`, `undefined`, `NaN`都认为是 `false`
+        var b;
+        if (!b) {
+            console.log(b); // undefined
+        }
+        var c = "Bruce" && 7;
+        console.log("Bruce && 7 = " + c);   // 7
+        var d = "" || null;
+        console.log('"" || null = ' + d);   // null
+        var e = NaN && 0;
+        console.log("NaN && 0 = " + e);     // NaN
+        var f = (10 > 5) && 0;
+        console.log("(10 > 5) && 0 = " + f);    // 0
+        var g = (10 + 1) || (6 < 0);
+        console.log("(10 + 1) || (6 < 0) = " + g);  // 11
+    </script>
+</head>
+<body>
+
+</body>
+</html>

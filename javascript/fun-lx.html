@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JS函数课堂练习</title>
+    <script type="text/javascript">
+        var f = function () {
+            var res = 0;
+            // 通过arguments来获取传入的参数
+            for(var i=0; i<arguments.length; ++i) {             // 排除掉 NaN
+                if (((typeof arguments[i]) == "number") && arguments[i]) {
+                    res += arguments[i];
+                }
+            }
+            return res;
+        }
+        console.log(f(1, 2.1, 5, true, "hi", null));  // 8.1
+        console.log(f(false, "hi", null, 7.2, 4, NaN));  // 11.2
+        console.log(typeof NaN);    // NaN 类型也是 number
+    </script>
+</head>
+<body>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>自定义对象方式2: {} 形式</title>
+    <script type="text/javascript">
+        // 演示自定义对象方式2: {} 形式
+        var person = {
+            name: "Tom",    // 两个属性/方法之间必须要有逗号 ,
+            age: 20,
+            hi: function () {
+                console.log("person信息：" + this.name + " " + this.age);
+            },
+            sum: function (n1, n2) {
+              return n1 + n2;
+            }
+        }
+        // 使用
+        console.log("name=" + person.name + " age=" + person.age);
+        person.hi();
+        console.log(person.sum(10, 20));
+    </script>
+</head>
+<body>
+
+</body>
+</html>

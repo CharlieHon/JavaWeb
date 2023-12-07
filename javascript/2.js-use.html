@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>使用script标签引入JS代码</title>
+    <!--
+    1. 混用时不会报错
+    2. 两种引入方式不能混用
+    3. 同一个script标签内，二者混用时只有一个生效，即前面引入的js生效(src)
+    -->
+    <script type="text/javascript" src="./js/my.js">
+        console.log("Hello, JS.");  // 不会生效
+    </script>
+    <script type="text/javascript">
+        console.log("second.")      // 有效
+    </script>
+</head>
+<body>
+</body>
+</html>

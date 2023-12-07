@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>函数使用方式</title>
+    <script type="text/javascript">
+        function f1() {
+          alert("Hello, world.");
+        }
+        f1();
+        // 定义有形参的函数
+        // 这里的形参不需要指定类型，name的数据类型是由实参决定
+        function f2(name) {
+          console.log("Hello, " + name);
+        }
+        f2("Charlie");
+        // 定义有形参和返回值的函数，不需要指定返回类型，返回类型由返回的数据决定
+        // js的函数调用机制和java一样
+        function f3(n1, n2) {
+          return n1 + n2;
+        }
+        alert("f2(10, 20)=" + f3(10, 20));
+        // 传入参数多于形参时，只有前几个有效
+        alert("f2(\"hi\", \"~\", 5)=" + f3("hi", "~", 5));  // hi~
+    </script>
+</head>
+<body>
+
+</body>
+</html>

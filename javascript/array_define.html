@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数组定义</title>
+    <script type="text/javascript">
+        // 数组定义方式，有4种
+        // 方式1
+        var cars = ["Audi", "BMW", "Volvo"];
+        console.log("cars=" + cars);    // cars=Audi,BMW,Volvo
+        console.log(cars[1]);    // 表示访问cars数组的第2个元素，下标从0开始
+        // 方式2
+        var cars2 = []; // 空数组
+        cars2[0] = "Audi";
+        cars2[1] = "BMW";
+        cars2[2] = "Mi";
+        console.log("cars2[2]=" + cars2[2]) // Mi
+        console.log("cars2[10]=" + cars2[10])   // undefined 如果该元素不存在，则返回就是 undefined
+        // 方式3
+        var cars3 = new Array("Mi", "Oppo", "Apple");
+        console.log(cars3[1]);  // Oppo
+        console.log(cars3[2]);  // Apple
+        // 方式4
+        var cars4 = new Array();
+        console.log(typeof cars4);  // object
+        cars4[0] = "Bruce";
+        cars4[1] = "Leslie";
+        cars4[2] = "Jack";
+        cars4[0] = "Tom";   // 替换
+        cars4[5] = "Tim";   // 扩容，如果跳过了下标给赋值，那么中间没有赋值的元素为 undefined
+        console.log(typeof cars4[4]);   // undefined
+        console.log(cars4); // ['Tom', 'Leslie', 'Jack', 空 ×2, 'Tim']
+    </script>
+</head>
+<body>
+
+</body>
+</html>
