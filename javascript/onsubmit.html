@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>onsubmit 表单提交事件</title>
+    <!--注册按钮被点击，提交表单(需求：如果用户名或密码为空，不能提交表单)-->
+    <script type="text/javascript">
+        // 静态注册表达提及哦事件
+        function register() {
+            // 先得到输入的用户名和密码
+            var u1 = document.getElementById("i1");
+            var p1 = document.getElementById("i2");
+            // 判断是否为空 ""
+            // u1, p1 是dom对象，判断其值(value)不能为空
+            if ("" == u1.value || "" == p1.value) {
+                alert("用户名和密码不能为空，不能提交");
+                return false;   // 代表不提交
+            }
+            return true;    // 表示不提交
+        }
+
+        // 动态注册表单提交事件
+        window.onload = function () {
+            var form2 = document.getElementById("form2");
+            // 给form2绑定onsubmit事件
+            // onsubmit指定的函数，会直接将返回结果(t/f)，返回给onsubmit
+            form2.onsubmit = function () {
+                // var u2 = document.getElementById("i3");
+                // var p2 = document.getElementById("i4");
+                var u2 = form2.username;
+                var p2 = form2.pwd;
+                if ("" == u2.value || "" == p2.value) {
+                    alert("用户名或密码不能为空~");
+                    return false;
+                }
+                return true;
+            }
+        }
+    </script>
+</head>
+<body>
+<h1>注册用户1</h1>
+<!--                                          将函数返回值返回，才能作用于 onsubmit事件-->
+<form action="ok.html" method="get" onsubmit="return register()">
+    <table>
+        <tr>
+            <td>用户名：</td>
+            <td><input type="text" id="i1" name="username"></td>
+        </tr>
+        <tr>
+            <td>密　码：</td>
+            <td><input type="password" id="i2" name="pwd"></td>
+        </tr>
+    </table>
+    <input type="submit" value="提交">
+</form>
+
+<h1>注册用户2</h1>
+<form action="ok.html" method="get" id="form2">
+    <table>
+        <tr>
+            <td>用户名：</td>
+            <td><input type="text" id="i3" name="username"></td>
+        </tr>
+        <tr>
+            <td>密　码：</td>
+            <td><input type="password" id="i4" name="pwd"></td>
+        </tr>
+    </table>
+    <input type="submit" value="提交">
+</form>
+</body>
+</html>

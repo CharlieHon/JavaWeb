@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>onchange 内容发生改变事件</title>
+    <script type="text/javascript">
+        function f1() {
+            alert("工作城市变化");
+        }
+        // 动态注册
+        window.onload = function () {
+            // 获取id2的dom对象
+            var s2 = document.getElementById("s2");
+            s2.onchange = function () {
+                alert("升职加新~");
+            }
+        }
+    </script>
+</head>
+<body>
+当前工作城市：
+<select id="s1" onchange="f1()">
+    <option>---城市---</option>
+    <option>成都</option>
+    <option>北京</option>
+    <option>上海</option>
+</select><br/>
+当前薪资水平：
+<select id="s2">
+    <option>----薪资---</option>
+    <option>10k~20K</option>
+    <option>20k~30K</option>
+    <option>30k~40K</option>
+</select>
+</body>
+</html>

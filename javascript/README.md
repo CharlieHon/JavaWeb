@@ -164,19 +164,19 @@ JS使用方式
 
 1. 算术运算符用于执行变量/或值之间的算术运算
 2. `y = 5;`，下面的表格解释了这些算术运算符
-3. ![算术运算符](img.png)
+3. ![算术运算符](imgs/img.png)
 
 ### 赋值运算符
 
 1. 赋值运算符用于给JS变量赋值
 2. 给定 `x=10;y=5;` ，下面的表格解释了赋值运算符
-3. ![赋值运算符](img_1.png)
+3. ![赋值运算符](imgs/img_1.png)
 
 ### 关系运算符
 
 1. 关系(比较)运算符在逻辑语句中使用，以测定变量或值是否相等
 2. 给定 `x=5;` 下面的表格解释了比较运算符
-3. ![关系运算符](img_2.png)
+3. ![关系运算符](imgs/img_2.png)
 
 > 关系运算符注意事项：
 > 1. 等于：`==` 是简单地做字面值的比较
@@ -667,7 +667,7 @@ JS使用方式
 2. 事件通常与函数配合使用，这样就可以通过发生的事件来驱动函数执行
 3. [js事件文档](https://www.w3school.com.cn/js/js_events.asp)
 
-| ![事件一览表1](img_3.png) | ![事件一览表2](img_4.png) |
+| ![事件一览表1](imgs/img_3.png) | ![事件一览表2](imgs/img_4.png) |
 |----------------------|----------------------|
 
 ### 事件分类
@@ -771,3 +771,213 @@ JS使用方式
 </body>
 </html>
 ```
+
+- [onchange 域的内容被改变](onchange.html)
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>onchange 内容发生改变事件</title>
+    <script type="text/javascript">
+        function f1() {
+            alert("工作城市变化");
+        }
+        // 动态注册
+        window.onload = function () {
+            // 获取id2的dom对象
+            var s2 = document.getElementById("s2");
+            s2.onchange = function () {
+                alert("升职加新~");
+            }
+        }
+    </script>
+</head>
+<body>
+当前工作城市：
+<select id="s1" onchange="f1()">
+    <option>---城市---</option>
+    <option>成都</option>
+    <option>北京</option>
+    <option>上海</option>
+</select><br/>
+当前薪资水平：
+<select id="s2">
+    <option>----薪资---</option>
+    <option>10k~20K</option>
+    <option>20k~30K</option>
+    <option>30k~40K</option>
+</select>
+</body>
+</html>
+```
+
+- [onsubmit 表单提交事件](onsubmit.html)
+- 注册按钮被点击，提交表单(需求：如果用户名或密码为空，不能提交表单)
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>onsubmit 表单提交事件</title>
+    <!--注册按钮被点击，提交表单(需求：如果用户名或密码为空，不能提交表单)-->
+    <script type="text/javascript">
+        // 静态注册表达提及哦事件
+        function register() {
+            // 先得到输入的用户名和密码
+            var u1 = document.getElementById("i1");
+            var p1 = document.getElementById("i2");
+            // 判断是否为空 ""
+            // u1, p1 是dom对象，判断其值(value)不能为空
+            if ("" == u1.value || "" == p1.value) {
+                alert("用户名和密码不能为空，不能提交");
+                return false;   // 代表不提交
+            }
+            return true;    // 表示不提交
+        }
+
+        // 动态注册表单提交事件
+        window.onload = function () {
+            var form2 = document.getElementById("form2");
+            // 给form2绑定onsubmit事件
+            // onsubmit指定的函数，会直接将返回结果(t/f)，返回给onsubmit
+            form2.onsubmit = function () {
+                // var u2 = document.getElementById("i3");
+                // var p2 = document.getElementById("i4");
+                var u2 = form2.username;
+                var p2 = form2.pwd;
+                if ("" == u2.value || "" == p2.value) {
+                    alert("用户名或密码不能为空~");
+                    return false;
+                }
+                return true;
+            }
+        }
+    </script>
+</head>
+<body>
+<h1>注册用户1</h1>
+<!--                                          将函数返回值返回，才能作用于 onsubmit事件-->
+<form action="ok.html" method="get" onsubmit="return register()">
+    <table>
+        <tr>
+            <td>用户名：</td>
+            <td><input type="text" id="i1" name="username"></td>
+        </tr>
+        <tr>
+            <td>密　码：</td>
+            <td><input type="password" id="i2" name="pwd"></td>
+        </tr>
+    </table>
+    <input type="submit" value="提交">
+</form>
+
+<h1>注册用户2</h1>
+<form action="ok.html" method="get" id="form2">
+    <table>
+        <tr>
+            <td>用户名：</td>
+            <td><input type="text" id="i3" name="username"></td>
+        </tr>
+        <tr>
+            <td>密　码：</td>
+            <td><input type="password" id="i4" name="pwd"></td>
+        </tr>
+    </table>
+    <input type="submit" value="提交">
+</form>
+</body>
+</html>
+```
+
+### 练习
+
+- 注册用户练习
+- ![js练习](imgs/img_5.png)
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录页面</title>
+    <style type="text/css">
+        h1 {
+            color: red;
+            font-family: 楷体;
+            font-weight: bold;
+            font-size: 30px;
+            text-align: left;
+        }
+    </style>
+    <script type="text/javascript">
+        // 动态绑定表单提交
+        window.onload = function () {
+            var form = document.getElementById("form");
+            form.onsubmit = function () {
+                var username = form.username.value;
+                var pwd1 = form.pwd1.value;
+                var pwd2 = form.pwd2.value;
+                var email = form.email.value;
+                // 处理用户名合法性
+                if (!(username.length >= 4 && username.length <= 6)) {
+                    alert("请按照规定输入用户名");
+                    return false;
+                }
+
+                // 处理密码合理性
+                if (pwd1.length !== 6) {
+                    alert("请正确输入密码格式");
+                    return false;
+                } else if (pwd2 !== pwd1) {
+                    alert("两次密码输入不同");
+                    return false;
+                }
+
+                // 电子邮件 ==> 需要使用正则表达式
+                /*
+                String regStr = "^[\\w-]+@([a-zA-Z]+\\.)+[a-zA-Z]+$"
+                1. 在java中，转义符号是 \\ ，在js中使用正则表达式 \
+                2. emailPattern.test("XXX");    验证XXX是不是满足emailPattern规则
+                    如果满足返回true，否则返回false
+                 */
+                var emailPattern = /^[\w-]+@([a-zA-Z]+\.)+[a-zA-Z]+$/;
+                if (!emailPattern.test(email)) {
+                    alert("点击邮件格式不正确");
+                    return false;
+                }
+                return true;
+            }
+        }
+    </script>
+</head>
+<body>
+<h1>注册用户</h1>
+<form action="ok.html" method="post" id="form">
+    <table>
+        <tr>
+            <td>用户名：</td>
+            <td><input type="text" name="username" id="u"></td>
+            <td>长度(4-6)</td>
+        </tr>
+        <tr>
+            <td>密　码：</td>
+            <td><input type="password" name="pwd1" id="p1"></td>
+            <td>长度(6)</td>
+        </tr>
+        <tr>
+            <td>确　认：</td>
+            <td><input type="password" name="pwd2" id="p2"></td>
+            <td>长度(6)</td>
+        </tr>
+        <tr>
+            <td>电　邮：</td>
+            <td><input type="text" name="email" id="e"></td>
+            <td>满足基本格式</td>
+        </tr>
+    </table>
+    <input type="submit" value="注册用户">
+</form>
+</body>
+</html>
+```
+

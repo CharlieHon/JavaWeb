@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录页面</title>
+    <style type="text/css">
+        h1 {
+            color: red;
+            font-family: 楷体;
+            font-weight: bold;
+            font-size: 30px;
+            text-align: left;
+        }
+    </style>
+    <script type="text/javascript">
+        // 动态绑定表单提交
+        window.onload = function () {
+            var form = document.getElementById("form");
+            form.onsubmit = function () {
+                var username = form.username.value;
+                var pwd1 = form.pwd1.value;
+                var pwd2 = form.pwd2.value;
+                var email = form.email.value;
+                // 处理用户名合法性
+                if (!(username.length >= 4 && username.length <= 6)) {
+                    alert("请按照规定输入用户名");
+                    return false;
+                }
+
+                // 处理密码合理性
+                if (pwd1.length !== 6) {
+                    alert("请正确输入密码格式");
+                    return false;
+                } else if (pwd2 !== pwd1) {
+                    alert("两次密码输入不同");
+                    return false;
+                }
+
+                // 电子邮件 ==> 需要使用正则表达式
+                /*
+                String regStr = "^[\\w-]+@([a-zA-Z]+\\.)+[a-zA-Z]+$"
+                1. 在java中，转义符号是 \\ ，在js中使用正则表达式 \
+                2. emailPattern.test("XXX");    验证XXX是不是满足emailPattern规则
+                    如果满足返回true，否则返回false
+                 */
+                var emailPattern = /^[\w-]+@([a-zA-Z]+\.)+[a-zA-Z]+$/;
+                if (!emailPattern.test(email)) {
+                    alert("点击邮件格式不正确");
+                    return false;
+                }
+                return true;
+            }
+        }
+    </script>
+</head>
+<body>
+<h1>注册用户</h1>
+<form action="ok.html" method="post" id="form">
+    <table>
+        <tr>
+            <td>用户名：</td>
+            <td><input type="text" name="username" id="u"></td>
+            <td>长度(4-6)</td>
+        </tr>
+        <tr>
+            <td>密　码：</td>
+            <td><input type="password" name="pwd1" id="p1"></td>
+            <td>长度(6)</td>
+        </tr>
+        <tr>
+            <td>确　认：</td>
+            <td><input type="password" name="pwd2" id="p2"></td>
+            <td>长度(6)</td>
+        </tr>
+        <tr>
+            <td>电　邮：</td>
+            <td><input type="text" name="email" id="e"></td>
+            <td>满足基本格式</td>
+        </tr>
+    </table>
+    <input type="submit" value="注册用户">
+</form>
+</body>
+</html>
