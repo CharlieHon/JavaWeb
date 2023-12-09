@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>createElement</title>
+    <script type="text/javascript">
+        function addImg() {
+            // 创建一张图片，展示在页面上
+            // 1. 创建这一张图片 img
+            var img = document.createElement("img");
+            // alert(img); // [object HTMLImageElement]
+            img.src = "./imgs/img_1.png";
+            img.width = 200;
+            // 2. 展示，添加到 document.body
+            document.body.appendChild(img);
+        }
+    </script>
+</head>
+<body>
+<input type="button" onclick="addImg()" value="点击创建一张图片"/><br/>
+</body>
+</html>

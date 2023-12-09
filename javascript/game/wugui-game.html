@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<!-- 思路分析
+    1. 搭建框架
+    2. 如何让乌龟动起来
+        - 拿到 wugui dom对象
+        - 获取 wugui.style.left 和 wugui.style.top 的值，通过修改就可以让乌龟动起来
+        - 给四个按键，绑定 onclick 事件(静态绑定)
+    3. 代码实现让乌龟动起来
+        - 向上 wugui.style.top 减小...
+    4. 分析如何判断乌龟和公鸡碰撞
+        -
+-->
+    <title>乌龟游戏</title>
+    <script type="text/javascript">
+        function move(obj) {
+            // alert("val= " + obj.value); // 向上/下/左/右走
+            // 1. 拿到 wugui dom对象
+            var wugui = document.getElementById("wugui");
+            // 2. 获取 wugui.style.left 和 wugui.style.top 的值
+            var wugui_left = wugui.style.left;
+            var wugui_top = wugui.style.top;
+
+            // alert(wugui_left);  // 100px 是字符串！
+            // 分析：wugui_left 和 wugui_top 是字符串， string "100px" -> number 100
+            wugui_left = parseInt(wugui_left.substring(0, wugui_left.indexOf("p")));
+            wugui_top = parseInt(wugui_top.substring(0, wugui_top.indexOf("p")));
+            // alert("wugui_left= " + wugui_left + typeof wugui_left); // wugui_left= 100number
+
+            // cock dom
+            var cock = document.getElementById("cock");
+            var cock_left = cock.style.left;
+            cock_left = parseInt(cock_left.substring(0, cock_left.indexOf("p")));
+            var cock_top = cock.style.top;
+            cock_top = parseInt(cock_top.substring(0, cock_top.indexOf("p")));
+
+            var COCK_WIDTH = cock.childNodes[1].width;
+            var COCK_HEIGHT = cock.childNodes[1].height;
+            // alert("w: " + COCK_WIDTH + ", h: " + COCK_HEIGHT);  // 76 73
+            var WUGUI_WIDTH = wugui.childNodes[1].width;
+            var WUGUI_HEIGHT = wugui.childNodes[1].height;
+            // alert("w: " + WUGUI_WIDTH + ", h: " + WUGUI_HEIGHT);    // 94 67
+
+            var l1 = cock_left - WUGUI_WIDTH;
+            var t1 = cock_top - WUGUI_HEIGHT;
+            var l2 = cock_left + COCK_WIDTH;
+            var t2 = cock_top + COCK_HEIGHT;
+
+            if ("向上走" === obj.value) {
+                wugui_top -= 10;
+                wugui.style.top = wugui_top + "px";
+            } else if ("向下走" === obj.value) {
+                wugui_top += 10;
+                wugui.style.top = wugui_top + "px";
+            } else if ("向左走" === obj.value) {
+                wugui_left -= 10;
+                wugui.style.left = wugui_left + "px";
+            } else if ("向右走" === obj.value) {
+                wugui_left += 10;
+                wugui.style.left = wugui_left + "px";
+            }
+            // 乌龟和鸡图片重叠
+            if (wugui_left >= l1 && wugui_left <= l2 && wugui_top >= t1 && wugui_top <= t2) {
+                alert("大吉大利！");
+                wugui.style.left = "100px";
+                wugui.style.top = "120px";
+            }
+        }
+    </script>
+</head>
+<body>
+<table border="1">
+    <tr>
+        <td></td>
+<!--
+    1. this 表示的是 [object HTMLInputElement] 即点击的这个button，而且已经是一个dom对象
+    2. 可以使用属性和方法
+-->
+        <td><input type="button" value="向上走" onclick="move(this)"/></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><input type="button" value="向左走" onclick="move(this)"/></td>
+        <td></td>
+        <td><input type="button" value="向右走" onclick="move(this)"/></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><input type="button" value="向下走" onclick="move(this)"/></td>
+        <td></td>
+    </tr>
+</table>
+<!--把乌龟放在一个div
+    1. style 的 position：absolute 表示绝对定位
+    2. left: 100px 表示图片距离窗口的原点(左上点)的横坐标
+    3. top: 120px  ...纵坐标
+    4. 针对图片而言，定位的点是图片的左上角
+-->
+<div id="wugui" style="position: absolute ;left:100px;top:120px;">
+    <img src="1.bmp" border="1" alt=""/>
+</div>
+<!--公鸡图片div-->
+<div id="cock" style="left:200px;position:absolute;top:200px;">
+    <img src="2.bmp" border="1" alt=""/>
+</div>
+</body>
+</html>

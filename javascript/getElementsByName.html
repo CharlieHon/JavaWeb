@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>getElementByName 函数</title>
+    <script type="text/javascript">
+        // 全选
+        function selectAll() {
+            // 1. 获取 sport 这一组复选框
+            // getElement s ByName
+            var sports = document.getElementsByName("sport");
+            // sports 是 NodeList 即是一个集合
+            // 2. 拿到[dom，集合]->操作 [属性和方法api]
+            // 遍历 sports 修改
+            for (var i=0; i<sports.length; ++i) {
+                sports[i].checked = true;   // 选中
+            }
+        }
+        // 全不选
+        function selectNone() {
+            var sports = document.getElementsByName("sport");
+            for (var i=0; i<sports.length; ++i) {
+                sports[i].checked = false;
+            }
+        }
+        // 反选
+        function selectReverse() {
+            var sports = document.getElementsByName("sport");
+            for (var i=0; i<sports.length; ++i) {
+                sports[i].checked = !sports[i].checked;
+            }
+        }
+    </script>
+</head>
+<body>
+你会的运动项目：
+<input type="checkbox" name="sport" value="football">足球
+<input type="checkbox" name="sport" value="billiards">台球
+<input type="checkbox" name="sport" value="ping-pong">乒乓球<br/>
+<input type="button" value="全选" onclick="selectAll()">&nbsp;
+<input type="button" value="全不选" onclick="selectNone()">&nbsp;
+<input type="button" value="反选" onclick="selectReverse()">
+</body>
+</html>

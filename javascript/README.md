@@ -981,3 +981,526 @@ JS使用方式
 </html>
 ```
 
+## DOM
+
+[DOM官方文档](https://www.w3school.com.cn/js/js_htmldom.asp)
+
+### DOM基本介绍
+
+1. `DOM` 全称是 `Document Object Model`，**文本对象模型**
+2. 就是把文档中的标签，属性，文本转换成为对象来管理
+   - ![dom分类](imgs/img_6.png)
+3. 通过`HTML DOM`，JavaScript能够访问和改变HTML文档的所有元素
+
+### HTML DOM
+
+1. 当网页被加载时，浏览器会创建页面的文档对象模型(Document Object Model)
+2. HTML DOM模型被结构化为对象数：
+   - ![对象树](https://www.w3school.com.cn/i/ct_htmltree.gif)
+   - ![DOM树](imgs/img_8.png)
+
+## document对象
+
+1. `document` 管理了所有的HTML文档内容
+2. 是一种树结构的文档
+3. 有层级关系，在dom中把所有的标签都**对象化**(html标签<-->对象-->操作)
+4. 通过document可以访问所有的标签对象
+5. document对象方法一览
+   - ![document对象方法](imgs/img_9.png)
+
+| ![应用案例1](imgs/img_10.png) | ![应用案例2](imgs/img_11.png) |
+|---------------------|---------------------|
+
+1. `id` -> `getElementById`
+2. `name` -> `getElementsByName`
+3. `Tag` -> `getElementsByTagName`
+
+- 根据元素 `id` 获取dom对象
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>getElementById的使用</title>
+<!--
+    1. 先得到 h1 的dom对象，通过 id 获取
+    2. 对h1对应的dom对象操作即可
+-->
+    <script type="text/javascript">
+        function getValue() {   // 定义函数
+            // myHeader 就是dom对象
+            var myHeader = document.getElementById("myHeader");
+            // alert(myHeader);    // HTMLHeadingElement
+            // innerText 获取到 <h1></h1> 包含的文本
+            alert(myHeader.innerText);  // 汉东省人民检察院
+            alert(myHeader.innerHTML);  // <div>汉东省人民检察院</div>
+        }
+
+        // 动态绑定
+        window.onload = function () {
+            var myHeader = document.getElementById("myHeader");
+            myHeader.onclick = function () {
+                alert("动态绑定：" + myHeader.innerText);
+            }
+        }
+    </script>
+</head>
+<body>
+<h1 id="myHeader" style="color: red;"><div>汉东省人民检察院</div></h1>
+<p>Click on the header to alert its value.</p>
+</body>
+</html>
+```
+
+- 根据元素`name`属性获取dom集合
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>getElementByName 函数</title>
+    <script type="text/javascript">
+        // 全选
+        function selectAll() {
+            // 1. 获取 sport 这一组复选框
+            // getElement s ByName
+            var sports = document.getElementsByName("sport");
+            // sports 是 NodeList 即是一个集合
+            // 2. 拿到[dom，集合]->操作 [属性和方法api]
+            // 遍历 sports 修改
+            for (var i=0; i<sports.length; ++i) {
+                sports[i].checked = true;   // 选中
+            }
+        }
+        // 全不选
+        function selectNone() {
+            var sports = document.getElementsByName("sport");
+            for (var i=0; i<sports.length; ++i) {
+                sports[i].checked = false;
+            }
+        }
+        // 反选
+        function selectReverse() {
+            var sports = document.getElementsByName("sport");
+            for (var i=0; i<sports.length; ++i) {
+                sports[i].checked = !sports[i].checked;
+            }
+        }
+    </script>
+</head>
+<body>
+你会的运动项目：
+<input type="checkbox" name="sport" value="football">足球
+<input type="checkbox" name="sport" value="billiards">台球
+<input type="checkbox" name="sport" value="ping-pong">乒乓球<br/>
+<input type="button" value="全选" onclick="selectAll()">&nbsp;
+<input type="button" value="全不选" onclick="selectNone()">&nbsp;
+<input type="button" value="反选" onclick="selectReverse()">
+</body>
+</html>
+```
+
+- 根据元素的标签名`TagName`获取dom集合
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>getElementsByTagName</title>
+    <script type="text/javascript">
+        function changeImgs() {
+            var btn = document.getElementById("btn");
+            // 1. 得到所有的img
+            var imgs = document.getElementsByTagName("img");
+            // img标签是 [object HTMLCollection]
+            alert("图片的数量是：" + imgs.length);
+
+            var a;
+            if (btn.value == "切换cat") {
+                a = 4;
+                btn.value = "切换dog";
+            } else if (btn.value == "切换dog") {
+                a = 1;
+                btn.value = "切换cat";
+            }
+
+            // 2. 修改src，遍历修改
+            for (var i = 0; i < imgs.length; i++) {
+                imgs[i].src = "./imgs/img_" + (a + i) + ".png";
+            }
+            // 3. 根据 input 的 value
+        }
+    </script>
+</head>
+<body>
+<img src="./imgs/img_1.png" height="100px">
+<img src="./imgs/img_2.png" height="100px">
+<img src="./imgs/img_3.png" height="100px"><br/>
+<input type="button" onclick="changeImgs()" value="切换cat" id="btn"/>
+</body>
+</html>
+```
+
+- 创建元素 `document.craeteElement()`
+- ![创建图片](imgs/img_7.png)
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>createElement</title>
+    <script type="text/javascript">
+        function addImg() {
+            // 创建一张图片，展示在页面上
+            // 1. 创建这一张图片 img
+            var img = document.createElement("img");
+            // alert(img); // [object HTMLImageElement]
+            img.src = "./imgs/img_8.png";
+            img.width = 200;
+            // 2. 展示，添加到 document.body
+            document.body.appendChild(img);
+        }
+    </script>
+</head>
+<body>
+<input type="button" onclick="addImg()" value="点击创建一张图片"/><br/>
+</body>
+</html>
+```
+
+## HTML DOM节点
+
+### 基本介绍
+
+在 `HTML DOM`(文档对象模型)中，每个部分都是节点：
+1. 文档本身是文档节点
+2. 所有HTML元素是元素节点
+3. 所有HTML属性是属性节点
+4. HTML元素内的文本是文本节点
+5. 注释是注释节点
+
+- [HTML DOM Element](https://www.w3school.com.cn/jsref/dom_obj_all.asp)
+- [HTML DOM Document](https://www.w3school.com.cn/jsref/dom_obj_document.asp)
+
+| ![常用节点方法](imgs/img_12.png)     | ![节点常用属性](imgs/img_13.png)    |
+|--------------------------------|-------------------------------|
+
+- ![dom练习](imgs/img_14.png)
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>演示HTML DOM相关方法</title>
+    <link rel="stylesheet" type="text/css" href="style/css.css"/>
+    <script type="text/javascript">
+        window.onload = function () {
+            // 查看 id=java 节点
+            var btn01 = document.getElementById("btn01");
+            btn01.onclick = function () {
+                var java = document.getElementById("java");
+                // alert("java节点：" + java)   // object HTMLLIElement
+                alert("java节点文本：" + java.innerText);    // java
+            }
+
+            // 查找所有 option 节点
+            var btn02 = document.getElementById("btn02");
+            btn02.onclick = function () {
+                // 根据元素标签名
+                var options = document.getElementsByTagName("option");
+                // alert(options); // [object HTMLCollection]
+                for (var i = 0; i < options.length; i++) {
+                    alert("值= " + options[i].innerText);
+                }
+            }
+
+            // 查看 name=sport 的节点
+            var btn03 = document.getElementById("btn03");
+            btn03.onclick = function () {
+                var sports = document.getElementsByName("sport");
+                for (var i = 0; i < sports.length; ++i) {
+                    if (sports[i].checked) {    // 仅显示选中的
+                        alert("运动：" + sports[i].value);
+                    }
+                }
+            }
+
+            // 查找 id=language 下所有 li 节点
+            var btn04 = document.getElementById("btn04");
+            btn04.onclick = function () {
+                // 通过 dom对象 获取其下面的子节点对象
+                /*
+                <ul>
+                    <li> </li>
+                    <li> </li>
+                </ul>
+                 */
+                var language = document.getElementById("language");
+                var lis = language.getElementsByTagName("li");
+                // alert(lis); // [object HTMLCollection]
+                for (var i = 0; i < lis.length; ++i) {
+                    alert(lis[i].innerText);
+                }
+            }
+
+            // 返回 id=sel01 的所有子节点
+            var btn05 = document.getElementById("btn05");
+            btn05.onclick = function () {
+                // var options = document.getElementById("sel01").getElementsByTagName("option");
+                // 换行也是子节点
+                // alert(document.getElementById("sel01").childNodes.length);  // 11
+                /*
+                1. 如果使用的是 document.getElementById("sel01").childNodes
+                    获取的是 object text 和 object HTMLOptionElement 对象
+                2. 如果不希望得到 text 对象，需要将所有内容放在一行
+                 */
+                var childNodes = document.getElementById("sel01").childNodes;
+                for (var i = 0; i < childNodes.length; ++i) {
+                    // if (childNodes[i].selected)  // selected 选中的
+                    alert(i + " " + childNodes[i]);   // 换行：[object Text]
+                }
+            }
+
+            // // 以前的方法
+            // /*
+            // 1. sel01 是 HTMLSelectElement => 本身就有集合特点
+            //  */
+            // var sel01 = document.getElementById("sel01");
+            // alert(sel01);   // [object HTMLSelectElement]
+            // alert(sel01[0]);    // [object HTMLOptionElement]
+
+            // 返回 id=sel01 的第一个子节点
+            var btn06 = document.getElementById("btn06");
+            btn06.onclick = function () {
+                // 除了上面的方法外，还可以直接使用属性 firstChild
+                var sel01 = document.getElementById("sel01");
+                alert("xx= " + sel01.firstChild);    // 是按照 .childNodes 得到第一个子节点 object text
+                alert("yy= " + sel01[0]);   // 直接得到第一个 option节点，object HTMLOptionElement
+            }
+
+            // 返回 id=java 的父节点
+            var btn07 = document.getElementById("btn07");
+            btn07.onclick = function () {
+                var java = document.getElementById("java");
+                alert("XX= " + java.parentNode);     // XX= [object HTMLUListElement]
+                alert("YY= " + java.parentElement);  // YY= [object HTMLUListElement]
+                alert("z= " + java.parentElement.childNodes.length);    // 9
+            }
+
+            // 返回 id=ct 的前后兄弟节点
+            var btn08 = document.getElementById("btn08");
+            btn08.onclick = function () {
+                var ct = document.getElementById("ct");
+                alert(ct.previousSibling);  // object Text
+                alert(ct.previousSibling.previousSibling.innerText);  // 艳红
+                alert(ct.nextSibling.nextSibling.innerText);    // 春花
+            }
+
+            // 读取 id=ct 的 value 属性值
+            var btn09 = document.getElementById("btn09");
+            btn09.onclick = function () {
+                var ct = document.getElementById("ct");
+                // ct.innerText = "hello, world.";
+                ct.value = "蕃秀";
+            }
+
+            // 设置#person 的文本域
+            var btn10 = document.getElementById("btn10");
+            btn10.onclick = function () {
+                var person = document.getElementById("person");
+                person.innerText = "好好学习，天天向上";
+            }
+
+        }
+    </script>
+</head>
+<body>
+<div id="total">
+    <div class="inner">
+        <P>
+            你会的运动项目：
+        </P>
+        <input type="checkbox" name="sport" value="zq" checked="checked">足球
+        <input type="checkbox" name="sport" value="tq">台球
+        <input type="checkbox" name="sport" value="ppq">乒乓球 <br/>
+        <hr/>
+        <P>
+            你当前女友是谁：
+        </P>
+        <select id="sel01">
+            <option>---女友---</option>
+            <option>艳红</option>
+            <option id="ct" value="春桃菇凉">春桃</option>
+            <option>春花</option>
+            <option>桃红</option>
+        </select>
+        <hr/>
+        <p>
+            你的编程语言?
+        </p>
+        <ul id="language">
+            <li id="java">Java</li>
+            <li>PHP</li>
+            <li>C++</li>
+            <li>Python</li>
+        </ul>
+        <br>
+        <br>
+        <hr/>
+        <p>
+            个人介绍:
+        </p>
+        <textarea name="person" id="person">个人介绍</textarea>
+    </div>
+</div>
+<div id="btnList">
+    <div>
+        <button id="btn01">查找 id=java 节点</button>
+    </div>
+    <div>
+        <button id="btn02">查找所有 option 节点</button>
+    </div>
+    <div>
+        <button id="btn03">查找 name=sport 的节点</button>
+    </div>
+    <div>
+        <button id="btn04">查找 id=language 下所有 li 节点</button>
+    </div>
+    <div>
+        <button id="btn05">返回 id=sel01 的所有子节点</button>
+    </div>
+    <div>
+        <button id="btn06">返回 id=sel01 的第一个子节点</button>
+    </div>
+    <div>
+        <button id="btn07">返回 id=java 的父节点</button>
+    </div>
+    <div>
+        <button id="btn08">返回 id=ct 的前后兄弟节点</button>
+    </div>
+    <div>
+        <button id="btn09">读取 id=ct 的 value 属性值</button>
+    </div>
+    <div>
+        <button id="btn10">设置 person 的文本域</button>
+    </div>
+</div>
+</body>
+</html>
+```
+
+### 乌龟吃鸡游戏
+
+- [wugui-game](./game/wugui-game.html)
+- ![乌龟吃鸡](imgs/img_15.png)
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<!-- 思路分析
+    1. 搭建框架
+    2. 如何让乌龟动起来
+        - 拿到 wugui dom对象
+        - 获取 wugui.style.left 和 wugui.style.top 的值，通过修改就可以让乌龟动起来
+        - 给四个按键，绑定 onclick 事件(静态绑定)
+    3. 代码实现让乌龟动起来
+        - 向上 wugui.style.top 减小...
+    4. 分析如何判断乌龟和公鸡碰撞
+        -
+-->
+    <title>乌龟游戏</title>
+    <script type="text/javascript">
+        function move(obj) {
+            // alert("val= " + obj.value); // 向上/下/左/右走
+            // 1. 拿到 wugui dom对象
+            var wugui = document.getElementById("wugui");
+            // 2. 获取 wugui.style.left 和 wugui.style.top 的值
+            var wugui_left = wugui.style.left;
+            var wugui_top = wugui.style.top;
+
+            // alert(wugui_left);  // 100px 是字符串！
+            // 分析：wugui_left 和 wugui_top 是字符串， string "100px" -> number 100
+            wugui_left = parseInt(wugui_left.substring(0, wugui_left.indexOf("p")));
+            wugui_top = parseInt(wugui_top.substring(0, wugui_top.indexOf("p")));
+            // alert("wugui_left= " + wugui_left + typeof wugui_left); // wugui_left= 100number
+
+            // cock dom
+            var cock = document.getElementById("cock");
+            var cock_left = cock.style.left;
+            cock_left = parseInt(cock_left.substring(0, cock_left.indexOf("p")));
+            var cock_top = cock.style.top;
+            cock_top = parseInt(cock_top.substring(0, cock_top.indexOf("p")));
+
+            var COCK_WIDTH = cock.childNodes[1].width;
+            var COCK_HEIGHT = cock.childNodes[1].height;
+            // alert("w: " + COCK_WIDTH + ", h: " + COCK_HEIGHT);  // 76 73
+            var WUGUI_WIDTH = wugui.childNodes[1].width;
+            var WUGUI_HEIGHT = wugui.childNodes[1].height;
+            // alert("w: " + WUGUI_WIDTH + ", h: " + WUGUI_HEIGHT);    // 94 67
+
+            var l1 = cock_left - WUGUI_WIDTH;
+            var t1 = cock_top - WUGUI_HEIGHT;
+            var l2 = cock_left + COCK_WIDTH;
+            var t2 = cock_top + COCK_HEIGHT;
+
+            if ("向上走" === obj.value) {
+                wugui_top -= 10;
+                wugui.style.top = wugui_top + "px";
+            } else if ("向下走" === obj.value) {
+                wugui_top += 10;
+                wugui.style.top = wugui_top + "px";
+            } else if ("向左走" === obj.value) {
+                wugui_left -= 10;
+                wugui.style.left = wugui_left + "px";
+            } else if ("向右走" === obj.value) {
+                wugui_left += 10;
+                wugui.style.left = wugui_left + "px";
+            }
+            // 乌龟和鸡图片重叠
+            if (wugui_left >= l1 && wugui_left <= l2 && wugui_top >= t1 && wugui_top <= t2) {
+                alert("大吉大利！");
+                wugui.style.left = "100px";
+                wugui.style.top = "120px";
+            }
+        }
+    </script>
+</head>
+<body>
+<table border="1">
+    <tr>
+        <td></td>
+<!--
+    1. this 表示的是 [object HTMLInputElement] 即点击的这个button，而且已经是一个dom对象
+    2. 可以使用属性和方法
+-->
+        <td><input type="button" value="向上走" onclick="move(this)"/></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><input type="button" value="向左走" onclick="move(this)"/></td>
+        <td></td>
+        <td><input type="button" value="向右走" onclick="move(this)"/></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><input type="button" value="向下走" onclick="move(this)"/></td>
+        <td></td>
+    </tr>
+</table>
+<!--把乌龟放在一个div
+    1. style 的 position：absolute 表示绝对定位
+    2. left: 100px 表示图片距离窗口的原点(左上点)的横坐标
+    3. top: 120px  ...纵坐标
+    4. 针对图片而言，定位的点是图片的左上角
+-->
+<div id="wugui" style="position: absolute ;left:100px;top:120px;">
+    <img src="1.bmp" border="1" alt=""/>
+</div>
+<!--公鸡图片div-->
+<div id="cock" style="left:200px;position:absolute;top:200px;">
+    <img src="2.bmp" border="1" alt=""/>
+</div>
+</body>
+</html>
+```

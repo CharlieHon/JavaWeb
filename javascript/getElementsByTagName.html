@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>getElementsByTagName</title>
+    <script type="text/javascript">
+        function changeImgs() {
+            var btn = document.getElementById("btn");
+            // 1. 得到所有的img
+            var imgs = document.getElementsByTagName("img");
+            // img标签是 [object HTMLCollection]
+            alert("图片的数量是：" + imgs.length);
+
+            var a;
+            if (btn.value == "切换cat") {
+                a = 4;
+                btn.value = "切换dog";
+            } else if (btn.value == "切换dog") {
+                a = 1;
+                btn.value = "切换cat";
+            }
+
+            // 2. 修改src，遍历修改
+            for (var i = 0; i < imgs.length; i++) {
+                imgs[i].src = "./imgs/img_" + (a + i) + ".png";
+            }
+            // 3. 根据 input 的 value
+        }
+    </script>
+</head>
+<body>
+<img src="./imgs/img_1.png" height="100px">
+<img src="./imgs/img_2.png" height="100px">
+<img src="./imgs/img_3.png" height="100px"><br/>
+<input type="button" onclick="changeImgs()" value="切换cat" id="btn"/>
+</body>
+</html>

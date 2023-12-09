@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>演示HTML DOM相关方法</title>
+    <link rel="stylesheet" type="text/css" href="style/css.css"/>
+    <script type="text/javascript">
+        window.onload = function () {
+            // 查看 id=java 节点
+            var btn01 = document.getElementById("btn01");
+            btn01.onclick = function () {
+                var java = document.getElementById("java");
+                // alert("java节点：" + java)   // object HTMLLIElement
+                alert("java节点文本：" + java.innerText);    // java
+            }
+
+            // 查找所有 option 节点
+            var btn02 = document.getElementById("btn02");
+            btn02.onclick = function () {
+                // 根据元素标签名
+                var options = document.getElementsByTagName("option");
+                // alert(options); // [object HTMLCollection]
+                for (var i = 0; i < options.length; i++) {
+                    alert("值= " + options[i].innerText);
+                }
+            }
+
+            // 查看 name=sport 的节点
+            var btn03 = document.getElementById("btn03");
+            btn03.onclick = function () {
+                var sports = document.getElementsByName("sport");
+                for (var i = 0; i < sports.length; ++i) {
+                    if (sports[i].checked) {    // 仅显示选中的
+                        alert("运动：" + sports[i].value);
+                    }
+                }
+            }
+
+            // 查找 id=language 下所有 li 节点
+            var btn04 = document.getElementById("btn04");
+            btn04.onclick = function () {
+                // 通过 dom对象 获取其下面的子节点对象
+                /*
+                <ul>
+                    <li> </li>
+                    <li> </li>
+                </ul>
+                 */
+                var language = document.getElementById("language");
+                var lis = language.getElementsByTagName("li");
+                // alert(lis); // [object HTMLCollection]
+                for (var i = 0; i < lis.length; ++i) {
+                    alert(lis[i].innerText);
+                }
+            }
+
+            // 返回 id=sel01 的所有子节点
+            var btn05 = document.getElementById("btn05");
+            btn05.onclick = function () {
+                // var options = document.getElementById("sel01").getElementsByTagName("option");
+                // 换行也是子节点
+                // alert(document.getElementById("sel01").childNodes.length);  // 11
+                /*
+                1. 如果使用的是 document.getElementById("sel01").childNodes
+                    获取的是 object text 和 object HTMLOptionElement 对象
+                2. 如果不希望得到 text 对象，需要将所有内容放在一行
+                 */
+                var childNodes = document.getElementById("sel01").childNodes;
+                for (var i = 0; i < childNodes.length; ++i) {
+                    // if (childNodes[i].selected)  // selected 选中的
+                    alert(i + " " + childNodes[i]);   // 换行：[object Text]
+                }
+            }
+
+            // // 以前的方法
+            // /*
+            // 1. sel01 是 HTMLSelectElement => 本身就有集合特点
+            //  */
+            // var sel01 = document.getElementById("sel01");
+            // alert(sel01);   // [object HTMLSelectElement]
+            // alert(sel01[0]);    // [object HTMLOptionElement]
+
+            // 返回 id=sel01 的第一个子节点
+            var btn06 = document.getElementById("btn06");
+            btn06.onclick = function () {
+                // 除了上面的方法外，还可以直接使用属性 firstChild
+                var sel01 = document.getElementById("sel01");
+                alert("xx= " + sel01.firstChild);    // 是按照 .childNodes 得到第一个子节点 object text
+                alert("yy= " + sel01[0]);   // 直接得到第一个 option节点，object HTMLOptionElement
+            }
+
+            // 返回 id=java 的父节点
+            var btn07 = document.getElementById("btn07");
+            btn07.onclick = function () {
+                var java = document.getElementById("java");
+                alert("XX= " + java.parentNode);     // XX= [object HTMLUListElement]
+                alert("YY= " + java.parentElement);  // YY= [object HTMLUListElement]
+                alert("z= " + java.parentElement.childNodes.length);    // 9
+            }
+
+            // 返回 id=ct 的前后兄弟节点
+            var btn08 = document.getElementById("btn08");
+            btn08.onclick = function () {
+                var ct = document.getElementById("ct");
+                alert(ct.previousSibling);  // object Text
+                alert(ct.previousSibling.previousSibling.innerText);  // 艳红
+                alert(ct.nextSibling.nextSibling.innerText);    // 春花
+            }
+
+            // 读取 id=ct 的 value 属性值
+            var btn09 = document.getElementById("btn09");
+            btn09.onclick = function () {
+                var ct = document.getElementById("ct");
+                // ct.innerText = "hello, world.";
+                ct.value = "蕃秀";
+            }
+
+            // 设置#person 的文本域
+            var btn10 = document.getElementById("btn10");
+            btn10.onclick = function () {
+                var person = document.getElementById("person");
+                person.innerText = "好好学习，天天向上";
+            }
+
+        }
+    </script>
+</head>
+<body>
+<div id="total">
+    <div class="inner">
+        <P>
+            你会的运动项目：
+        </P>
+        <input type="checkbox" name="sport" value="zq" checked="checked">足球
+        <input type="checkbox" name="sport" value="tq">台球
+        <input type="checkbox" name="sport" value="ppq">乒乓球 <br/>
+        <hr/>
+        <P>
+            你当前女友是谁：
+        </P>
+        <select id="sel01">
+            <option>---女友---</option>
+            <option>艳红</option>
+            <option id="ct" value="春桃菇凉">春桃</option>
+            <option>春花</option>
+            <option>桃红</option>
+        </select>
+        <hr/>
+        <p>
+            你的编程语言?
+        </p>
+        <ul id="language">
+            <li id="java">Java</li>
+            <li>PHP</li>
+            <li>C++</li>
+            <li>Python</li>
+        </ul>
+        <br>
+        <br>
+        <hr/>
+        <p>
+            个人介绍:
+        </p>
+        <textarea name="person" id="person">个人介绍</textarea>
+    </div>
+</div>
+<div id="btnList">
+    <div>
+        <button id="btn01">查找 id=java 节点</button>
+    </div>
+    <div>
+        <button id="btn02">查找所有 option 节点</button>
+    </div>
+    <div>
+        <button id="btn03">查找 name=sport 的节点</button>
+    </div>
+    <div>
+        <button id="btn04">查找 id=language 下所有 li 节点</button>
+    </div>
+    <div>
+        <button id="btn05">返回 id=sel01 的所有子节点</button>
+    </div>
+    <div>
+        <button id="btn06">返回 id=sel01 的第一个子节点</button>
+    </div>
+    <div>
+        <button id="btn07">返回 id=java 的父节点</button>
+    </div>
+    <div>
+        <button id="btn08">返回 id=ct 的前后兄弟节点</button>
+    </div>
+    <div>
+        <button id="btn09">读取 id=ct 的 value 属性值</button>
+    </div>
+    <div>
+        <button id="btn10">设置 person 的文本域</button>
+    </div>
+</div>
+</body>
+</html>

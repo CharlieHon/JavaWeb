@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>getElementById的使用</title>
+<!--
+    1. 先得到 h1 的dom对象，通过 id 获取
+    2. 对h1对应的dom对象操作即可
+-->
+    <script type="text/javascript">
+        function getValue() {   // 定义函数
+            // myHeader 就是dom对象
+            var myHeader = document.getElementById("myHeader");
+            // alert(myHeader);    // HTMLHeadingElement
+            // innerText 获取到 <h1></h1> 包含的文本
+            alert(myHeader.innerText);  // 汉东省人民检察院
+            alert(myHeader.innerHTML);  // <div>汉东省人民检察院</div>
+        }
+
+        // 动态绑定
+        window.onload = function () {
+            var myHeader = document.getElementById("myHeader");
+            myHeader.onclick = function () {
+                alert("动态绑定：" + myHeader.innerText);
+            }
+        }
+    </script>
+</head>
+<body>
+<h1 id="myHeader" style="color: red;"><div>汉东省人民检察院</div></h1>
+<p>Click on the header to alert its value.</p>
+</body>
+</html>
