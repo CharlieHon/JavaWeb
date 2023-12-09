@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DOM对象转成jQuery对象</title>
+    <script type="text/javascript" src="./script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            // 演示通过dom对象来获取输入框的value
+            // username是dom对象
+            var username = document.getElementById("username");
+            alert("username: " + username.value);  // 李自成
+            // 通过jquery对象来获取
+            // 把username dom对象转成jquery对象
+            // var $username = $(username);
+            // 使用jquery对象来获取value
+            alert($(username).val());   // 李自成
+        }
+    </script>
+</head>
+<body>
+用户名：<input id="username" name="username" value="李自成"/>
+</body>
+</html>

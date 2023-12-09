@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>快速入门</title>
+<!--    引入 jquery-->
+    <script type="text/javascript" src="./script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        // window.onload = function () {
+        //     // 1. 得到 button 的dom对象
+        //     var btn01 = document.getElementById("btn01");
+        //     btn01.onclick = function () {
+        //         alert("hello, jquery~");
+        //     }
+        // }
+
+        // 使用 jquery
+        /*
+        1. 引入 jquery库
+        2. $(function(){}) 等价原生的js的，当页面加载完毕就执行 function(){}，即
+            window.onload = function() {}
+         */
+        $(function (){
+            // 1. 得到 btn01 这个对象的 jquery对象
+            // $btn01 是一个jquery对象，其实就是对dom对象的包装，
+            // 这是就可以使用jquery对象的方法、事件等
+            // 通过debug 防线jquery对象是数组对象
+            // 2. jquery中，获取对象的方法是 $("#id")，必须在id前有#
+            // 3. 编程中，规定 jquery对象的命名以 $ 开头 (非必须，但是约定)
+            var $btn01 = $("#btn01");
+            // 2. 绑定事件
+            $btn01.click(function (){
+                alert("hello, jquery.");
+            });
+        });
+    </script>
+</head>
+<body>
+<!--
+1. 内容处理: <input> 是一个空元素，其内容由 value 属性定义，
+    而 <button> 是一个容器元素，可以包含丰富的内容。
+2. 默认类型: <input> 元素的默认类型是 "text"，
+    而 <button> 元素的默认类型是 "submit"（在没有明确指定的情况下）。
+3. 使用场景: <input> 元素更常用于简单的按钮，而 <button> 元素更适合需要包含复杂内容的按钮。
+-->
+<input type="button" id="btn01" value="按钮1"/>
+<!--<button id="btn01">按钮1</button>-->
+</body>
+</html>

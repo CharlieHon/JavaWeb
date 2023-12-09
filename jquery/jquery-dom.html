@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>jQuery对象转成DOM对象</title>
+    <script type="text/javascript" src="./script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            // 得到jquery对象
+            var $username = $("#username");
+            alert("$username.val(): " + $username.val());
+            // 把jquery对象 -> dom对象
+            /*
+            1. jquery对象是一个数组对象，封装了dom对象
+            2. 可以通过 [index] 或者 get(index) 来获取
+            3. 一般来说 index 是0
+             */
+            // 方式1
+            // var username = $username[0];
+            // 方式2
+            var username = $username.get(0);
+            alert("username.value: " + username.value);
+        }
+    </script>
+</head>
+<body>
+用户名：<input id="username" name="username" value="李自成"/>
+</body>
+</html>
