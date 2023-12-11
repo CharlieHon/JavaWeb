@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>作业1</title>
+    <script type="text/javascript" src="./script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            // 1. 对所有的p元素进行遍历绑定
+            // $p.each(
+            //     function () {
+            //         // 方式1-dom
+            //         // this.onclick = function () {
+            //         //     // alert(this.innerText);
+            //         //     alert($(this).text());
+            //         // }
+            //         // 方式2-jquery
+            //         $(this).click(function () {
+            //             alert($(this).text());
+            //         });
+            //     }
+            // )
+            // 2. 同上，统一绑定
+            $("p").click(function () {
+                // 当点击p元素时，会隐式的传入this(dom)，表示当前的元素，对应的dom元素
+                alert("p的内容是：" + $(this).text());
+            })
+        })
+    </script>
+</head>
+<body>
+<p>段落1</p>
+<p>段落2</p>
+<p>段落3</p>
+</body>
+</html>

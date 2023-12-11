@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>使一个特定的表格隔行变色</title>
+    <style type="text/css">
+        table, tr, td {
+            border: 1px solid cyan;
+            border-collapse: collapse;
+            width: 400px;
+        }
+    </style>
+    <script type="text/javascript" src="./script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            // 1. 先选择到table
+            // 2. 得到 tr
+            // 3. 得到even的tr元素
+            // 4. 得到指定的table
+            // 5. 得到指定的 table:eq(index) 可以得到指定index的table
+            // index是从0开始编号
+            $("table:eq(0) tr:even").css("background", "red");
+            $("table:eq(0) tr:odd").css("background", "blue");
+
+            $("table:eq(1) tr:even").css("background", "green");
+            $("table:eq(1) tr:odd").css("background", "silver");
+        })
+    </script>
+</head>
+<body>
+<h1>第一个表格</h1>
+<table>
+    <tr>
+        <td>1</td>
+        <td>1</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>3</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>4</td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>5</td>
+    </tr>
+    <tr>
+        <td>6</td>
+        <td>6</td>
+    </tr>
+</table>
+<h1>第二个表格</h1>
+<table>
+    <tr>
+        <td>1</td>
+        <td>1</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>3</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>4</td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>5</td>
+    </tr>
+    <tr>
+        <td>6</td>
+        <td>6</td>
+    </tr>
+</table>
+</body>
+</html>

@@ -463,3 +463,1014 @@
 </body>
 </html>
 ```
+
+### 可见度过滤选择器
+
+- 根据元素的可见和不可见状态来选择相应的元素
+- `each()`方法，取数组值
+- ![可见度过滤器](img_7.png)
+
+| `:hidden`  | `$("tr:hidden")`  | 匹配所有不可见元素，input元素的type属性为hidden；</br>或者css中`display:none` |
+|------------|-------------------|-----------------------------------------------------------|
+| `:visible` | `$("tr:visible")` | 匹配所有可见元素                                                  |
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>可见度过滤器实例</title>
+  <style type="text/css">
+    div, span {
+      width: 140px;
+      height: 140px;
+      margin: 20px;
+      background: #9999CC;
+      border: #000 1px solid;
+      float: left;
+      font-size: 17px;
+      font-family: Roman;
+    }
+    div.mini {
+      width: 60px;
+      height: 30px;
+      background: #CC66FF;
+      border: #000 1px solid;
+      font-size: 12px;
+      font-family: Roman;
+    }
+    div.visible {
+      display: none;
+    }
+  </style>
+  <script type="text/javascript" src="./script/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript">
+    $(function (){
+      // 1. 改变所有可见 div 元素的背景色为 #0000FF
+      $("#b1").click(function () {
+        $("div:visible").css("background", "#0000FF");
+      });
+
+      // 2. 改变所有不可见的 div，利用 jQuery中的show()方法将它们显示出来，并设置背景色为 #0000FF
+      $("#b2").click(function () {
+        $("div:hidden").css("background", "#0000FF");
+        $("div:hidden").show();
+      });
+
+      // 3. 选取所有的文本隐藏域，并打印它们的值
+      $("#b3").click(function () {
+        // $inputs 是 jQuery对象，而且是数组对象
+        var $inputs = $("input:hidden");
+        // alert($inputs); // Object
+        // alert($inputs.length); // 4
+        // 遍历
+        // 方式1-for
+        // for (var i = 0; i < $inputs.length; ++i) {
+        //   console.log($inputs[i].value);
+        // }
+        // 方式2- jQuery each() 可以对数组遍历
+        // each()方法遍历时，会将 $inputs 数组的元素取出，传给 function(){} -> this
+        $inputs.each(function () {
+          // this对象是dom对象
+          // alert(this.value);
+          // 也可以将 this -> jQuery对象 使用jQuery方法取值
+          alert($(this).val());
+        })
+      });
+    })
+  </script>
+</head>
+<body>
+<input type="button" value="改变所有可见 div 元素的背景色为 #0000FF" id="b1"/>
+<input type="button" value="改变所有不可见的 div，利用 jQuery中的show()方法将它们显示出来，
+并设置背景色为 #0000FF" id="b2"/>
+<input type="button" value="选取所有的文本隐藏域，并打印它们的值" id="b3"/>
+<hr/>
+<input type="hidden" value="hidden1"/>
+<input type="hidden" value="hidden2"/>
+<input type="hidden" value="hidden3"/>
+<input type="hidden" value="hidden4"/>
+<div id="one" class="visible">
+  div id为one
+</div>
+<div id="two" class="visible">
+  div id为two
+</div>
+<div id="three" class="one">
+  div id为three
+</div>
+</body>
+</html>
+```
+
+### 属性过滤器
+
+- 通过元素属性来获取相应的元素
+
+| ![img_9.png](img_9.png) | ![img_10.png](img_10.png)  |
+|-------------------------|----------------------------|
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>属性过滤选择器-应用实例</title>
+    <style type="text/css">
+        div, span {
+            width: 140px;
+            height: 140px;
+            margin: 20px;
+            background: #9999CC;
+            border: #000 1px solid;
+            float: left;
+            font-size: 17px;
+            font-family: Roman;
+        }
+
+        div.mini {
+            width: 30px;
+            height: 30px;
+            background: #CC66FF;
+            border: #000 1px solid;
+            font-size: 12px;
+            font-family: Roman;
+        }
+
+
+        div.visible {
+            display: none;
+        }
+    </style>
+    <script type="text/javascript" src="./script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            //*****含有属性title 的div元素.
+            $("#b1").click(
+                function () {
+                    $("div[title]").css("background", "green");
+                }
+            )
+
+            //****属性title值等于test的div元素
+            $("#b2").click(
+                function () {
+                    $("div[title='test']").css("background", "green");
+                }
+            )
+
+            //属性title值不等于test的div元素(没有属性title的也将被选中)
+            $("#b3").click(
+                function () {
+                    $("div[title!='test']").css("background", "green");
+                }
+            )
+
+            //属性title值 以te开始的div元素
+            $("#b4").click(
+                function () {
+                    $("div[title^='te']").css("background", "green");
+                }
+            )
+
+            //属性title值 以est结束的div元素
+            $("#b5").click(
+                function () {
+                    $("div[title$='est']").css("background", "green");
+                }
+            )
+
+            //属性title值含有es的div元素
+            $("#b6").click(
+                function () {
+                    $("div[title*='es']").css("background", "green");
+                }
+            )
+
+            //选取有属性id的div元素，然后在结果中选取属性title值含有“es”的 div 元素
+            $("#b7").click(
+                function () {
+                    $("div[id][title*='es']").css("background", "green");
+                }
+            )
+
+        });
+    </script>
+</head>
+<body>
+<input type="button" value="含有属性title 的div元素." id="b1"/><br/><br/>
+<input type="button" value="属性title值等于test的div元素" id="b2"/><br/><br/>
+<input type="button" value="属性title值不等于test的div元素(没有属性title的也将被选中)" id="b3"/><br/><br/>
+<input type="button" value="属性title值 以te开始 的div元素" id="b4"/><br/><br/>
+<input type="button" value="属性title值 以est结束 的div元素" id="b5"/><br/><br/>
+<input type="button" value="属性title值 含有es的div元素" id="b6"/><br/><br/>
+<input type="button" value="选取有属性id的div元素，然后在结果中选取属性title值含有“es”的 div 元素" id="b7"/><br/><br/>
+<div id="one" title="test">
+    div id为one test
+</div>
+
+<div id="one-1" title="texxx">
+    div id为one-1 texxx
+</div>
+
+<div id="one-2" title="xxxest">
+    div id为one-2 xxxest
+</div>
+
+<div id="one-3" title="xxxesxxxxxt">
+    div id为one-3 xxxesxxxxxt
+</div>
+
+<div id="two" title="ate">
+    div id为two
+</div>
+
+<div id="three" class="one">
+    div id为three
+</div>
+</body>
+</html>
+```
+
+### 子元素过滤选择器
+
+| ![子元素选择过滤器1](img_11.png) | ![子元素选择过滤器2](img_12.png) |
+|--------------------------|--------------------------|
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>子元素过滤选择器示例-应用实例</title>
+    <style type="text/css">
+        div, span {
+            width: 140px;
+            height: 70px;
+            margin: 20px;
+            background: #9999CC;
+            border: #000 1px solid;
+            float: left;
+            font-size: 17px;
+            font-family: Roman;
+        }
+        div.visible {
+            display: none;
+        }
+    </style>
+    <script type="text/javascript" src="./script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            //****每个class为one的div父元素下的第2个子元素
+            $("#b1").click(
+                function () {
+                    $("div .one:nth-child(2)").css("background", "yellow");
+                }
+            )
+
+            //*****每个class为one的div父元素下的第一个子元素
+            $("#b2").click(
+                function () {
+                    $("div .one:first-child").css("background", "green");
+                    //$("div .one:nth-child(1)").css("background", "green");
+                }
+            )
+
+
+            //*****每个class为one的div父元素下的最后一个子元素
+            $("#b3").click(
+                function () {
+                    $("div .one:last-child").css("background", "red");
+                }
+            )
+
+
+            //**如果class为one的div父元素下的仅仅只有一个子元素，那么选中这个子元素
+            $("#b4").click(
+                function () {
+                    $("div .one:only-child").css("background", "pink");
+                }
+            )
+
+        });
+    </script>
+</head>
+<body>
+
+<input type="button" value="每个class为one的div父元素下的第2个子元素" id="b1"/><br/><br/>
+<input type="button" value="每个class为one的div父元素下的第一个子元素" id="b2"/><br/><br/>
+<input type="button" value="每个class为one的div父元素下的最后一个子元素" id="b3"/><br/><br/>
+<input type="button" value="如果class为one的div父元素下的仅仅只有一个子元素，那么选中这个子元素" id="b4"/><br/><br/>
+
+
+<div class="one">
+    <span class="one">hello</span>
+    <div id="one" class="one">
+        XXXXXXXXX id=one
+    </div>
+    <div id="two" class="one">
+        XXXXXXXXX id=two
+    </div>
+    <div id="three" class="one">
+        XXXXXXXXX id=three
+    </div>
+    <div id="four" class="one">
+        XXXXXXXXX id=four
+    </div>
+</div>
+
+<div class="one">
+    <div id="five" class="one">
+        XXXXXXXXX id=five
+    </div>
+</div>
+</body>
+</html>
+```
+
+### 表单属性过滤选择器
+
+- ![表单属性过滤器](img_13.png)
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>表单对象属性过滤选择器-应用实例</title>
+    <style type="text/css">
+        div, span {
+            width: 140px;
+            height: 140px;
+            margin: 20px;
+            background: #9999CC;
+            border: #000 1px solid;
+            float: left;
+            font-size: 17px;
+            font-family: Roman;
+        }
+
+    </style>
+    <script type="text/javascript" src="./script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(function (){
+            //*利用 jQuery 对象的 val() 方法改变表单内 type=text 可用 <input> 元素的值
+            $("#b1").click(
+                function () {
+                    //$jquery对象.val() , 如果() 是空的，就表示返回value
+                    //$jquery对象.val('值') , 就表示给该对象value设置值
+                    $("input[type='text']:enabled").val("台球");
+                }
+            )
+
+            //利用 jQuery 对象的 val() 方法改变表单内 type=text 不可用 <input> 元素的值
+            $("#b2").click(
+                function () {
+                    //老师解读
+                    //$jquery对象.val() , 如果() 是空的，就表示返回value
+                    //$jquery对象.val('值') , 就表示给该对象value设置值
+                    $("input[type='text']:disabled").val("足球");
+                }
+            )
+
+            //利用 jQuery 对象的 length 属性获取复选框选中的个数
+            $("#b3").click(
+                function () {
+                    alert($("input[type='checkbox']:checked").length);
+                }
+            )
+
+            //****利用 jQuery 对象的 text() 方法获取下拉框选中的内容
+            $("#b4").click(
+                function () {
+                    //如果我们希望选择指定的select , 可以加入属性过滤选择器
+                    //var $selects = $("select[属性='值'] option:selected");
+                    var $selects = $("select option:selected");
+                    $selects.each(function () {
+                        alert("你选择了：" + $(this).text());
+                    })
+                }
+            )
+        });
+    </script>
+</head>
+<body>
+<input type="button" value="利用 jQuery 对象的 val() 方法改变表单内 type=text 可用 <input> 元素的值" id="b1"/><br/><br/>
+<input type="button" value="利用 jQuery 对象的 val() 方法改变表单内 type=text 不可用 <input> 元素的值" id="b2"/><br/><br/>
+<input type="button" value="利用 jQuery 对象的 length 属性获取多选框选中的个数" id="b3"/><br/><br/>
+<input type="button" value="利用 jQuery 对象的 text() 方法获取下拉框选中的内容" id="b4"/><br/><br/>
+<input type="text" value="篮球1"/>
+<input type="text" value="篮球2"/>
+<input type="text" value="篮球3" disabled="true"/>
+<input type="text" value="篮球4" disabled="true"/>
+<br>
+<h1>选择你的爱好</h1>
+<input type="checkbox" value="爱好1"/>爱好1
+<input type="checkbox" value="爱好2"/>爱好2
+<input type="checkbox" value="爱好3"/>爱好3
+<input type="checkbox" value="爱好4"/>爱好4
+<br>
+<h1>选项如下:</h1>
+<!--多选下拉框-->
+<select name="job" size=9 multiple="multiple">
+    <option value="选项1">选项1^^</option>
+    <option value="选项2">选项2^^</option>
+    <option value="选项3">选项3^^</option>
+    <option value="选项4">选项4^^</option>
+    <option value="选项5">选项5^^</option>
+    <option value="选项6">选项6^^</option>
+</select>
+<!--单选下拉框-->
+<select id="hsp" name="edu">
+    <option value="博士">博士^^</option>
+    <option value="硕士">硕士^^</option>
+    <option value="本科">本科^^</option>
+    <option value="小学">小学^^</option>
+</select>
+</body>
+</html>
+```
+
+### 表单选择器
+
+| ![表单选择器1](img_14.png) | ![表单选择器2](img_15.png) |
+|-----------------------|-----------------------|
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>表单选择器-应用实例</title>
+    <script type="text/javascript" src="./script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            //选择所有的button
+            //这里我们就不绑定事件，直接演示
+            //$(":button") 会选择<input type="button" value="按钮1"/><br/>
+            //还会选择  <button>按钮2</button>
+            var $button = $(":button");
+            alert("$button 大小=" + $button.length)//3
+
+            //得到type="button" 的元素
+            //老韩解读 $("input[type='button']") 只会得到 <input type="button" value="按钮1"/>
+            var $button2 = $("input[type='button']");
+            alert("$button2 大小=" + $button2.length)//1
+
+            //得到<button />按照元素标签取值
+            //老韩解读 $("button") 只会按照元素标签获取 <button>按钮2</button>
+            var $button3 = $("button");
+            alert("$button3 大小=" + $button3.length)//2
+        });
+    </script>
+</head>
+<body>
+<form>
+    <input type="text"/><br/>
+    <input type="checkbox"/><br/>
+    <input type="radio"/><br/>
+    <input type="image" src="../image/2.png" height="100"/><br/>
+    <input type="file"/><br/>
+    <input type="submit"/><br/>
+    <input type="reset"/><br/>
+    <input type="password"/><br/>
+    <input type="button" value="按钮1"/><br/>
+    <select>
+        <option/>
+    </select><br/>
+    <textarea></textarea><br/>
+    <button>按钮2</button>
+    <button>按钮3</button>
+    <br/>
+</form>
+</body>
+</html>
+```
+
+### 练习
+
+1. 为网页中所有 `<p>` 元素添加 `onclick` 事件。[homework1](homework01.html)
+2. 使一个特定的表格隔行变色。[homework2](homework02.html)
+
+## jQuery节点操作
+
+### 创建节点
+
+- ![创建节点](img_16.png)
+- 创建节点举例：
+  - `$("<li id=\"cq\" name=\"chongqing\">重庆</li>")`
+
+| 内部插入法                          | 外部插入法                                                                     |
+|--------------------------------|---------------------------------------------------------------------------|
+| ![内部插入法](img_17.png)           | ![外部插入法](img_18.png)                                                      |
+| 内部插入法是在元素内插入内容(该内容成该元素的子元素或节点) | 外部插入法就是在元素的外面插入内容(其内容变成元素的兄弟节点)<br/>以上方法不但能将新的DOM元素插入到文档中，也能对原有的DOM元素进行移动 |
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>创建节点-应用实例</title>
+    <style type="text/css">
+        div, span {
+            width: 140px;
+            height: 140px;
+            margin: 20px;
+            background: #9999CC;
+            border: #000 1px solid;
+            float: left;
+            font-size: 17px;
+            font-family: Roman;
+        }
+
+        div.mini {
+            width: 30px;
+            height: 30px;
+            background: #CC66FF;
+            border: #000 1px solid;
+            font-size: 12px;
+            font-family: Roman;
+        }
+    </style>
+    <script type="text/javascript" src="../script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            //添加重庆li到上海下(使用dom的传统方法)
+            $("#b1").click(function () {
+                // 1. 创建重庆li
+                var cq_li = document.createElement("li");
+                // 2. 设置属性和内容
+                cq_li.setAttribute("id", "cq");
+                cq_li.setAttribute("name", "chongqing");
+                cq_li.innerText = "重庆";
+                // 3. 添加到指定元素后面
+                document.getElementById("sh").append(cq_li);
+            })
+
+            //*****添加重庆li到 上海下-jquery完成添加节点
+            $("#b2").click(function () {
+                // 1. 使用 jquery 创建节点
+                var $cq_li = $("<li id=\"cq\" name=\"chongqing\">重庆</li>");
+                // 2. 添加
+                // 内部插入法，此时 $cq_li 是 #sh 的子元素
+                // $("#sh").append($cq_li);
+                // 外部插入法
+                $("#sh").after($cq_li);
+            })
+
+
+            //*** 添加成都li到 北京前
+            $("#b3").click(function () {
+                //创建成都li
+                var $cd_li = $("<li id=\"cd\" name=\"chengdou\">成都</li>");
+                //添加到北京li前面-老韩玩一把[感受外部插入和内部插入区别]
+                //$("#bj").prepend($cd_li);//内部插入，其效果如下
+                // <li id="sh" name="shanghai">上海<li id="cq" name="chongqing">重庆</li></li>
+                $("#bj").before($cd_li);//外部插入
+            })
+
+            //*** 添加成都li到 北京和上海之间
+            $("#b4").click(function () {
+                //创建成都li
+                var $cd_li = $("<li id=\"cd\" name=\"chengdou\">成都~~~~</li>");
+                //外部插入
+                //$("#bj").after($cd_li);
+                $("#sh").before($cd_li);
+            })
+
+            //*** 添加成都li到 吉林前面
+            $("#b5").click(function () {
+                //创建成都li
+                var $cd_li = $("<li id=\"cd\" name=\"chengdou\">成都@@@###</li>");
+                //外部插入
+                $("#jl").before($cd_li);
+                //$cd_li.insertBefore($("#jl"));
+            })
+
+        })
+    </script>
+</head>
+<body>
+<ul id="city">
+    <li id="bj" name="beijing">北京</li>
+    <li id="sh" name="shanghai">上海</li>
+    <li id="jl" name="jilin">吉林</li>
+    <li id="my" name="mianyang">绵阳</li>
+</ul>
+
+<input type="button" id="b1" value="添加重庆li到 上海下(使用dom的传统方法)"/><br/><br/>
+<input type="button" id="b2" value="添加重庆li到 上海下"/><br/><br/>
+<input type="button" id="b3" value="添加成都li到 北京前"/><br/><br/>
+<input type="button" id="b4" value="添加成都li到 北京和上海之间"/><br/><br/>
+<input type="button" id="b5" value="添加成都li到 吉林前面"/><br/>
+
+</body>
+</html>
+```
+
+### 删除节点
+
+1. `remove()`：从DOM中删除所有匹配的元素，传入的参数用于根据jQuery表达式来筛选元素。
+    当某个节点用该方法删除后，该节点所包含的所有后代节点将被同时删除，这个方法的返回值是一个指向已被删除的节点的引用。
+2. `empty()`：清空节点-清空元素中的所有的后代节点(不包含属性节点)
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>删除节点-应用实例</title>
+    <script type="text/javascript" src="../script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            // 删除所有p
+            $("#b1").click(function () {
+                $("p").remove();
+            })
+            // 清空p
+            $("#b2").click(function () {
+                $("p").empty();
+            })
+            // 删除上海这个 li
+            $("#b3").click(function () {
+                $("#sh").remove();
+            })
+        })
+    </script>
+</head>
+<body>
+您喜欢的城市:<br>
+<ul id="city">
+    <li id="bj" name="beijing">北京</li>
+    <li id="sh" name="shanghai">上海</li>
+    <li id="tj" name="tianjin">天津</li>
+</ul>
+
+您爱好的游戏:<br>
+<ul id="game">
+    <li id="fk" name="fakong">反恐</li>
+    <li id="cq" name="chuangqi">传奇</li>
+</ul>
+
+<p>Hello</p> how are <p>you?</p>
+
+
+<p name="test">Hello, <span>Person</span> <a href="#">and person</a></p>
+
+<input type="button" value="删除所有p" id="b1"/>
+<input type="button" value="所有p清空" id="b2"/>
+<input type="button" value="删除上海这个li" id="b3"/>
+</body>
+</html>
+```
+
+### 复制节点
+
+1. `clone()`：克隆匹配的DOM元素，返回值为克隆的符本，但此时复制的新节点不具有任何行为
+2. `clone(true)`：复制元素的同时也复制元素中的事件
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>复制节点-应用实例</title>
+    <script type="text/javascript" src="../script/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function () {
+            // 点击p显示文本内容
+            $("p").click(function () {
+                alert($(this).text());
+            })
+
+            // 克隆p，插入后按钮后面
+            // 1. $("p").clone() 表示克隆p元素，但是没有事件
+            // $("p").clone().insertAfter($("button"));
+            // 2. $("p").clone(true) 表示克隆p元素，同时属性、绑定的事件都会被克隆
+            $("p").clone(true).insertAfter($("button"));
+        })
+    </script>
+</head>
+<body>
+<button>保存</button>
+<br><br><br><br><br>
+///////////////////////////////////////////////<br>
+<p>段落1</p>
+<p>段落2</p>
+<p>段落3</p>
+<p>段落4</p>
+<p>段落5</p>
+</body>
+</html>
+```
+
+### 替换节点
+
+1. `replaceWith()`：将所有匹配的元素都替换为指定的**HTML或DOM/jQuery对象**
+   - `A.replaceWirh(B)` 用B替换A
+2. `replaceAll`：A替换B
+3. 若在替换之前，已经在元素上绑定了事件，替换后原先绑定的事件会与原先的元素一起消失
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>替换节点-应用实例</title>
+    <script type="text/javascript" src="../script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            // 1. 将p替换成button
+            // $("p").replaceWith("<input type='button' id='my' value='我的按钮'/>");
+
+            // 2. 将p替换成超链接
+            // $("p").replaceWith("<a href='http://www.baidu.com'>百度</a><br/>");
+
+            // 3. 使用对象来进行替换
+            var $button = $("<input type='button' id='my' value='我的按钮'/>");
+            $("p").replaceWith($button);
+        });
+    </script>
+</head>
+<body>
+<h1>节点替换</h1>
+<p>Hello</p>
+<p>jquery</p>
+<p>World</p>
+</body>
+</html>
+```
+
+### 属性操作
+
+- `attr()`：传入一个参数，则获取该参数值；传入两个参数，则设置该参数为指定值
+- `html()`：不传入参数则，获取元素内嵌入的html内容；传入参数则设置html内容为指定内容
+- ![属性操作](img_19.png)
+
+### 样式操作
+
+1. 获取 `class` 和设置 `class`：class是元素的一个属性，所以获取class和设置都可以使用 `attr()` 方法来完成
+2. 追加样式 `addClass()`
+3. 移除样式：`removeClass()`--从匹配的元素中删除全部或指定的class
+4. 切换样式：`toggleClass()`--控制样式上的重复切换。如果类名存在则删除它，如果类名不存在则添加它
+5. 判断时候含有某个样式：`hasClass()`--判断元素中是否含有某个class，如果有，则返回true，否则返回false
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>查找节点</title>
+    <style type="text/css">
+        div {
+            width: 140px;
+            height: 140px;
+            margin: 20px;
+            float: left;
+            border: #000 1px solid;
+        }
+
+        .one {
+            width: 140px;
+            height: 140px;
+            margin: 20px;
+            background: #9999CC;
+            border: #000 1px solid;
+            float: left;
+            font-size: 17px;
+            font-family: Roman;
+        }
+    </style>
+    <script type="text/javascript" src="../script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            //获取 class 和设置 class 都可以使用 attr() 方法来完成.(给id 为first添加 .one 样式)
+            $("#b1").click(function (){
+                $("#first").attr("class", "one");
+            })
+            //追加样式: addClass()
+            $("#b2").click(function (){
+                $("#first").addClass("one");
+            })
+
+            //移除样式: removeClass() --- 从匹配的元素中删除全部或指定的 class
+            $("#b3").click(function (){
+                // 一个元素可以有多个 class
+                $("#first").removeClass("one");
+            })
+
+            //切换样式: toggleClass()
+            // 控制样式上的重复切换.如果类名存在则删除它, 如果类名不存在则添加它
+            $("#b4").click(function (){
+                $("#first").toggleClass("one");
+            })
+
+            //判断是否含有某个样式: hasClass() --- 判断元素中是否含有某个 class, 如果有, 则返回 true; 否则返回 false
+            $("#b5").click(function (){
+                alert($("#first").hasClass("one"))
+            })
+        });
+    </script>
+</head>
+<body>
+<input type="button" value="获取 class 和设置 class 都可以使用 attr() 方法来完成(给id 为first添加 .one 样式)" id="b1"/><br/><br/>
+<input type="button" value="追加样式: addClass() (给id 为first添加 .one 样式)" id="b2"/><br/><br/>
+<input type="button" value="移除样式: removeClass() --- 从匹配的元素中删除全部或指定的 class(给id 为first删除 .one 样式) " id="b3"/><br/><br/>
+<input type="button"
+       value="切换样式: toggleClass() (给id 为first切换 .one 样式) --- 控制样式上的重复切换.如果类名存在则删除它, 如果类名不存在则添加它"
+       id="b4"/><br/><br/>
+<input type="button"
+       value="判断是否含有某个样式: hasClass() --- 判断元素中是否含有某个 class, 如果有, 则返回 true; 否则返回 false"
+       id="b5"/><br/><br/>
+<div id="first">first</div>
+<div id="second">second</div>
+</body>
+</html>
+```
+
+### 获取html文本和值
+
+- ![获取html文本和值](img_20.png)
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>val()课堂练习</title>
+    <script type="text/javascript" src="../script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+
+            // 用户邮箱/手机号/用户名
+            // alert(document.getElementById("b1").defaultValue);
+
+            // 1. 给 b1 绑定一个获取焦点事件
+            // 2. 当用户把光标定位到输入框 b1，该事件就会被触发
+            $("#b1").focus(function () {
+                // 获取-判断
+                var curVal = $(this).val();
+                // defaultValue 是文本框属性 value 的值
+                // 如果档期那之就是默认值，就清空，让用户输入自己的值
+                if (curVal === this.defaultValue) {
+                    $(this).val("");    // 有参数，即表示赋新值
+                }
+            })
+
+            // 1. 给b1绑定一个失去焦点事件 blur
+            // 2. 当用户的光标离开这个输入框，就会触发
+            $("#b1").blur(function () {
+                // 获取当前值
+                var curVal = $(this).val();
+                // 如果判断当前值为 ""，即光标聚焦后的值，表示用户没有输入内容
+                // 就恢复提示默认信息
+                if (curVal === "") {
+                    // this.defaultValue 不会因为设置value值而改变的
+                    $(this).val(this.defaultValue);
+                }
+            })
+        })
+    </script>
+</head>
+<body>
+<input type="text" value="用户邮箱/手机号/用户名" id="b1"/><br>
+<input type="password" value="" id="b2"/><br>
+<input type="button" value="登陆" id="b3"/>
+</body>
+</html>
+```
+
+### 常用遍历节点方法
+
+- ![节点遍历](img_21.png)
+- ![实例图](img_22.png)
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>常用遍历节点方法-应用实例</title>
+    <style type="text/css">
+        div, span {
+            width: 140px;
+            height: 60px;
+            margin: 20px;
+            background: #9999CC;
+            border: #000 1px solid;
+            float: left;
+            font-size: 17px;
+            font-family: Roman;
+        }
+
+    </style>
+    <script type="text/javascript" src="../script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+
+            //**查找所有子元素（class 为 one 的div的子元素)
+            $("#b1").click(function () {
+
+                // 通过 $("div[class='one']") 来选择class 为 one 的div
+                $("div[class='one']").children().each(function () {
+                    alert("子div的内容是~~~ " + $(this).text());
+                })
+
+                // class为one的div 的子元素
+                // $("div.one").children().each(function (){
+                //     alert("子div的内容是= " + $(this).text());
+                // })
+
+                //指定获取到第几个子元素, eq(1) 表示得到第2个子元素
+                // alert($("div.one").children().eq(1).text());
+            })
+
+            //***获取后面的同辈div元素（class 为 one 的div的)
+            $("#b2").click(function () {
+                //老师解读
+                //1. $("div.one") 选择到 class = one 的 div
+                //2. nextAll() 获取到后面所有的同辈元素
+                //3. filter("div"), 获取到后面所有的同辈元素, 进行过滤，只得到div
+                //4. each 遍历
+                $("div.one").nextAll().filter("div").each(function () {
+                    alert("后面同辈div的内容是= " + $(this).text());
+                })
+
+                //如果我们希望得到后面同辈元素的第几个，可以eq
+                //获取到后面同辈div元素的第2个
+                alert("后面同辈div元素的第2个的内容=" +
+                    $("div.one").nextAll().filter("div").eq(1).text());//aaaa..
+
+                //如果我们希望得到的是紧邻的面同辈元素
+                alert("紧邻的面同辈元素=" +
+                    $("div.one").next().text());//ttt...
+            })
+
+            //**获取前面的同辈div元素（class 为 one 的div的)
+            $("#b3").click(function () {
+                //遍历
+                // $("div.one").prevAll().filter("div").each(function (){
+                //     alert("div的内容= " + $(this).text());
+                // })
+
+                //得到前面的同辈元素第4个
+                //$("div.one").prevAll().eq(3);
+                //得到前面的紧邻同辈元素
+                alert($("div.one").prev().text())//ccccc
+            })
+            //**获取所有的同辈div元素（class 为 one 的div的)
+            $("#b4").click(function () {
+                $("div.one").siblings().filter("div").each(function () {
+                    alert("同辈div text= " + $(this).text())
+                })
+            })
+
+        })
+    </script>
+</head>
+<body>
+<input type="button" value="查找所有子元素 (class 为 one 的div的)" id="b1"/><br/><br/>
+<input type="button" value="获取后面的同辈元素 (class 为 one 的div的)" id="b2"/><br/><br/>
+<input type="button" value="获取前面的同辈元素 (class 为 one 的div的)" id="b3"/><br/><br/>
+<input type="button" value="获取所有的同辈元素 (class 为 one 的div的)" id="b4"/>
+<hr/>
+<div>
+    ccccccc
+</div>
+
+<p class="one">
+    ccccccc
+</p>
+
+<div class="one">
+    <div id="one">
+        XXXXXXXXX one
+    </div>
+
+    <div id="two">
+        XXXXXXXXX two
+    </div>
+
+    <div id="three">
+        XXXXXXXXX three
+    </div>
+
+    <div id="four">
+        XXXXXXXXX four
+    </div>
+</div>
+<div>
+    tttttttttt
+</div>
+<div>
+    aaaaaaa
+</div>
+<div>bbbbbb</div>
+<p>hello, pp</p>
+</body>
+</html>
+```
+
+
+

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>替换节点-应用实例</title>
+    <script type="text/javascript" src="../script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            // 1. 将p替换成button
+            // $("p").replaceWith("<input type='button' id='my' value='我的按钮'/>");
+
+            // 2. 将p替换成超链接
+            // $("p").replaceWith("<a href='http://www.baidu.com'>百度</a><br/>");
+
+            // 3. 使用对象来进行替换
+            var $button = $("<input type='button' id='my' value='我的按钮'/>");
+            $("p").replaceWith($button);
+        });
+    </script>
+</head>
+<body>
+<h1>节点替换</h1>
+<p>Hello</p>
+<p>jquery</p>
+<p>World</p>
+</body>
+</html>
