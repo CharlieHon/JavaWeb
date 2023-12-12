@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>使用 JQuery 实现动态添加用户效果</title>
+    <script type="text/javascript" src="../script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+
+        // 点击删除超链接，完成删除某个用户的任务操作
+        function deleteUser($a) {
+            // 弹出一个确认的对话框
+            var b = window.confirm("确认删除 " + $a.attr("id") + " 用户信息");
+            if (!b) {
+                return false;
+            }
+            // 继续处理删除操作
+            /*
+            1. 通过 $a 找到父 tr
+             */
+            $a.parent().parent().remove();
+            return false;
+        }
+
+        $(function () {
+            $("a").click(function () {
+                // 隐式传入this
+                // 调用deleteUser时候，需要对this包装为 $(this)
+                return deleteUser($(this));
+            });
+
+            // 添加操作
+            $("#addUser").click(function () {
+                // 添加用户
+                /*
+                1. 使用 jquery dom 相关技术
+                2. 添加的内容/对象 到 table > tbody
+                <tr>
+                    <td>Tom</td>
+                    <td>tom@tom.com</td>
+                    <td>5000</td>
+                    <td><a id="Tom" href="deleteEmp?id=Tom">Delete</a></td>
+                </tr>
+                3. 构建 TR
+                    1) nameTD 名字从输入得到
+                    2) emailTD, telTD, deteleTD
+                    3) 构建 TD，把前面的td 加入
+                4. 将TR加入到 tbody
+                 */
+                var $nameTD = $("<td/>");   // $("<td></td>")
+                var nameVal = $("#name").val();
+                $nameTD.append(nameVal)
+
+                var $emailTD = $("<td/>")
+                var emailVal = $("#email").val();
+                $emailTD.append(emailVal)
+
+                var $telTD = $("<td/>");
+                var telVal = $("#tel").val();
+                $telTD.append(telVal)
+
+                // 构建 deleteTD
+                var $deleteTD = $("<td/>");
+                var $a = $("<a/>");
+                $a.attr("id", nameVal);
+                $a.attr("href", "deleteEmp?id=" + nameVal);
+                $a.html("Delete");
+
+                // 完成点击删除的功能
+                $a.click(function () {
+                    // 专门写一个函数，完成删除任务
+                    // 注意：如果返回的false，表示放弃提交，页面就会停留在原页面
+                    return deleteUser($a);
+                })
+
+                $deleteTD.append($a);   // 超链接绑定的点击事件会被保留
+
+                var $tr = $("<tr/>");
+                $tr.append($nameTD);
+                $tr.append($emailTD);
+                $tr.append($telTD);
+                $tr.append($deleteTD);
+
+                // 将tr加入到 table > tdbody
+                // 当且仅当所有输入内容都非空时才加入
+                if (nameVal && emailVal && telVal) {
+                    $("#usertable tbody").append($tr);
+                }
+
+                // $("#addUser").click(function () {
+                //     var $name = $("#name");
+                //     var $email = $("#email");
+                //     var $tel = $("#tel");
+                //     // 三者都非空时
+                //     if ($name.val() && $email.val() && $tel.val()) {
+                //         $("table").append("<tr><td>" + $name.val() +
+                //             "</td><td>" + $email.val() + "</td><td>" + $tel.val() + "</tr></td>");
+                //     }
+                // })
+            })
+        })
+    </script>
+</head>
+<body>
+<center>
+    <br><br>
+    添加用户:<br><br>
+    姓名: <input type="text" name="name" id="name"/>&nbsp;&nbsp;
+    email: <input type="text" name="email" id="email"/>&nbsp;&nbsp;
+    电话: <input type="text" name="tel" id="tel"/><br><br>
+    <button id="addUser">提交</button>
+    <br><br>
+    <hr>
+    <br><br>
+    <table id="usertable" border="1" cellpadding="5" cellspacing=0>
+        <tbody>
+        <tr>
+            <th>姓名</th>
+            <th>email</th>
+            <th>电话</th>
+            <th>&nbsp;</th>
+        </tr>
+        <tr>
+            <td>Tom</td>
+            <td>tom@tom.com</td>
+            <td>5000</td>
+            <td><a id="Tom" href="deleteEmp?id=Tom">Delete</a></td>
+        </tr>
+        <tr>
+            <td>Jerry</td>
+            <td>jerry@sohu.com</td>
+            <td>8000</td>
+            <td><a id="Jerry" href="deleteEmp?id=Jerry">Delete</a></td>
+        </tr>
+        </tbody>
+    </table>
+</center>
+</body>
+</html>

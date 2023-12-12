@@ -9,6 +9,30 @@
       <change beforePath="$PROJECT_DIR$/../javascript/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../javascript/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dom/element-attribute.html" beforeDir="false" afterPath="$PROJECT_DIR$/dom/element-attribute.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_10.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_10.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_11.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_11.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_12.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_12.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_13.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_13.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_14.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_14.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_15.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_15.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_16.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_16.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_17.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_17.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_18.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_18.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_19.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_19.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_20.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_20.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_21.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_21.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_22.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_22.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_3.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_4.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_5.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_5.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_6.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_6.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_7.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_7.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_8.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_8.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img_9.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_9.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,27 +72,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "E:/Javaweb/jquery/dom",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "MavenSettings",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/Javaweb/jquery&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\Javaweb\jquery\dom" />
       <recent name="E:\Javaweb\jquery" />
+      <recent name="E:\Javaweb\jquery\dom" />
       <recent name="E:\Javaweb\jquery\script" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -100,6 +124,9 @@
       <workItem from="1702117201712" duration="12712000" />
       <workItem from="1702185554346" duration="7120000" />
       <workItem from="1702299573992" duration="7181000" />
+      <workItem from="1702306865182" duration="25000" />
+      <workItem from="1702360646045" duration="8369000" />
+      <workItem from="1702376904625" duration="4517000" />
     </task>
     <servers />
   </component>

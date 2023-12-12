@@ -9,7 +9,7 @@
 2. 提供方法、events、选择器，并且方便地为网站提供 `AJAX` 交互
 3. 其宗旨是 `WRITE LESS, DO MORE`
 4. jQuery实现了浏览器的兼容问题
-5. ![jquery介绍](img.png)
+5. ![jquery介绍](imgs/img.png)
 
 使用 `script` 引入 `jQuery` 库文件即可使用
 1. 使用 `<script type="text/javascript" src="./script/jquery-3.6.0.min.js"></script>` 引入jQuery库文件
@@ -162,7 +162,7 @@
 ### 基本选择器
 
 - 基本选择器是 `jQuery` 中最常用的选择器，也是最简单的选择器，它通过元素 **id,class和标签名** 来查找DOM元素
-- ![jQuery选择器](img_1.png)
+- ![jQuery选择器](imgs/img_1.png)
 
 |                          | 用法                          | 返回值       | 说明                                                                                            |
 |--------------------------|-----------------------------|-----------|-----------------------------------------------------------------------------------------------|
@@ -172,7 +172,7 @@
 | `*`                      | `$("*")`                    | 集合元素      | 匹配所有元素，多用于结合上下文来搜索                                                                            |
 | `selector1,selector2,sN` | `$("div,span,p,p.myClass")` | 集合元素      | 将每一个选择器匹配到的元素合并后一起返回，可以指定任意多个选择器，</br>将匹配到的元素合并到一个结果内。其中 `p.myClass` 表示匹配元素 p class="myClass" |
 
-- ![基本选择器应用实例](img_2.png)
+- ![基本选择器应用实例](imgs/img_2.png)
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -247,7 +247,7 @@
 ### 层次选择器
 
 - 如果想通过DOM元素之间的层次关系来获取特定元素, 例如后代元素,子元素,相邻元素,兄弟元素等,则需要使用层次选择器.
-- ![层次选择器实例](img_3.png)
+- ![层次选择器实例](imgs/img_3.png)
 
 |                       | 用法                   | 说明                                                                                  |
 |-----------------------|----------------------|-------------------------------------------------------------------------------------|
@@ -347,10 +347,10 @@
 
 ### 基础过滤选择器
 
-| ![基础过滤器1](img_4.png) | ![基础过滤器2](img_5.png) |
+| ![基础过滤器1](imgs/img_4.png) | ![基础过滤器2](imgs/img_5.png) |
 |----------------------|----------------------|
 
-- ![基础过滤器实例](img_6.png)
+- ![基础过滤器实例](imgs/img_6.png)
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -468,7 +468,7 @@
 
 - 根据元素的可见和不可见状态来选择相应的元素
 - `each()`方法，取数组值
-- ![可见度过滤器](img_7.png)
+- ![可见度过滤器](imgs/img_7.png)
 
 | `:hidden`  | `$("tr:hidden")`  | 匹配所有不可见元素，input元素的type属性为hidden；</br>或者css中`display:none` |
 |------------|-------------------|-----------------------------------------------------------|
@@ -567,7 +567,7 @@
 
 - 通过元素属性来获取相应的元素
 
-| ![img_9.png](img_9.png) | ![img_10.png](img_10.png)  |
+| ![img_9.png](imgs/img_9.png) | ![img_10.png](imgs/img_10.png)  |
 |-------------------------|----------------------------|
 
 ```html
@@ -694,7 +694,7 @@
 
 ### 子元素过滤选择器
 
-| ![子元素选择过滤器1](img_11.png) | ![子元素选择过滤器2](img_12.png) |
+| ![子元素选择过滤器1](imgs/img_11.png) | ![子元素选择过滤器2](imgs/img_12.png) |
 |--------------------------|--------------------------|
 
 ```html
@@ -790,7 +790,7 @@
 
 ### 表单属性过滤选择器
 
-- ![表单属性过滤器](img_13.png)
+- ![表单属性过滤器](imgs/img_13.png)
 
 ```html
 <!DOCTYPE html>
@@ -893,7 +893,7 @@
 
 ### 表单选择器
 
-| ![表单选择器1](img_14.png) | ![表单选择器2](img_15.png) |
+| ![表单选择器1](imgs/img_14.png) | ![表单选择器2](imgs/img_15.png) |
 |-----------------------|-----------------------|
 
 ```html
@@ -956,14 +956,14 @@
 
 ### 创建节点
 
-- ![创建节点](img_16.png)
+- ![创建节点](imgs/img_16.png)
 - 创建节点举例：
   - `$("<li id=\"cq\" name=\"chongqing\">重庆</li>")`
 
-| 内部插入法                          | 外部插入法                                                                     |
-|--------------------------------|---------------------------------------------------------------------------|
-| ![内部插入法](img_17.png)           | ![外部插入法](img_18.png)                                                      |
-| 内部插入法是在元素内插入内容(该内容成该元素的子元素或节点) | 外部插入法就是在元素的外面插入内容(其内容变成元素的兄弟节点)<br/>以上方法不但能将新的DOM元素插入到文档中，也能对原有的DOM元素进行移动 |
+| 内部插入法                          | 外部插入法                                                                              |
+|--------------------------------|------------------------------------------------------------------------------------|
+| ![内部插入法](imgs/img_17.png)           | ![外部插入法](imgs/img_18.png)                                                               |
+| 内部插入法是在元素内插入内容(该内容成该元素的子元素或节点) | 外部插入法就是在元素的外面插入内容(其内容变成元素的兄弟节点)<br/>以上方法**不但能将新的DOM元素插入到文档中，也能对原有的DOM元素进行移动**      |
 
 ```html
 <!DOCTYPE html>
@@ -1206,7 +1206,7 @@
 
 - `attr()`：传入一个参数，则获取该参数值；传入两个参数，则设置该参数为指定值
 - `html()`：不传入参数则，获取元素内嵌入的html内容；传入参数则设置html内容为指定内容
-- ![属性操作](img_19.png)
+- ![属性操作](imgs/img_19.png)
 
 ### 样式操作
 
@@ -1291,7 +1291,7 @@
 
 ### 获取html文本和值
 
-- ![获取html文本和值](img_20.png)
+- ![获取html文本和值](imgs/img_20.png)
 
 ```html
 <!DOCTYPE html>
@@ -1343,8 +1343,8 @@
 
 ### 常用遍历节点方法
 
-- ![节点遍历](img_21.png)
-- ![实例图](img_22.png)
+- ![节点遍历](imgs/img_21.png)
+- ![实例图](imgs/img_22.png)
 
 ```html
 <!DOCTYPE html>
@@ -1472,5 +1472,487 @@
 </html>
 ```
 
+### CSS-DOM操作
+
+| ![css样式1](imgs/img_23.png) | ![css样式2](imgs/img_24.png) |
+|-----------------------|-----------------------|
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>css-dom操作</title>
+    <script type="text/javascript" src="../script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(function (){
+            $("#b1").click(function (){
+                var width = $("img").width();
+                alert("width= " + width);
+                // offset (left, top) 表示图片左上角距离坐标原点的横向/纵向距离
+                var offset = $("img").offset();
+                alert("top= " + offset.top);
+                alert("left= " + offset.left);
+            })
+        })
+    </script>
+</head>
+<body>
+<br/><br/><br/>
+hello,world~<img src="../img_1.png" width="200">
+<button id="b1" type="button">获取图片信息</button>
+</body>
+</html>
+
+```
+
+## 多选框应用
+
+- ![多选框案例](imgs/img_25.png)
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>多选框应用</title>
+    <style type="text/css">
+
+        BODY {
+            font-size: 12px;
+            margin: 0px 0px 0px 0px;
+            overflow-x: auto;
+            overflow-y: auto;
+            background-color: #B8D3F4;
+        }
+
+        .default_input {
+            border: 1px solid #666666;
+            height: 18px;
+            font-size: 12px;
+        }
+
+        .default_input2 {
+            border: 1px solid #666666;
+            height: 18px;
+            font-size: 12px;
+        }
+
+        .nowrite_input {
+            border: 1px solid #849EB5;
+            height: 18px;
+            font-size: 12px;
+            background-color: #EBEAE7;
+            color: #9E9A9E;
+        }
+
+        .default_list {
+            font-size: 12px;
+            border: 1px solid #849EB5;
+        }
+
+        .default_textarea {
+            font-size: 12px;
+            border: 1px solid #849EB5;
+        }
+
+        .nowrite_textarea {
+            border: 1px solid #849EB5;
+            font-size: 12px;
+            background-color: #EBEAE7;
+            color: #9E9A9E;
+        }
+
+        .wordtd5 {
+            font-size: 12px;
+            text-align: center;
+            vertical-align: top;
+            padding-top: 6px;
+            padding-right: 5px;
+            padding-bottom: 3px;
+            padding-left: 5px;
+            background-color: #b8c4f4;
+        }
+
+        .wordtd {
+            font-size: 12px;
+            text-align: left;
+            vertical-align: top;
+            padding-top: 6px;
+            padding-right: 5px;
+            padding-bottom: 3px;
+            padding-left: 5px;
+            background-color: #b8c4f4;
+        }
+
+        .wordtd_1 {
+            font-size: 12px;
+            vertical-align: top;
+            padding-top: 6px;
+            padding-right: 5px;
+            padding-bottom: 3px;
+            padding-left: 5px;
+            background-color: #516CD6;
+            color: #fff;
+        }
+
+        .wordtd_2 {
+            font-size: 12px;
+            text-align: right;
+            vertical-align: top;
+            padding-top: 6px;
+            padding-right: 5px;
+            padding-bottom: 3px;
+            padding-left: 5px;
+            background-color: #64BDF9;
+        }
+
+        .wordtd_3 {
+            font-size: 12px;
+            text-align: right;
+            vertical-align: top;
+            padding-top: 6px;
+            padding-right: 5px;
+            padding-bottom: 3px;
+            padding-left: 5px;
+            background-color: #F1DD34;
+        }
+
+        .inputtd {
+            font-size: 12px;
+            vertical-align: top;
+            padding-top: 3px;
+            padding-right: 3px;
+            padding-bottom: 3px;
+            padding-left: 3px;
+        }
+
+        .inputtd2 {
+            text-align: center;
+            font-size: 12px;
+            vertical-align: top;
+            padding-top: 3px;
+            padding-right: 3px;
+            padding-bottom: 3px;
+            padding-left: 3px;
+        }
+
+        .tablebg {
+            font-size: 12px;
+        }
+
+        .tb {
+            border-collapse: collapse;
+            border: 1px outset #999999;
+            background-color: #FFFFFF;
+        }
+
+        .td2 {
+            line-height: 22px;
+            text-align: center;
+            background-color: #F6F6F6;
+        }
+
+        .td3 {
+            background-color: #B8D3F4;
+            text-align: center;
+            line-height: 20px;
+            width: 100px;
+        }
+
+        .td4 {
+            background-color: #F6F6F6;
+            line-height: 20px;
+        }
+
+        .td5 {
+            border: #000000 solid;
+            border-right-width: 0px;
+            border-left-width: 0px;
+            border-top-width: 0px;
+            border-bottom-width: 1px;
+        }
+
+        .tb td {
+            font-size: 12px;
+            border: 2px groove #ffffff;
+        }
 
 
+        .noborder {
+            border: none;
+        }
+
+        .button {
+            border: 1px ridge #ffffff;
+            line-height: 18px;
+            height: 20px;
+            width: 45px;
+            padding-top: 0px;
+            background: #CBDAF7;
+            color: #000000;
+            font-size: 9pt;
+        }
+
+        .textarea {
+            font-family: Arial, Helvetica, sans-serif, "??";
+            font-size: 9pt;
+            color: #000000;
+            border-bottom-width: 1px;
+            border-top-style: none;
+            border-right-style: none;
+            border-bottom-style: solid;
+            border-left-style: none;
+            border-bottom-color: #000000;
+            background-color: transparent;
+            text-align: left
+        }
+    </style>
+    <script type="text/javascript" src="../script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            // 全部移动到右边
+            /*
+            1. 绑定事件
+            2. 选择对应的对象
+            3. 插入[内部插入/外部插入]
+             */
+            $("#add_all").click(function () {
+                // alert("add_all");
+                // 层级选择器，#first 选择框 下的 option 选项
+                // 层级选择器中的 > 可以省略
+                $("#first > option").appendTo($("#second"));
+            })
+
+            // 选中的移动到右边
+            $("#add").click(function () {
+                // alert("add");
+                $("#first > option:selected").appendTo($("#second"));
+            })
+
+            // 双击移动到右边
+            $("#first").dblclick(function () {
+                // alert("dblclick");
+                // 先择对象 -> 隐式传入 this(dom) -> $(this) jQuery对象
+                $("#first > option:selected").appendTo($("#second"));
+            })
+
+            // 全部移动到左边
+            $("#remove_all").click(function () {
+                // alert("remove_all");
+                $("#second option").appendTo($("#first"));
+            })
+
+            // 选中的移动到左边
+            $("#remove").click(function () {
+                // alert("remove");
+                $("#second option:selected").appendTo($("#first"));
+            })
+
+            // 双击移动到左边
+            // 给second多选框添加双击事件，将选中的选项移动到左边
+            $("#second").dblclick(function () {
+                $("#second > option:selected").appendTo($("#first"));
+            })
+        })
+    </script>
+</head>
+<body>
+<div style="border:1px dashed #E6E6E6;margin:50px 0px 0px 50px; width:350px; height:260px; background-color:#E6E6E6;">
+    <table width="285" height="169" border="0" align="left" cellpadding="0" cellspacing="0"
+           style="margin:15px 0px 0px 15px;">
+        <tr>
+            <td width="126">
+                <!--multiple="multiple" 能同时选择多个   size="10"  确定下拉选的长度-->
+                <select name="first" size="10" multiple="multiple" class="td3" id="first">
+                    <option value="选项1">选项1</option>
+                    <option value="选项2">选项2</option>
+                    <option value="选项3">选项3</option>
+                    <option value="选项4">选项4</option>
+                    <option value="选项5">选项5</option>
+                    <option value="选项6">选项6</option>
+                    <option value="选项7">选项7</option>
+                    <option value="选项8">选项8</option>
+                </select>
+            </td>
+            <td width="69" valign="middle">
+                <input name="add" id="add" type="button" class="button" value="-->"/>
+                <input name="add_all" id="add_all" type="button" class="button" value="==>"/>
+                <input name="remove" id="remove" type="button" class="button" value="&lt;--"/>
+                <input name="remove_all" id="remove_all" type="button" class="button" value="&lt;=="/>
+            </td>
+            <td width="127" align="left">
+                <select name="second" size="10" multiple="multiple" class="td3" id="second">
+                    <option value="选项9">选项9</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
+```
+
+## 加载DOM
+
+关于页面加载完毕后触发方法的几种写法
+1. js原生方法
+   - `document.onload = function()`
+2. jQuery方法
+   - `$(document).ready(function(){})`
+3. jQuery方法可以简化为
+   - `$(function(){})`
+
+## 作业练习
+
+- `prop()`：用于获取或设置被选元素的属性值，如checked,disabled等
+  - `$("#example").prop("checked", true);`
+  - `var isChecked = $("#example").prop("checked");`
+  - 在处理布尔属性时，使用 `prop()` 方法更为合适，因为它处理的是属性的状态
+
+| ![练习1](imgs/img_26.png)      | [对多选框进行操作](homework03.html) |
+|------------------------------|-----------------------------|
+| ![练习2](imgs/img_27.png)      | [练习2](homework04.html)      |
+| ![练习3](imgs/img_28.png)      | [练习3](homework05.html)      |
+| ![练习4](imgs/img_29.png)      | [动态添加删除用户](homework06.html) |
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>使用 JQuery 实现动态添加用户效果</title>
+    <script type="text/javascript" src="../script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+
+        // 点击删除超链接，完成删除某个用户的任务操作
+        function deleteUser($a) {
+            // 弹出一个确认的对话框
+            var b = window.confirm("确认删除 " + $a.attr("id") + " 用户信息");
+            if (!b) {
+                return false;
+            }
+            // 继续处理删除操作
+            /*
+            1. 通过 $a 找到父 tr
+             */
+            $a.parent().parent().remove();
+            return false;
+        }
+
+        $(function () {
+            $("a").click(function () {
+                // 隐式传入this
+                // 调用deleteUser时候，需要对this包装为 $(this)
+                return deleteUser($(this));
+            });
+
+            // 添加操作
+            $("#addUser").click(function () {
+                // 添加用户
+                /*
+                1. 使用 jquery dom 相关技术
+                2. 添加的内容/对象 到 table > tbody
+                <tr>
+                    <td>Tom</td>
+                    <td>tom@tom.com</td>
+                    <td>5000</td>
+                    <td><a id="Tom" href="deleteEmp?id=Tom">Delete</a></td>
+                </tr>
+                3. 构建 TR
+                    1) nameTD 名字从输入得到
+                    2) emailTD, telTD, deteleTD
+                    3) 构建 TD，把前面的td 加入
+                4. 将TR加入到 tbody
+                 */
+                var $nameTD = $("<td/>");   // $("<td></td>")
+                var nameVal = $("#name").val();
+                $nameTD.append(nameVal)
+
+                var $emailTD = $("<td/>")
+                var emailVal = $("#email").val();
+                $emailTD.append(emailVal)
+
+                var $telTD = $("<td/>");
+                var telVal = $("#tel").val();
+                $telTD.append(telVal)
+
+                // 构建 deleteTD
+                var $deleteTD = $("<td/>");
+                var $a = $("<a/>");
+                $a.attr("id", nameVal);
+                $a.attr("href", "deleteEmp?id=" + nameVal);
+                $a.html("Delete");
+
+                // 完成点击删除的功能
+                $a.click(function () {
+                    // 专门写一个函数，完成删除任务
+                    // 注意：如果返回的false，表示放弃提交，页面就会停留在原页面
+                    return deleteUser($a);
+                })
+
+                $deleteTD.append($a);   // 超链接绑定的点击事件会被保留
+
+                var $tr = $("<tr/>");
+                $tr.append($nameTD);
+                $tr.append($emailTD);
+                $tr.append($telTD);
+                $tr.append($deleteTD);
+
+                // 将tr加入到 table > tdbody
+                // 当且仅当所有输入内容都非空时才加入
+                if (nameVal && emailVal && telVal) {
+                    $("#usertable tbody").append($tr);
+                }
+
+                // $("#addUser").click(function () {
+                //     var $name = $("#name");
+                //     var $email = $("#email");
+                //     var $tel = $("#tel");
+                //     // 三者都非空时
+                //     if ($name.val() && $email.val() && $tel.val()) {
+                //         $("table").append("<tr><td>" + $name.val() +
+                //             "</td><td>" + $email.val() + "</td><td>" + $tel.val() + "</tr></td>");
+                //     }
+                // })
+            })
+        })
+    </script>
+</head>
+<body>
+<center>
+    <br><br>
+    添加用户:<br><br>
+    姓名: <input type="text" name="name" id="name"/>&nbsp;&nbsp;
+    email: <input type="text" name="email" id="email"/>&nbsp;&nbsp;
+    电话: <input type="text" name="tel" id="tel"/><br><br>
+    <button id="addUser">提交</button>
+    <br><br>
+    <hr>
+    <br><br>
+    <table id="usertable" border="1" cellpadding="5" cellspacing=0>
+        <tbody>
+        <tr>
+            <th>姓名</th>
+            <th>email</th>
+            <th>电话</th>
+            <th>&nbsp;</th>
+        </tr>
+        <tr>
+            <td>Tom</td>
+            <td>tom@tom.com</td>
+            <td>5000</td>
+            <td><a id="Tom" href="deleteEmp?id=Tom">Delete</a></td>
+        </tr>
+        <tr>
+            <td>Jerry</td>
+            <td>jerry@sohu.com</td>
+            <td>8000</td>
+            <td><a id="Jerry" href="deleteEmp?id=Jerry">Delete</a></td>
+        </tr>
+        </tbody>
+    </table>
+</center>
+</body>
+</html>
+```

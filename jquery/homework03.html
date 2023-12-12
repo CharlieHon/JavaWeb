@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>对多选框进行操作</title>
+    <script type="text/javascript" src="script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btn").click(function () {
+                // input标签下 name=sports 且选中的 复选框 的个数
+                var $input = $("input[name='sports']:checked");
+                alert($input.length);
+                // 显示名称
+                $input.each(function () {
+                    alert($(this).val())
+                })
+            })
+        })
+    </script>
+</head>
+<body>
+<div>
+    <input type="checkbox" name="sports" value="lq">篮球</input>
+    <input type="checkbox" name="sports" value="pq">排球</input>
+    <input type="checkbox" name="sports" value="ymq">羽毛球</input>
+    <input type="checkbox" name="sports" value="ppq">乒乓球</input>
+    <input type="button" id="btn" value="选中的个数">
+</div>
+</body>
+</html>
