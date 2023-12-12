@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JSON和字符串对象转换注意事项和细节</title>
+    <script type="text/javascript">
+        window.onload = function () {
+            var jsonPerson = {
+                "name": "Tom",
+                "age": 21
+            }
+            // 1. JSON.stringify(json对象)会返回对应的string，但并不会要想原来json对象
+            var strPerson = JSON.stringify(jsonPerson);
+            console.log("jsonPerson=", jsonPerson);
+
+            // 2. JSON.parse(string) 会返回对应的json对象，但并会影响原来的string
+            var strDog = '{"name":"Tom","age":21}';
+            var jsonDog = JSON.parse(strDog);
+            console.log("strDog=", strDog);
+
+            // 3. 在定义Json对象时，可以使用 `''` 也可以使用 `""`
+            var jsonPerson2 = {
+                'name': 'tim',
+                'age': 25
+            }
+            console.log('jsonPerson2= ', jsonPerson2);
+
+            // 4. 但是在原生字符串转成 json对象时，必须使用 "" ，否则会报错
+            var strDog3 = "{'name': 'kiki', 'age': 2}"  // 报错！
+            var strDog4 = "{name: 'kiki', age: 2}"      // 报错！
+            var strDog5 = "{\"name\": \"kiki\", \"age\": 2}"    // 正确
+            JSON.parse(strDog5);    // uncaught SyntaxError: Expected property name or '}' in JSON at position 1
+
+            // 5. JSON.stringify(json对象) 返回的字符串，都是 "" 表示的字符串，可以直接再转为JSON对象
+            var strPerson2 = JSON.stringify(jsonPerson2);
+            console.log(JSON.parse(strPerson2)) // 正确
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>
