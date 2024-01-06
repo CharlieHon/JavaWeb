@@ -29,8 +29,8 @@
                     // 如果请求已完成，响应已就绪，并且响应码是200
                     if (xhr.readyState === 4 && xhr.status === 200) {
                         // 把返回的json数据，显示在div中
-                        document.getElementById("div1").innerText = responseText;
                         var responseText = xhr.responseText;
+                        document.getElementById("div1").innerText = responseText;
                         // {"id":100,"username":"king","pwd":"666","email":"king@sohu.com"}
                         // console.log("返回的信息：", responseText);
                         if (responseText !== "") {

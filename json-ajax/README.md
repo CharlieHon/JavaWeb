@@ -63,7 +63,7 @@ JSON规则
 1. `JSON.stringify(json)`：将一个json对象转换成json字符串
 2. `JSON.parse(jsonString)`：将一个json字符串转换成为json对象
 3. `JSON`是一个js的内置对象(build-in)，可以直接使用
-   - ![JSON对象](img.png)
+   - ![JSON对象](imgs/img.png)
 
 ```html
 <!DOCTYPE html>
@@ -162,8 +162,8 @@ JSON规则
 3. 可以对JSON字符串和Java对象相互转换
 
 JSON在Java中应用场景
-- ![img_1.png](img_1.png)
-- ![img_2.png](img_2.png)
+- ![img_1.png](imgs/img_1.png)
+- ![img_2.png](imgs/img_2.png)
 
 ```java
 package com.charlie.json;
@@ -268,8 +268,3 @@ public class JavaJson {
 > 
 > 因为 TypeToken类的无参构造器 是 `protected` 修饰，在外包无法调用其无参构造器，使用 `{}` 构造了匿名内部类
 > 通过调用匿名内部类的无参构造器，其内部隐式地调用 `super()` 即其父类 `TypeToken` 的无参构造器
-
-
-
-
-

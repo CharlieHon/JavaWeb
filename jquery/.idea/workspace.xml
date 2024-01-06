@@ -7,32 +7,6 @@
     <list default="true" id="3281016f-e5c2-4942-b154-3976e04cdd6f" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../javascript/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../javascript/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dom/element-attribute.html" beforeDir="false" afterPath="$PROJECT_DIR$/dom/element-attribute.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_1.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_1.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_10.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_10.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_11.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_11.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_12.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_12.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_13.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_13.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_14.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_14.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_15.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_15.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_16.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_16.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_17.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_17.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_18.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_18.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_19.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_19.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_2.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_2.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_20.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_20.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_21.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_21.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_22.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_22.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_3.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_3.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_4.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_4.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_5.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_5.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_6.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_6.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_7.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_7.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_8.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_8.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/img_9.png" beforeDir="false" afterPath="$PROJECT_DIR$/imgs/img_9.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,6 +101,7 @@
       <workItem from="1702306865182" duration="25000" />
       <workItem from="1702360646045" duration="8369000" />
       <workItem from="1702376904625" duration="4517000" />
+      <workItem from="1702385403185" duration="111000" />
     </task>
     <servers />
   </component>
