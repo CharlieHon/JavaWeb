@@ -3,11 +3,11 @@
 Ajax是什么？
 1. AJAX即 `Asynchronous Javascript And XML`，异步JavaScript和XML
 2. Ajax是一种浏览器**异步发起请求(指定发哪些数据)，局部更新页面**的技术
-3. ![传统的方式](../Ajax/img_3.png)
+3. ![传统的方式](imgs/img_3.png)
 
 ## 传统的Web应用
 
-- ![传统的web应用](../Ajax/img_4.png)
+- ![传统的web应用](imgs/img_4.png)
 - 缺点：
     1. 表单提交是把表单的所有数据，都提交给服务端、数据大，而且没有意义
     2. 在服务端没有Http响应前，浏览器前端页面处于等待状态，处于一个挂起状态
@@ -15,19 +15,19 @@ Ajax是什么？
 
 ## Ajax原理示意图
 
-- ![Ajax原理](../Ajax/img_5.png)
-- ![优点](../Ajax/img_6.png)
+- ![Ajax原理](imgs/img_5.png)
+- ![优点](imgs/img_6.png)
 
 ## JavaScript原生Ajax请求
 
 ### 应用实例-验证与户名是否存在
 
-- ![JS原生Ajax案例](img_1.png)
+- ![JS原生Ajax案例](imgs/img_1.png)
 1. 在输入框输入用户名
 2. 点击验证用户名，使用 `ajax` 方式，服务端验证该用户名是否已经被占用了，如果该用户已经占用，
   以 `json` 格式返回该用户信息
 3. 对页面进行局部刷新，显示返回信息
-- ![案例思路框架](img_2.png)
+- ![案例思路框架](imgs/img_2.png)
 1. 使用ajax引擎发送http请求
 2. 服务端处理请求
 3. ajax接收返回的数据
@@ -145,8 +145,8 @@ public class CheckUserServlet extends HttpServlet {
 }
 ```
 
-- ![作业思路框架](img_7.png)
-- ![JavaWeb加载配置文件](img_8.png)
+- ![作业思路框架](imgs/img_7.png)
+- ![JavaWeb加载配置文件](imgs/img_8.png)
 
 ```java
 package com.charlie.ajax.utils;
@@ -267,6 +267,201 @@ public class CheckUserServlet extends HttpServlet {
 
 ## JQuery的Ajax请求
 
-- ![原生Ajax请求问题](img_9.png)
+- ![原生Ajax请求问题](imgs/img_9.png)
 - [JQuery-Ajax在线文档](https://www.w3school.com.cn/jquery/jquery_ref_ajax.asp)
+- ![JQuery-Ajax操作函数](imgs/img_10.png)
 
+- ![img_11.png](imgs/img_11.png)
+- ![img_12.png](imgs/img_12.png)
+- ![img_13.png](imgs/img_13.png)
+
+> 提示：当项目中有文件是直接拷贝过来时，有可能识别不到。这时可以 `Build->Rebuild Project`
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册-JQuery+Ajax</title>
+<!--    引入jquery-->
+    <script type="text/javascript" src="./script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            // 绑定事件
+            $("#btn1").click(function () {
+                /*
+                发出ajax请求
+                1. 指定参数时，需要在 {} 中
+                2. 给参数时，前面需要指定参数名
+                3. dataType: "json" 要求服务器返回数据是json
+                 */
+                // $.ajax({
+                //     url: "/ajax/checkUserServlet2",
+                //     type: "POST",
+                //     data: { // 这里直接给json
+                //         username: $("#uname").val(),
+                //         date: new Date()    // 传一个日期，为了解决浏览器缓存
+                //     },
+                //     error: function () {    // 失败后的回调函数
+                //         console.log("失败~")
+                //     },
+                //     // success(response,status,xhr)
+                //     success: function (data, status, xhr) {
+                //         console.log("成功！");
+                //         console.log("data=", data);
+                //         console.log("status=", status);
+                //         console.log("xhr=", xhr);
+                //         // data是json对象 -> 显示转成json的字符串
+                //         $("#div1").html(JSON.stringify(data));
+                //         // 对返回的结果进行处理
+                //         if ("" === data.username) {
+                //             $("#myres").val("该用户名可用");
+                //         } else {
+                //             $("#myres").val("该用户名不可用");
+                //         }
+                //     },
+                //     dataType: "json"    // 返回数据类型
+                // })
+
+                // .get() 使用
+                /*
+                1. $.get() 默认是get请求，不需要指定请求方式
+                2. 不需要指定参数名
+                3. 填写的实参是顺序的，url, data, success, dataType
+                    $(selector).get(url,data,success(response,status,xhr),dataType)
+                 */
+                // $.get(
+                //     "/ajax/checkUserServlet2",
+                //     { // 这里直接给json
+                //         username: $("#uname").val(),
+                //             date: new Date()    // 传一个日期，为了解决浏览器缓存
+                //     },
+                //     function (data, status, xhr) {
+                //         $("#div1").html(JSON.stringify(data));
+                //         if ("" === data.username) {
+                //             $("#myres").val("用户名已被占用~")
+                //         } else {
+                //             $("#myres").val("该用户名可用！")
+                //         }
+                //     },
+                //     "json"
+                // )
+
+                /*
+                1. $.post() 和 $.get() 的调用方式一样
+                2. 区别仅在于 使用 POST 方式发送请求
+                 */
+                // $.post(
+                //     "/ajax/checkUserServlet2",
+                //     { // 这里直接给json
+                //         username: $("#uname").val(),
+                //         date: new Date()    // 传一个日期，为了解决浏览器缓存
+                //     },
+                //     function (data, status, xhr) {
+                //         console.log("成功！");
+                //         console.log("data=", data);
+                //         console.log("status=", status);
+                //         console.log("xhr=", xhr);
+                //         $("#div1").html(JSON.stringify(data));
+                //         if ("" === data.username) {
+                //             $("#myres").val("用户名已被占用~")
+                //         } else {
+                //             $("#myres").val("该用户名可用！")
+                //         }
+                //     },
+                //     "json"
+                // )
+
+                /*
+                $.getJson
+                1. 如果通过jquery发出的ajax请求是get请求 并且 返回的数据格式是json
+                2. 可以直接使用 getJson() 函数
+                 */
+                $.getJSON(
+                    "/ajax/checkUserServlet2",
+                    { // 这里直接给json
+                        username: $("#uname").val(),
+                        date: new Date()    // 传一个日期，为了解决浏览器缓存
+                    },
+                    function (data, status, xhr) {  // 成功后的回调函数
+                        console.log("成功！");
+                        console.log("data=", data);
+                        console.log("status=", status);
+                        console.log("xhr=", xhr);
+                        $("#div1").html(JSON.stringify(data));
+                        if ("" === data.username) {
+                            $("#myres").val("该用户名可用！")
+                        } else {
+                            $("#myres").val("用户名已被占用~")
+                        }
+                    },
+                    "json"
+                )
+            })
+        })
+    </script>
+</head>
+<body>
+<h1>用户注册-JQuery+Ajax</h1>
+<form action="/ajax/checkUserServlet2" method="post">
+    用户名称：<input type="text" name="username" id="uname">
+    <input type="button" id="btn1" value="验证用户名">
+    <input style="border-width: 0;color: red" type="text" id="myres"><br/>
+    用户密码：<input type="password" name="password"><br/><br/>
+    电子邮件：<input type="text" name="email"><br/><br/>
+    <input type="submit" value="用户注册">
+</form>
+<h1>返回的json数据</h1>
+<div id="div1"></div>
+</body>
+</html>
+```
+
+```java
+package com.charlie.ajax.servlet;
+
+import com.charlie.ajax.entity.User;
+import com.charlie.ajax.service.UserService;
+import com.google.gson.Gson;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+public class CheckUserServlet2 extends HttpServlet {
+
+    private UserService userService = new UserService();
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+//        System.out.println("checkUserServlet2被调用...");
+        // 接收jquery发送的ajax数据
+        String username = req.getParameter("username");
+//        System.out.println("jquery ajax username=" + username);
+        resp.setContentType("text/json;charset=utf-8");
+        Gson gson = new Gson();
+
+        // 到数据库去验证，用户名是否已被占用
+        User user = userService.getUserByName(username);
+        if (user == null) {
+            user = new User(-1, "", "", "");
+        }
+
+//        if ("king".equals(username)) {
+//            user = new User(100, "king", "abc", "king@sohu.com");
+//        } else {
+//            // 返回一个不存在的user
+//            user = new User(-1, "", "", "");
+//        }
+
+        resp.getWriter().write(gson.toJson(user));
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doPost(req, resp);
+    }
+}
+```

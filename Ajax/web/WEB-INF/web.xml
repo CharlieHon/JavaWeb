@@ -11,4 +11,13 @@
         <servlet-name>CheckUserServlet</servlet-name>
         <url-pattern>/checkUserServlet</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>CheckUserServlet2</servlet-name>
+        <servlet-class>com.charlie.ajax.servlet.CheckUserServlet2</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CheckUserServlet2</servlet-name>
+        <url-pattern>/checkUserServlet2</url-pattern>
+    </servlet-mapping>
 </web-app>
