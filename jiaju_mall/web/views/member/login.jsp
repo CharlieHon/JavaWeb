@@ -1,13 +1,73 @@
-<!DOCTYPE html>
+<%--JSP文件头--%>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <title>韩顺平教育-家居网购</title>
+    <%--为了让我们确定页面资源使用一个固定的参考路径，这里设置了base--%>
+    <%--<base href="http://localhost:8080/jiaju_mall/">--%>
+    <%--JSP脚本表达式--%>
+    <base href="<%=request.getContextPath() + "/"%>">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <link rel="stylesheet" href="../../assets/css/vendor/vendor.min.css"/>
-    <link rel="stylesheet" href="../../assets/css/plugins/plugins.min.css"/>
-    <link rel="stylesheet" href="../../assets/css/style.min.css"/>
+    <link rel="stylesheet" href="assets/css/vendor/vendor.min.css"/>
+    <link rel="stylesheet" href="assets/css/plugins/plugins.min.css"/>
+    <link rel="stylesheet" href="assets/css/style.min.css"/>
+<!--    引入jquery，先使用-->
+    <script type="text/javascript" src="script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(function () { // 页面加载完毕后执行function
+            // 注册-绑定点击事件
+            $("#sub-btn").click(function () {
+
+                // 1. 获取到输入的用户名
+                var usernameVal = $("#username").val();
+                // 编写正则表达式，进行验证
+                var usernamePattern = /^\w{3,10}$/;
+                // 验证
+                if (!usernamePattern.test(usernameVal)) {
+                    // 展示错误提示-属性过滤器
+                    $("span[class='errorMsg']").text("用户名格式不对，需要6~10字符");
+                    // 阻止表单提交，仅进行验证
+                    return false;   // 不提交，返回false
+                }
+
+                // 2. 完成对密码的校验
+                var passwordVal = $("#password").val();
+                var passwordPattern = /^\w{6,10}$/;
+                if (!passwordPattern.test(passwordVal)) {
+                    // 展示密码错误提示-基本过滤器
+                    $("span.errorMsg").text("密码格式不对，需要6~10字符");
+                    return false;
+                }
+
+                // 3. 两次密码相同验证
+                // 得到第二次输入密码
+                var repwdVal = $("#repwd").val();
+                if (repwdVal !== passwordVal) {
+                    $("span.errorMsg").text("输入的两次密码不同！");
+                    return false;
+                }
+
+                // 4. 验证邮箱
+                // 得到邮箱
+                var emailVal = $("#email").val();
+                // 说明：在java中正则表达式的转义是 \\，在js中正则表达式转义是 \
+                var emailPattern = /^[\w-]+@([a-zA-Z]+\.)+[a-zA-Z]+$/;
+                if (!emailPattern.test(emailVal)) {
+                    $("span.errorMsg").text("电子邮件格式有误！");
+                    return false;
+                }
+
+                $("span[class='errorMsg']").text("通过验证！");
+                // 写完后端后，直接提交表单
+                return true;
+            })
+
+            // 登录-绑定点击事件
+
+        })
+    </script>
 </head>
 
 <body>
@@ -22,7 +82,7 @@
                 <!-- Header Logo Start -->
                 <div class="col-auto align-self-center">
                     <div class="header-logo">
-                        <a href="../../index.html"><img src="../../assets/images/logo/logo.png" alt="Site Logo"/></a>
+                        <a href="index.html"><img src="assets/images/logo/logo.png" alt="Site Logo"/></a>
                     </div>
                 </div>
                 <!-- Header Logo End -->
@@ -37,7 +97,7 @@
                 <!-- Header Logo Start -->
                 <div class="col-auto align-self-center">
                     <div class="header-logo">
-                        <a href="index.html"><img width="280px" src="../../assets/images/logo/logo.png" alt="Site Logo" /></a>
+                        <a href="index.html"><img width="280px" src="assets/images/logo/logo.png" alt="Site Logo" /></a>
                     </div>
                 </div>
                 <!-- Header Logo End -->
@@ -67,9 +127,13 @@
                         <div id="lg1" class="tab-pane active">
                             <div class="login-form-container">
                                 <div class="login-register-form">
-                                    <form action="#" method="post">
-                                        <input type="text" name="user-name" placeholder="Username"/>
-                                        <input type="password" name="user-password" placeholder="Password"/>
+                                    <%--提示错误信息-el表达式--%>
+                                    <span style="font-size: 18pt;font-weight: bold;float: right;color: gainsboro">
+                                        ${requestScope.msg}
+                                    </span>
+                                    <form action="loginServlet" method="post">
+                                        <input type="text" name="username" value="${requestScope.username}" placeholder="Username"/>
+                                        <input type="password" name="password" placeholder="Password"/>
                                         <div class="button-box">
                                             <div class="login-toggle-btn">
                                                 <input type="checkbox"/>
@@ -87,13 +151,14 @@
                                 <div class="login-register-form">
                                     <span class="errorMsg"
                                           style="float: right; font-weight: bold; font-size: 20pt; margin-left: 10px;"></span>
-                                    <form action="#" method="post">
-                                        <input type="text" id="username" name="user-name" placeholder="Username"/>
-                                        <input type="password" id="password" name="user-password" placeholder="输入密码"/>
-                                        <input type="password" id="repwd" name="user-password" placeholder="确认密码"/>
-                                        <input name="user-email" id="email" placeholder="电子邮件" type="email"/>
+                                    <!--注册表单-->
+                                    <form action="registerServlet" method="post">
+                                        <input type="text" id="username" name="username" placeholder="Username"/>
+                                        <input type="password" id="password" name="password" placeholder="输入密码"/>
+                                        <input type="password" id="repwd" name="repassword" placeholder="确认密码"/>
+                                        <input name="email" id="email" placeholder="电子邮件" type="email"/>
                                         <input type="text" id="code" name="user-name" style="width: 50%" id="code"
-                                               placeholder="验证码"/>　　<img alt="" src="../../assets/images/code/code.bmp">
+                                               placeholder="验证码"/>　　<img alt="" src="assets/images/code/code.bmp">
                                         <div class="button-box">
                                             <button type="submit" id="sub-btn"><span>会员注册</span></button>
                                         </div>
@@ -180,9 +245,9 @@
     </div>
 </div>
 <!-- Footer Area End -->
-<script src="../../assets/js/vendor/vendor.min.js"></script>
-<script src="../../assets/js/plugins/plugins.min.js"></script>
+<script src="assets/js/vendor/vendor.min.js"></script>
+<script src="assets/js/plugins/plugins.min.js"></script>
 <!-- Main Js -->
-<script src="../../assets/js/main.js"></script>
+<script src="assets/js/main.js"></script>
 </body>
 </html>
