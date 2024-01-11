@@ -41,4 +41,10 @@ public class MemberDAOImpl extends BasicDAO<Member> implements MemberDAO {
         String sql = "select * from member where username=? and `password`=md5(?)";
         return querySingle(sql, Member.class, username, password);
     }
+
+    @Override
+    public Member adminLogin(String username, String password) {
+        String sql = "select id, `name`, `password`, `email` from admin where name=? and password=md5(?)";
+        return querySingle(sql, Member.class, username, password);
+    }
 }

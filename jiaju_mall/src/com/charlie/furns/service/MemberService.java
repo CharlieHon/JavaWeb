@@ -14,4 +14,7 @@ public interface MemberService {
      * @return 返回db中的member
      */
     public Member login(Member member);
+
+    // 管理员登录
+    public Member admin(Member member);
 }

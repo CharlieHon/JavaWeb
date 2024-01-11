@@ -14,6 +14,8 @@ public abstract class BasicServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 解决到接收的数据中文乱码问题
+        req.setCharacterEncoding("utf-8");
         // 获取到action
         // 提示：如果使用了模板模式+反射+动态绑定，要满足action的value和方法名一致
         String action = req.getParameter("action");

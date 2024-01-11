@@ -11,4 +11,7 @@ public interface MemberDAO {    // 需要自己分析，需要哪些方法
 
     // 根据用户名和密码查询用户的方法
     public Member queryMemberByUsernameAndPassword(String username, String password);
+
+    // 管理员登录
+    public Member adminLogin(String username, String password);
 }

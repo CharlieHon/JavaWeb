@@ -831,3 +831,101 @@ public class MemberServlet2 extends BasicServlet {
 
 - ![程序框架图](img_25.png)
 
+```mysql
+### 设计furn表，家具表 需求-文档-界面
+-- 有时会看到 id int(11) 其中11表示显示的宽度，配合zerofill，存放的数据范围是和int一致的
+--	int(6) 123 ---> 000123
+--	int的范围是-2^32~2^32-1 最大长度是11位(带上符号)
+--	int(11)->有符号
+--	int(10)->无符号
+-- 对于数据库中的图片，可以存放其所在地址的url
+DROP TABLE IF EXISTS furn;
+CREATE TABLE IF NOT EXISTS furn (
+	id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,	# id
+	`name` VARCHAR(64) NOT NULL,			# 家具名
+	`maker` VARCHAR(64) NOT NULL,			# 制造商
+	price DECIMAL(11, 2) NOT NULL,			# 价格，定点数
+	`sales` INT UNSIGNED NOT NULL,			# 销量
+	`stock` INT UNSIGNED NOT NULL,			# 库存
+	`img_path` VARCHAR(256) NOT NULL		# 存放图片的路径
+)CHARSET utf8 ENGINE INNODB;
+-- 增加测试数据
+INSERT INTO furn(`id` , `name` , `maker` , `price` , `sales` , `stock` , `img_path`)
+	VALUES(NULL, '北欧风格小桌子', '熊猫家居', 180, 666, 7, 'assets/images/product-image/6.jpg');
+INSERT INTO furn(`id` , `name` , `maker` , `price` , `sales` , `stock` , `img_path`)
+	VALUES(NULL, '简约风格小椅子', '熊猫家居', 180, 666, 7, 'assets/images/product-image/4.jpg');
+INSERT INTO furn(`id` , `name` , `maker` , `price` , `sales` , `stock` , `img_path`)
+	VALUES(NULL, '典雅风格小台灯', '蚂蚁家居', 180, 666, 7, 'assets/images/product-image/14.jpg');
+SELECT * FROM furn;
+```
+
+> 设计的FurnServlet继承BasicServlet，要调用到FurnServlet的list方法，需要在浏览器地址栏输入
+> `jiaju_mall/manage/furnServlet?action=list`
+
+```html
+<tbody>
+<%--取出furns集合，循环显示--%>
+<c:forEach items="${requestScope.furns}" var="furn">
+<tr>
+    <td class="product-thumbnail">
+        <a href="#"><img class="img-responsive ml-3" src=${furn.imgPath} alt=""/></a>
+    </td>
+    <td class="product-name"><a href="#">${furn.name}</a></td>
+    <td class="product-name"><a href="#">${furn.maker}</a></td>
+    <td class="product-price-cart"><span class="amount">${furn.price}</span></td>
+    <td class="product-quantity">
+        ${furn.sales}
+    </td>
+    <td class="product-quantity">
+        ${furn.stock}
+    </td>
+    <td class="product-remove">
+        <a href="#"><i class="icon-pencil"></i></a>
+        <a href="#"><i class="icon-close"></i></a>
+    </td>
+</tr>
+</c:forEach>
+</tbody>
+```
+
+```java
+package com.charlie.furns.web;
+
+import com.charlie.furns.entity.Furn;
+import com.charlie.furns.service.FurnService;
+import com.charlie.furns.service.impl.FurnServiceImpl;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+
+public class FurnServlet extends BasicServlet {
+
+    private FurnService furnService = new FurnServiceImpl();
+
+    /**
+     * 使用前面的模板设计模式+反射+动态绑定来调用list方法
+     */
+    protected void list(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 通过在地址栏输入 manage/furnServlet?action=list 能够调用该方法
+        // System.out.println("FurnServlet 的list方法被调用...");
+        List<Furn> furns = furnService.queryFurns();
+        // 把furn集合放入到req域
+        req.setAttribute("furns", furns);
+        // 请求转发
+        req.getRequestDispatcher("/views/manage/furn_manage.jsp").forward(req, resp);
+    }
+}
+```
+
+## 实现功能08-后台管理-添加家具
+
+- ![img_26.png](img_26.png)
+- ![img_27.png](img_27.png)
+
+> 1. 解决中文乱码问题：在 `BasicServlet` 的 `doPos()` 方法中设置 `req.setCharacterEncoding("utf-8");`
+> 2. 解决表单重复提交问题：当使用请求转发时，浏览器地址栏会停留在第一个servlet，如果刷新页面，会再次发出请求并提交数据，
+> 所以在支付页面等情况下，不要使用请求转发，否则会造成重复支付。
+> 3. 数据正确性校验：添加家具时提交的数据可能有问题，可以分别在前端和后端进行数据校验

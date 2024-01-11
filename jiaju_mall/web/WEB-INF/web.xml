@@ -37,4 +37,22 @@
         <servlet-name>MemberServlet2</servlet-name>
         <url-pattern>/memberServlet2</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>FurnServlet</servlet-name>
+        <servlet-class>com.charlie.furns.web.FurnServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>FurnServlet</servlet-name>
+        <url-pattern>/manage/furnServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>AdminServlet</servlet-name>
+        <servlet-class>com.charlie.furns.web.AdminServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminServlet</servlet-name>
+        <url-pattern>/adminServlet</url-pattern>
+    </servlet-mapping>
 </web-app>

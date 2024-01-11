@@ -33,4 +33,9 @@ public class MemberServiceImpl implements MemberService {
         return memberDAO.queryMemberByUsernameAndPassword(member.getUsername(),
                 member.getPassword());
     }
+
+    @Override
+    public Member admin(Member member) {
+        return memberDAO.adminLogin(member.getUsername(), member.getPassword());
+    }
 }
