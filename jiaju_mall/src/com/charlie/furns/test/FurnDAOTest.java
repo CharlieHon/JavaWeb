@@ -3,6 +3,8 @@ package com.charlie.furns.test;
 import com.charlie.furns.dao.FurnDAO;
 import com.charlie.furns.dao.impl.FurnDAOImpl;
 import com.charlie.furns.entity.Furn;
+import com.charlie.furns.entity.Page;
+import jdk.nashorn.internal.ir.LiteralNode;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -48,5 +50,18 @@ public class FurnDAOTest {
         Furn furn = new Furn(17, "阿三神油", "印地", new BigDecimal("66.6"), 80, 160, "");
         int update = furnDAO.updateFurn(furn);
         System.out.println(update);
+    }
+
+    @Test
+    public void getTotalRow() {
+        System.out.println(furnDAO.getTotalRow());
+    }
+
+    @Test
+    public void getPageItems() {
+        List<Furn> pageItems = furnDAO.getPageItems(0, 3);
+        for (Furn pageItem : pageItems) {
+            System.out.println(pageItem);
+        }
     }
 }

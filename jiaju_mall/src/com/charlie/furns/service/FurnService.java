@@ -1,6 +1,7 @@
 package com.charlie.furns.service;
 
 import com.charlie.furns.entity.Furn;
+import com.charlie.furns.entity.Page;
 
 import java.util.List;
 
@@ -22,4 +23,7 @@ public interface FurnService {
 
     // 修改指定id的家具信息
     public boolean updateFurn(Furn furn);
+
+    // 根据传入的pageNo和pageSize，返回对应的page对象
+    public Page<Furn> page(int pageNo, int pageSize);
 }

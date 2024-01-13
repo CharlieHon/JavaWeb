@@ -1137,3 +1137,215 @@ public class FurnServlet extends BasicServlet {
     }
 }
 ```
+
+## 实现功能11-后台分页(分页显示家具)
+
+- ![需求分析](img_41.png)
+- ![思路分析](img_42.png)
+
+> 数据模型：设计一个Page的JavaBean，包含要显示的页数和该页内的数据。设置为泛型类型，方便扩展。
+> 对于Page中不同的属性，其中能从数据库DB中直接获取的放大DAO中处理，从前端获取的放到service中处理
+
+```java
+package com.charlie.furns.entity;
+
+import java.util.List;
+
+/**
+ * Page是一个JavaBean，是一个分页的数据模型，包含了分页的各种信息
+ * T表示泛型，因为将来分页模型对应的数据类型是不确定的
+ */
+public class Page<T> {
+
+    // 因为每页显示多少条记录，在其它地方有可能使用
+    // ctrl+shift+u => 切换变量名大小写
+    public static final Integer PAGE_SIZE = 3;
+
+    // 表示显示当前页[显示第几页]
+    private Integer pageNo;     // 前端页面获取
+    // 表示每页显示几条记录
+    private Integer pageSize = PAGE_SIZE;
+    // 表示共有多少页
+    private Integer pageTotalCount; // 通过计算而来
+    // 表示的是共有多少条记录
+    private Integer totalRow;   // 可以从数据库获得 -> DAO
+    // 返回当前页要显示的数据
+    private List<T> items;      // 从数据库中获取 -> DAO
+    // 分页导航的字符串
+    private String url;
+    // getter and setter 方法省略
+}
+```
+
+```java
+package com.charlie.furns.dao.impl;
+
+import com.charlie.furns.dao.BasicDAO;
+import com.charlie.furns.dao.FurnDAO;
+import com.charlie.furns.entity.Furn;
+import com.charlie.furns.entity.Page;
+
+import java.util.List;
+
+public class FurnDAOImpl extends BasicDAO<Furn> implements FurnDAO {
+
+    @Override
+    public int getTotalRow() {
+        String sql = "select count(*) from furn";
+        //return (Integer) queryScalar(sql);    // Long cannot be cast to Integer
+        return ((Number) queryScalar(sql)).intValue();
+    }
+
+    @Override
+    public List<Furn> getPageItems(int begin, int pageSize) {
+        String sql = "SELECT `id`, `name`, `maker`, `price`, `sales`, `stock`, `img_path` imgPath from `furn` limit ?, ?";
+        return queryMulti(sql, Furn.class, begin, pageSize);
+    }
+}
+```
+
+```java
+package com.charlie.furns.service.impl;
+
+import com.charlie.furns.dao.FurnDAO;
+import com.charlie.furns.dao.impl.FurnDAOImpl;
+import com.charlie.furns.entity.Furn;
+import com.charlie.furns.entity.Page;
+import com.charlie.furns.service.FurnService;
+
+import java.util.List;
+
+public class FurnServiceImpl implements FurnService {
+
+    private FurnDAO furnDAO = new FurnDAOImpl();
+
+    @Override
+    public Page<Furn> page(int pageNo, int pageSize) {
+        // 先创建一个page对象，然后根据实际情况填充属性
+        Page<Furn> page = new Page<>();
+        page.setPageNo(pageNo);                     // 要显示第几页
+        page.setPageSize(pageSize);                 // 每页显示的数据量
+        int totalRow = furnDAO.getTotalRow();
+        page.setTotalRow(totalRow);                 // 一共有多少行数据记录
+
+        // pageTotalCount 要显示的页数
+        int pageTotalCount = totalRow / pageSize;
+        if (totalRow % pageNo != 0) {
+            pageTotalCount += 1;
+        }
+        page.setPageTotalCount(pageTotalCount);     // 一共可以显示多少页
+
+        // begin = (第几页 - 1) * 每页显示的数据
+        int begin = (pageNo - 1) * pageSize;
+        page.setItems(furnDAO.getPageItems(begin, pageSize));
+        // url分页导航，后续实现
+        return page;
+    }
+}
+```
+
+```java
+package com.charlie.furns.web;
+
+import com.charlie.furns.entity.Furn;
+import com.charlie.furns.entity.Page;
+import com.charlie.furns.service.FurnService;
+import com.charlie.furns.service.impl.FurnServiceImpl;
+import com.charlie.furns.utils.DataUtils;
+import org.apache.commons.beanutils.BeanUtils;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
+public class FurnServlet extends BasicServlet {
+
+    private FurnService furnService = new FurnServiceImpl();
+
+    // 处理分页显示请求
+    protected void page(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int pageNo = DataUtils.parseInt(req.getParameter("pageNo"), 1);
+        int pageSize = DataUtils.parseInt(req.getParameter("pageSize"), Page.PAGE_SIZE);
+        // 调用service方法，获取Page对象
+        Page<Furn> page = furnService.page(pageNo, pageSize);
+        // 将page放入到req域
+        req.setAttribute("page", page);
+        // 请求转发到furn_manage.jsp页面
+        req.getRequestDispatcher("/views/manage/furn_manage.jsp").forward(req, resp);
+    }
+}
+```
+
+## 实现功能12-后台分页(分页导航)
+
+- ![需求分析](img_43.png)
+
+```html
+<!--  Pagination Area Start -->
+<div class="pro-pagination-style text-center mb-md-30px mb-lm-30px mt-6" data-aos="fade-up">
+    <ul>
+        <%--首页--%>
+        <li><a href="manage/furnServlet?action=page&pageNo=1">首页</a></li>
+        <%--上一页:如果当前页大于1，就显示上一页--%>
+        <c:if test="${requestScope.page.pageNo > 1}">
+            <li><a href="manage/furnServlet?action=page&pageNo=${requestScope.page.pageNo-1}">上页</a></li>
+        </c:if>
+
+        <%--显示所有的分页数，先易后难
+        先确定开始页数 begin 第1页
+        再确定结束页数 end 末页
+        问题：如果页数很多，如何处理？ => 通过算法最多显示5页
+        --%>
+        <c:set var="begin" value="1"/>
+        <c:set var="end" value="${requestScope.page.pageTotalCount}"/>
+        <c:forEach begin="${begin}" end="${end}" var="i">
+            <%--如果i是当前页，就使用class="active"修饰--%>
+            <c:if test="${i == requestScope.page.pageNo}">
+                <li><a class="active" href="manage/furnServlet?action=page&pageNo=${i}">${i}</a></li>
+            </c:if>
+            <c:if test="${i != requestScope.page.pageNo}">
+                <li><a href="manage/furnServlet?action=page&pageNo=${i}">${i}</a></li>
+            </c:if>
+        </c:forEach>
+
+        <%--下一页--%>
+        <c:if test="${requestScope.page.pageNo < requestScope.page.pageTotalCount}">
+            <li><a href="manage/furnServlet?action=page&pageNo=${requestScope.page.pageNo+1}">下页</a></li>
+        </c:if>
+        <%--末页--%>
+        <li><a href="manage/furnServlet?action=page&pageNo=${requestScope.page.pageTotalCount}">末页</a></li>
+        <li><a>共 ${requestScope.page.pageTotalCount} 页</a></li>
+        <li><a>共 ${requestScope.page.totalRow} 记录</a></li>
+    </ul>
+</div>
+<!--  Pagination Area End -->
+```
+
+- 如下处理修改/删除后返回对应的分页上
+- ![img_44.png](img_44.png)
+
+> 注意:
+> - 在jsp中使用 `${requestScope.pageNo}` 获取的是 `Request`域中的数据,即通过 `req.setAttribute("pageNo", pageNo)` 添加的域数据
+> - 而通过 `${param.pageNo}` 可以获取请求参数的值,如通过请求 `furnServlet?action=page&pageNo=1`
+
+```
+// 处理回显家具信息的请求
+protected void showFurn(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    int id = DataUtils.parseInt(req.getParameter("id"), 0);
+    Furn furn = furnService.queryFurnById(id);
+    // 将furn放入到req域中
+    req.setAttribute("furn", furn);
+
+    // 1. 将从请求中获取的参数信息pageNo保存到req的域中,则可以在jsp中使用 ${requestScope.pageNo} 获取域数据
+    // 2. 如果是请求带来的参数如 pageNo=1,而且通过请求转发到下一个页面,
+    //      在下一个页面可以通过 ${param.pageNo} 获取,此时不需要设置域数据,直接请求转发req即可
+    //req.setAttribute("pageNo", req.getParameter("pageNo"));
+    //req.setAttribute("pageSize", req.getParameter("pageSize"));
+
+    // 请求转发
+    req.getRequestDispatcher("/views/manage/furn_update.jsp").forward(req, resp);
+}
+```

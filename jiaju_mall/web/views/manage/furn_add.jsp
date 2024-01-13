@@ -106,6 +106,9 @@
                 <form action="manage/furnServlet" method="post">
                     <%--增加一个隐藏于，因为是post方法，不能在url上添加参数--%>
                     <input type="hidden" name="action" value="add">
+                    <%--因为是通过超链接带请求参数过来的,所以使用 ${param.pageNo} 获取参数信息--%>
+                    <input type="hidden" name="pageNo" value="${param.pageNo}">
+                    <input type="hidden" name="pageSize" value="${param.pageSize}">
                     <div class="table-content table-responsive cart-table-content">
                         <table>
                             <thead>

@@ -1,6 +1,7 @@
 package com.charlie.furns.web;
 
 import com.charlie.furns.entity.Furn;
+import com.charlie.furns.entity.Page;
 import com.charlie.furns.service.FurnService;
 import com.charlie.furns.service.impl.FurnServiceImpl;
 import com.charlie.furns.utils.DataUtils;
@@ -9,6 +10,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -87,7 +89,10 @@ public class FurnServlet extends BasicServlet {
         // req.getRequestDispatcher("/manage/furnServlet?action=list").forward(req, resp);
 
         // 因为重定向实际是让浏览器重新发送请求，所以回送的url是一个完整的url
-        String url = req.getContextPath() + "/manage/furnServlet?action=list";
+        //String url = req.getContextPath() + "/manage/furnServlet?action=list";
+        // 改为page分页显示
+        String url = req.getContextPath() + "/manage/furnServlet?action=page&pageNo=" + req.getParameter("pageNo")
+                + "&pageSize=" + req.getParameter("pageSize");
         resp.sendRedirect(url);
         //System.out.println("url=" + url);   // url=/jiaju_mall/manage/furnServlet?action=list
     }
@@ -98,9 +103,12 @@ public class FurnServlet extends BasicServlet {
         int id = DataUtils.parseInt(req.getParameter("id"), 0);
         // 删除家具
         furnService.deleteFurnById(id);
-        // 重定向，方式刷新页面后重复提交删除信息
+        // 重定向. 如果使用请求转发方式,刷新页面后重复提交删除信息
         String contextPath = req.getContextPath();
-        String url = contextPath + "/manage/furnServlet?action=list";
+        //String url = contextPath + "/manage/furnServlet?action=list";
+        // 改为分页请求
+        String url = contextPath + "/manage/furnServlet?action=page&pageNo=" +
+                req.getParameter("pageNo") + "&pageSize=" + req.getParameter("pageSize");
         resp.sendRedirect(url);
     }
 
@@ -110,6 +118,15 @@ public class FurnServlet extends BasicServlet {
         Furn furn = furnService.queryFurnById(id);
         // 将furn放入到req域中
         req.setAttribute("furn", furn);
+
+        // 1. 将从请求中获取的参数信息pageNo保存到req的域中,则可以在jsp中使用 ${requestScope.pageNo} 获取域数据
+        // 2. 如果是请求带来的参数如 pageNo=1,而且通过请求转发到下一个页面,
+        //      在下一个页面可以通过 ${param.pageNo} 获取,此时不需要设置域数据,直接请求转发req即可
+
+        // 在jsp中使用 ${param.pageNo},所以不再设置域数据
+        //req.setAttribute("pageNo", req.getParameter("pageNo"));
+        //req.setAttribute("pageSize", req.getParameter("pageSize"));
+
         // 请求转发
         req.getRequestDispatcher("/views/manage/furn_update.jsp").forward(req, resp);
     }
@@ -120,7 +137,22 @@ public class FurnServlet extends BasicServlet {
         // 修改家具信息
         furnService.updateFurn(furn);
         // 重定向
-        String url = req.getContextPath() + "/manage/furnServlet?action=list";
+        //String url = req.getContextPath() + "/manage/furnServlet?action=list";
+        // 走分页显示的请求page
+        String url = req.getContextPath() + "/manage/furnServlet?action=page&pageNo=" +
+                req.getParameter("pageNo") + "&pageSize=" + req.getParameter("pageSize");
         resp.sendRedirect(url);
+    }
+
+    // 处理分页显示请求
+    protected void page(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int pageNo = DataUtils.parseInt(req.getParameter("pageNo"), 1);
+        int pageSize = DataUtils.parseInt(req.getParameter("pageSize"), Page.PAGE_SIZE);
+        // 调用service方法，获取Page对象
+        Page<Furn> page = furnService.page(pageNo, pageSize);
+        // 将page放入到req域
+        req.setAttribute("page", page);
+        // 请求转发到furn_manage.jsp页面
+        req.getRequestDispatcher("/views/manage/furn_manage.jsp").forward(req, resp);
     }
 }

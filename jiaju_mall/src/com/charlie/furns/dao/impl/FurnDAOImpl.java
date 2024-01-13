@@ -3,6 +3,7 @@ package com.charlie.furns.dao.impl;
 import com.charlie.furns.dao.BasicDAO;
 import com.charlie.furns.dao.FurnDAO;
 import com.charlie.furns.entity.Furn;
+import com.charlie.furns.entity.Page;
 
 import java.util.List;
 
@@ -41,5 +42,18 @@ public class FurnDAOImpl extends BasicDAO<Furn> implements FurnDAO {
     public int updateFurn(Furn furn) {
         String sql = "UPDATE `furn` SET `name`=?, `maker`=?, `price`=?, `sales`=?, `stock`=?, `img_path`=? WHERE id=?;";
         return update(sql, furn.getName(), furn.getMaker(), furn.getPrice(), furn.getSales(), furn.getStock(), furn.getImgPath(), furn.getId());
+    }
+
+    @Override
+    public int getTotalRow() {
+        String sql = "select count(*) from furn";
+        //return (Integer) queryScalar(sql);    // Long cannot be cast to Integer
+        return ((Number) queryScalar(sql)).intValue();
+    }
+
+    @Override
+    public List<Furn> getPageItems(int begin, int pageSize) {
+        String sql = "SELECT `id`, `name`, `maker`, `price`, `sales`, `stock`, `img_path` imgPath from `furn` limit ?, ?";
+        return queryMulti(sql, Furn.class, begin, pageSize);
     }
 }

@@ -1,6 +1,7 @@
 package com.charlie.furns.test;
 
 import com.charlie.furns.entity.Furn;
+import com.charlie.furns.entity.Page;
 import com.charlie.furns.service.FurnService;
 import com.charlie.furns.service.impl.FurnServiceImpl;
 import org.junit.Test;
@@ -51,5 +52,12 @@ public class FurnServiceTest {
     public void updateFurn() {
         Furn furn = new Furn(17, "美的饮水机", "美的", new BigDecimal("126.6"), 99, 500, "");
         System.out.println(furnService.updateFurn(furn) ? "修改成功！" : "修改失败~");
+    }
+
+    @Test
+    public void page() {
+        // 如果需要看一个对象(复杂)，可以debug看
+        Page<Furn> page = furnService.page(2, 2);
+        System.out.println("page=" + page);
     }
 }

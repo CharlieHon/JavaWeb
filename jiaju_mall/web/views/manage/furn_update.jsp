@@ -76,6 +76,8 @@
                     <%--因为是post方法，所以需要使用到隐藏域id和action--%>
                     <input type="hidden" name="action" value="update">
                     <input type="hidden" name="id" value="${requestScope.furn.id}">
+                    <input type="hidden" name="pageNo" value="${param.pageNo}">
+                    <input type="hidden" name="pageSize" value="${param.pageSize}">
                     <div class="table-content table-responsive cart-table-content">
                         <table>
                             <thead>
