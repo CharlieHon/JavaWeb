@@ -23,8 +23,9 @@ public class Furn {
     private BigDecimal price;
     private Integer sales;
     private Integer stock;
-    // 注意：表地字段是 img_path，而这里设置为imgPath
-    private String imgPath;    // 存放商品图片对应的url
+    // 注意：表的字段是 img_path，而这里设置为imgPath
+    // 设置一下默认值，因为建表时要求该字段不能为 null
+    private String imgPath = "assets/images/product-image/9.jpg";    // 存放商品图片对应的url
 
     public Furn() {
     }
@@ -36,7 +37,9 @@ public class Furn {
         this.price = price;
         this.sales = sales;
         this.stock = stock;
-        this.imgPath = imgPath;
+        if (!(imgPath == null || "".equals(imgPath))) {
+            this.imgPath = imgPath;
+        }
     }
 
     @Override

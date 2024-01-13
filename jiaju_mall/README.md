@@ -929,3 +929,211 @@ public class FurnServlet extends BasicServlet {
 > 2. 解决表单重复提交问题：当使用请求转发时，浏览器地址栏会停留在第一个servlet，如果刷新页面，会再次发出请求并提交数据，
 > 所以在支付页面等情况下，不要使用请求转发，否则会造成重复支付。
 > 3. 数据正确性校验：添加家具时提交的数据可能有问题，可以分别在前端和后端进行数据校验
+
+```java
+package com.charlie.furns.web;
+
+import com.charlie.furns.entity.Furn;
+import com.charlie.furns.service.FurnService;
+import com.charlie.furns.service.impl.FurnServiceImpl;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
+
+public class FurnServlet extends BasicServlet {
+
+    private FurnService furnService = new FurnServiceImpl();
+    
+    protected void add(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 获取家具信息
+        String name = req.getParameter("name");
+        String maker = req.getParameter("maker");
+        String price = req.getParameter("price");
+        String sales = req.getParameter("sales");
+        String stock = req.getParameter("stock");
+        // 图片路径imgPath使用默认即可
+        String imgPath = "assets/images/product-image/16.jpg";
+
+        /*
+        后端数据校验
+        1. 逐个进行校验
+        try {
+            BigDecimal price = new BigDecimal(price);
+        } catch (Exception e) {
+            System.out.println("家具价格格式有误~");
+            req.setAttribute("msg", "家具价格格式有误~");
+            req.getRequestDispatcher("/views/manage/furn_add.jsp").forward(req, resp);
+            return;
+        }
+        2. 在 new Furn() 处校验一次性验证
+        3. SprintMVC有个专门用于数据校验的规则/框架 JSP303 Hibernate Validator
+         */
+
+        Furn furn = null;
+        try {
+            furn = new Furn(null, name, maker, new BigDecimal(price), Integer.parseInt(sales), Integer.parseInt(stock), imgPath);
+        } catch (Exception e) {
+            System.out.println("添加家具信息有误...");
+            req.setAttribute("msg", "添加的家具数据有误，请仔细检验~");
+            req.getRequestDispatcher("/views/manage/furn_add.jsp").forward(req, resp);
+            return;
+        }
+
+        // 添加家具
+        furnService.addFurn(furn);
+
+        // 请求转发到家具显示页面，即需要重新走一遍furnServlet的list方法
+        // 因为这里使用请求转发，当用户刷新页面时会重新发出一次添加请求，就会造成数据重复提交，解决方法->使用请求重定向
+        // req.getRequestDispatcher("/manage/furnServlet?action=list").forward(req, resp);
+
+        // 因为重定向实际是让浏览器重新发送请求，所以回送的url是一个完整的url
+        String url = req.getContextPath() + "/manage/furnServlet?action=list";
+        resp.sendRedirect(url);
+        //System.out.println("url=" + url);   // url=/jiaju_mall/manage/furnServlet?action=list
+    }
+}
+```
+
+> 使用 `BeanUtils` 自动封装javabean
+
+1. `BeanUtils`工具类，可以一次性地把所有请求的参数注入到JavaBean中
+2. 经常用于把Map中的值注入到JavaBean中，或者是对象属性的拷贝操作
+3. 需要导入jar包 `commons-beanutils-1.8.0.jar` 和 `commons-logging-1.1.1.jar`
+
+- 老韩小技巧：Debug时选中某个方法，右键->`Evaluate Expression` 能够得到表达式的值
+- ![img_28.png](img_28.png)
+
+```java
+package com.charlie.furns.utils;
+
+import org.apache.commons.beanutils.BeanUtils;
+import java.util.Map;
+
+public class DataUtils {
+    // 将使用BeanUtils工具自动封装javabean的方法放到静态方法中使用
+    public static <T> T copyParamToBean(Map value, T bean) {
+        try {
+            BeanUtils.populate(bean, value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bean;
+    }
+}
+```
+
+```java
+package com.charlie.furns.web;
+
+import com.charlie.furns.entity.Furn;
+import com.charlie.furns.service.FurnService;
+import com.charlie.furns.service.impl.FurnServiceImpl;
+import com.charlie.furns.utils.DataUtils;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+
+public class FurnServlet extends BasicServlet {
+
+    private FurnService furnService = new FurnServiceImpl();
+
+    protected void add(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 将上述自动封装的方法封装到utils中
+        Furn furn = DataUtils.copyParamToBean(req.getParameterMap(), new Furn());
+
+        // 添加家具
+        furnService.addFurn(furn);
+
+        // 请求转发到家具显示页面，即需要重新走一遍furnServlet的list方法
+        // 因为这里使用请求转发，当用户刷新页面时会重新发出一次添加请求，就会造成数据重复提交，解决方法->使用请求重定向
+        // req.getRequestDispatcher("/manage/furnServlet?action=list").forward(req, resp);
+
+        // 因为重定向实际是让浏览器重新发送请求，所以回送的url是一个完整的url
+        String url = req.getContextPath() + "/manage/furnServlet?action=list";
+        resp.sendRedirect(url);
+        //System.out.println("url=" + url);   // url=/jiaju_mall/manage/furnServlet?action=list
+    }
+}
+```
+
+- ![img_29.png](img_29.png)
+
+## 实现功能09-后台管理-删除家具
+
+- ![需求分析](img_30.png)
+- ![思路分析](img_31.png)
+
+| DAO层                      | Service层                   | Servlet层                   |
+|---------------------------|----------------------------|----------------------------|
+| ![img_32.png](img_32.png) | ![img_34.png](img_34.png)  | ![img_37.png](img_37.png)  |
+| ![img_33.png](img_33.png) | ![img_35.png](img_35.png)  | ![img_36.png](img_36.png)  |
+
+## 实现功能10-后台管理-修改家具
+
+- ![需求分析](img_38.png)
+- ![需求分析](img_39.png)
+- ![思路分析](img_40.png)
+
+```html
+<form action="manage/furnServlet" method="post">
+    <%--因为是post方法，所以需要使用到隐藏域id和action--%>
+    <input type="hidden" name="action" value="update">
+    <input type="hidden" name="id" value="${requestScope.furn.id}">
+            <a href="#"><img class="img-responsive ml-3" src="assets/images/product-image/default.jpg" alt=""/></a>
+        <td class="product-name"><input name="name" style="width: 60%" type="text" value="${requestScope.furn.name}"/></td>
+        <td class="product-name"><input name="maker" style="width: 90%" type="text" value="${requestScope.furn.maker}"/></td>
+        <td class="product-price-cart"><input name="price" style="width: 90%" type="text" value="${requestScope.furn.price}"/></td>
+            <input name="sales" style="width: 90%" type="text" value="${requestScope.furn.sales}"/>
+            <input name="stock" style="width: 90%" type="text" value="${requestScope.furn.stock}"/>
+            <input type="submit" style="width: 90%;background-color: silver;border: silver;border-radius: 20%;" value="修改家居"/>
+</form>
+```
+
+```java
+package com.charlie.furns.web;
+
+import com.charlie.furns.entity.Furn;
+import com.charlie.furns.service.FurnService;
+import com.charlie.furns.service.impl.FurnServiceImpl;
+import com.charlie.furns.utils.DataUtils;
+import org.apache.commons.beanutils.BeanUtils;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
+public class FurnServlet extends BasicServlet {
+
+    private FurnService furnService = new FurnServiceImpl();
+
+    // 处理回显家具信息的请求
+    protected void showFurn(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int id = DataUtils.parseInt(req.getParameter("id"), 0);
+        Furn furn = furnService.queryFurnById(id);
+        // 将furn放入到req域中
+        req.setAttribute("furn", furn);
+        // 请求转发
+        req.getRequestDispatcher("/views/manage/furn_update.jsp").forward(req, resp);
+    }
+
+    // 处理修改家具信息的请求
+    protected void update(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Furn furn = DataUtils.copyParamToBean(req.getParameterMap(), new Furn());
+        // 修改家具信息
+        furnService.updateFurn(furn);
+        // 重定向
+        String url = req.getContextPath() + "/manage/furnServlet?action=list";
+        resp.sendRedirect(url);
+    }
+}
+```

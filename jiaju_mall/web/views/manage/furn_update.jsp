@@ -1,44 +1,17 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html; charset=UTF-8" language="java" %>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge"/>
     <title>韩顺平教育-家居网购</title>
+    <%--记得加上base，不加的话会看到界面混乱--%>
     <base href="<%=request.getContextPath() + "/"%>">
     <!-- 移动端适配 -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <link rel="stylesheet" href="assets/css/vendor/vendor.min.css"/>
     <link rel="stylesheet" href="assets/css/plugins/plugins.min.css"/>
     <link rel="stylesheet" href="assets/css/style.min.css">
-    <script type="text/javascript" src="script/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript">
-        $(function () {
-            // 完成添加家具信息时，前端数据校验
-            $("#sub-btn").click(function () {
-                var furnPrice = $("#furnPrice").val();
-                var pricePattern = /^[1-9]\d*(\.\w*)?/;
-                if (!pricePattern.test(furnPrice)) {
-                    $("span.errorMsg").text("家具价格格式错误！");
-                    return false;   // 阻止表单提交
-                }
-
-                var furnSales = $("#furnSales").val();
-                var salesPattern = /^[1-9]+\w*$/;
-                if (!salesPattern.test(furnSales)) {
-                    $("span.errorMsg").text("家具销量格式错误！");
-                    return false;
-                }
-
-                var furnStock = $("#furnStock").val();
-                if (!salesPattern.test(furnStock)) {
-                    $("span.errorMsg").text("家具库存格式错误！");
-                    return false;
-                }
-                // 完成校验
-                return true;
-            })
-        })
-    </script>
 </head>
 
 <body>
@@ -96,16 +69,13 @@
 <!-- Cart Area Start -->
 <div class="cart-main-area pt-100px pb-100px">
     <div class="container">
-        <h3 class="cart-page-title">家居后台管理-添加家居</h3>
+        <h3 class="cart-page-title">家居后台管理-修改家居</h3>
         <div class="row">
-            <span class="errorMsg"
-                  style="float: left; font-weight: bold; font-size: 15pt; color: red;margin-left: 10px;">
-                ${requestScope.msg}
-            </span>
             <div class="col-lg-12 col-md-12 col-sm-12 col-12">
                 <form action="manage/furnServlet" method="post">
-                    <%--增加一个隐藏于，因为是post方法，不能在url上添加参数--%>
-                    <input type="hidden" name="action" value="add">
+                    <%--因为是post方法，所以需要使用到隐藏域id和action--%>
+                    <input type="hidden" name="action" value="update">
+                    <input type="hidden" name="id" value="${requestScope.furn.id}">
                     <div class="table-content table-responsive cart-table-content">
                         <table>
                             <thead>
@@ -124,19 +94,19 @@
                                 <td class="product-thumbnail">
                                     <a href="#"><img class="img-responsive ml-3" src="assets/images/product-image/default.jpg" alt=""/></a>
                                 </td>
-                                <td class="product-name"><input name="name" style="width: 60%" type="text" value="家具名"/></td>
-                                <td class="product-name"><input name="maker" style="width: 90%" type="text" value="制造商"/></td>
-                                <td class="product-price-cart"><input name="price" id="furnPrice" style="width: 90%" type="text" value="价格"/></td>
+                                <td class="product-name"><input name="name" style="width: 60%" type="text" value="${requestScope.furn.name}"/></td>
+                                <td class="product-name"><input name="maker" style="width: 90%" type="text" value="${requestScope.furn.maker}"/></td>
+                                <td class="product-price-cart"><input name="price" style="width: 90%" type="text" value="${requestScope.furn.price}"/></td>
                                 <td class="product-quantity">
-                                    <input name="sales" id="furnSales" style="width: 90%" type="text" value="销量"/>
+                                    <input name="sales" style="width: 90%" type="text" value="${requestScope.furn.sales}"/>
                                 </td>
                                 <td class="product-quantity">
-                                    <input name="stock" id="furnStock" style="width: 90%" type="text" value="库存"/>
+                                    <input name="stock" style="width: 90%" type="text" value="${requestScope.furn.stock}"/>
                                 </td>
                                 <td>
 <!--                                    <a href="#"><i class="icon-pencil"></i></a>-->
 <!--                                    <a href="#"><i class="icon-close"></i></a>-->
-                                    <input type="submit" id="sub-btn" style="width: 90%;background-color: silver;border: silver;border-radius: 20%;" value="添加家居"/>
+                                    <input type="submit" style="width: 90%;background-color: silver;border: silver;border-radius: 20%;" value="修改家居"/>
                                 </td>
                             </tr>
                             </tbody>

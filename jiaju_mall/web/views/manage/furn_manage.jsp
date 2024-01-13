@@ -11,6 +11,31 @@
     <link rel="stylesheet" href="assets/css/vendor/vendor.min.css"/>
     <link rel="stylesheet" href="assets/css/plugins/plugins.min.css"/>
     <link rel="stylesheet" href="assets/css/style.min.css">
+    <%--引入jquery--%>
+    <script type="text/javascript" src="script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(function () { // 页面加载完毕后，执行 function(){}
+            // $("i.icon-close").click(function () {
+            //     var del = confirm("请确认是否删除？");
+            //     return del; // 确认：true 取消：false
+            // });
+
+            // 绑定点击事件
+            $("a.deleteCss").click(function () {
+                // 获取到要删除的家具名
+                // this表示当前点击的a标签的dom对象 -> jquery对象 $(this)
+                // 通过下面前端代码可以看出，家具名字对应的元素与该标签的相对关系
+                // this父标签的父标签下的第二个子标签的text内容
+                var furnName = $(this).parent().parent().find("td:eq(1)").text();
+                /*
+                1. confirm方法会弹出一个确认窗口
+                2. 点击确认返回 true
+                3. 点击取消返回 false
+                 */
+                return confirm("请确认是否删除【" + furnName + "】");
+            })
+        })
+    </script>
 </head>
 
 <body>
@@ -45,6 +70,9 @@
                         <!-- Single Wedge Start -->
                         <div class="header-bottom-set dropdown">
                             <a href="#">后台管理</a>
+                        </div>
+                        <div class="header-bottom-set dropdown">
+                            <a href="views/manage/furn_add.jsp">添加家具</a>
                         </div>
                     </div>
                 </div>
@@ -94,24 +122,27 @@
                             <tbody>
                             <%--取出furns集合，循环显示--%>
                             <c:forEach items="${requestScope.furns}" var="furn">
-                            <tr>
-                                <td class="product-thumbnail">
-                                    <a href="#"><img class="img-responsive ml-3" src=${furn.imgPath} alt=""/></a>
-                                </td>
-                                <td class="product-name"><a href="#">${furn.name}</a></td>
-                                <td class="product-name"><a href="#">${furn.maker}</a></td>
-                                <td class="product-price-cart"><span class="amount">${furn.price}</span></td>
-                                <td class="product-quantity">
-                                    ${furn.sales}
-                                </td>
-                                <td class="product-quantity">
-                                    ${furn.stock}
-                                </td>
-                                <td class="product-remove">
-                                    <a href="#"><i class="icon-pencil"></i></a>
-                                    <a href="#"><i class="icon-close"></i></a>
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td class="product-thumbnail">
+                                        <a href="#"><img class="img-responsive ml-3" src=${furn.imgPath} alt=""/></a>
+                                    </td>
+                                    <td class="product-name"><a href="#">${furn.name}</a></td>
+                                    <td class="product-name"><a href="#">${furn.maker}</a></td>
+                                    <td class="product-price-cart"><span class="amount">${furn.price}</span></td>
+                                    <td class="product-quantity">
+                                            ${furn.sales}
+                                    </td>
+                                    <td class="product-quantity">
+                                            ${furn.stock}
+                                    </td>
+                                    <td class="product-remove">
+                                            <%--修改家具信息--%>
+                                        <a class="updateCss" href="manage/furnServlet?action=showFurn&id=${furn.id}"><i class="icon-pencil"></i></a>
+                                            <%--删除家具信息--%>
+                                        <a class="deleteCss" href="manage/furnServlet?action=del&id=${furn.id}"><i
+                                                class="icon-close"></i></a>
+                                    </td>
+                                </tr>
                             </c:forEach>
                             </tbody>
                         </table>
@@ -141,7 +172,8 @@
                                     <ul class="align-items-center">
                                         <li class="li"><a class="single-link" href="about.html">关于我们</a></li>
                                         <li class="li"><a class="single-link" href="#">交货信息</a></li>
-                                        <li class="li"><a class="single-link" href="privacy-policy.html">隐私与政策</a></li>
+                                        <li class="li"><a class="single-link" href="privacy-policy.html">隐私与政策</a>
+                                        </li>
                                         <li class="li"><a class="single-link" href="#">条款和条件</a></li>
                                         <li class="li"><a class="single-link" href="#">制造</a></li>
                                     </ul>

@@ -29,4 +29,24 @@ public class FurnDAOTest {
             System.out.println("添加失败~");
         }
     }
+
+    @Test
+    public void deleteFurnById() {
+        int i = furnDAO.deleteFurnById(21);
+        System.out.println("删除的行数=" + i);
+    }
+
+    @Test
+    public void queryFurnById() {
+        int id = 18;
+        Furn furn = furnDAO.queryFurnById(id);
+        System.out.println(furn);
+    }
+
+    @Test
+    public void updateFurn() {
+        Furn furn = new Furn(17, "阿三神油", "印地", new BigDecimal("66.6"), 80, 160, "");
+        int update = furnDAO.updateFurn(furn);
+        System.out.println(update);
+    }
 }

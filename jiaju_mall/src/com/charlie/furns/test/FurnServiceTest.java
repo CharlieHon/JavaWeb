@@ -29,4 +29,27 @@ public class FurnServiceTest {
             System.out.println("添加失败~");
         }
     }
+
+    @Test
+    public void deleteFurnById() {
+        int id = 20;
+        if (furnService.deleteFurnById(20)) {
+            System.out.println("删除家具成功！");
+        } else {
+            System.out.println("删除家具失败~");
+        }
+    }
+
+    @Test
+    public void queryFurnById() {
+        int id = 10;
+        Furn furn = furnService.queryFurnById(id);
+        System.out.println(furn);
+    }
+
+    @Test
+    public void updateFurn() {
+        Furn furn = new Furn(17, "美的饮水机", "美的", new BigDecimal("126.6"), 99, 500, "");
+        System.out.println(furnService.updateFurn(furn) ? "修改成功！" : "修改失败~");
+    }
 }

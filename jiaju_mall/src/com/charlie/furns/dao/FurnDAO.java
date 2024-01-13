@@ -13,4 +13,13 @@ public interface FurnDAO {
 
     // 添加家具到数据库，返回受影响的行数
     public int addFurn(Furn furn);
+
+    // 通过家具的id删除家具，返回受影响的行数
+    public int deleteFurnById(int id);
+
+    // 通过家具的id查询家具
+    public Furn queryFurnById(int id);
+
+    // 修改家具信息
+    public int updateFurn(Furn furn);
 }

@@ -20,4 +20,19 @@ public class FurnServiceImpl implements FurnService {
     public boolean addFurn(Furn furn) {
         return furnDAO.addFurn(furn) == 1;
     }
+
+    @Override
+    public boolean deleteFurnById(int id) {
+        return furnDAO.deleteFurnById(id) == 1;
+    }
+
+    @Override
+    public Furn queryFurnById(int id) {
+        return furnDAO.queryFurnById(id);
+    }
+
+    @Override
+    public boolean updateFurn(Furn furn) {
+        return furnDAO.updateFurn(furn) == 1;
+    }
 }
