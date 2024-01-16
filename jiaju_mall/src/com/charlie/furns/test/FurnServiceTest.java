@@ -60,4 +60,10 @@ public class FurnServiceTest {
         Page<Furn> page = furnService.page(2, 2);
         System.out.println("page=" + page);
     }
+
+    @Test
+    public void pageByName() {
+        Page<Furn> page = furnService.pageByName("%椅子%", 1, 3);
+        System.out.println("page=" + page);
+    }
 }

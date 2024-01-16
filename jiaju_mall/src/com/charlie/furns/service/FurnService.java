@@ -26,4 +26,7 @@ public interface FurnService {
 
     // 根据传入的pageNo和pageSize，返回对应的page对象
     public Page<Furn> page(int pageNo, int pageSize);
+
+    // 根据传入的家具名字、pageNo和pageSize，返回对应的page对象
+    public Page<Furn> pageByName(String name, int pageNo, int pageSize);
 }

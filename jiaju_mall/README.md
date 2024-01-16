@@ -1349,3 +1349,134 @@ protected void showFurn(HttpServletRequest req, HttpServletResponse resp) throws
     req.getRequestDispatcher("/views/manage/furn_update.jsp").forward(req, resp);
 }
 ```
+
+## 实现功能13-首页分页
+
+- ![img_45.png](img_45.png)
+- ![img_46.png](img_46.png)
+
+```html
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page contentType="text/html; charset=UTF-8" language="java" %>
+<%--家具项目默认进入的index页面只负责将请求直接转发给处理对应业务的servlet
+类似网站的入口
+--%>
+<jsp:forward page="/customerFurnServlet?action=page&pageNo=1"></jsp:forward>
+```
+
+## 实现功能14-首页搜索
+
+- ![需求分析](img_47.png)
+- ![程序思路](img_48.png)
+- ![img_49.png](img_49.png)
+
+点击分页条保持上次搜索记录的两种实现方法
+1. 使用 `${param.name}` 获取请求转发的搜索参数
+2. 通过设置返回page的属性url保存name
+
+```html
+<!--web/index.jsp-->
+<jsp:forward page="/customerFurnServlet?action=pageByName&pageNo=1"></jsp:forward>
+
+<!--web/views/customer/index.jsp-->
+<div class="dropdown_search">
+    <form class="action-form" action="customerFurnServlet">
+        <input type="hidden" name="action" value="pageByName">
+        <input class="form-control" name="name" value="${param.name}" placeholder="请输入家具名搜索" type="text">
+        <button class="submit" type="submit"><i class="icon-magnifier"></i></button>
+    </form>
+</div>
+```
+
+```java
+package com.charlie.furns.web;
+
+import com.charlie.furns.entity.Furn;
+import com.charlie.furns.entity.Page;
+import com.charlie.furns.service.FurnService;
+import com.charlie.furns.service.impl.FurnServiceImpl;
+import com.charlie.furns.utils.DataUtils;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+public class CustomerFurnServlet extends BasicServlet {
+
+    private FurnService furnService = new FurnServiceImpl();
+
+    // 处理首页搜索请求
+    protected void pageByName(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String name = req.getParameter("name");
+        /*
+        1. 如果参数有name，但是没有值，则接收的是 ""
+        2. 如果name参数都没有，接收到的是 null
+         */
+        if (name == null) {
+            name = "";
+        }
+        int pageNo = DataUtils.parseInt(req.getParameter("pageNo"), 1);
+        int pageSize = DataUtils.parseInt(req.getParameter("pageSize"), 4);
+        Page<Furn> page = furnService.pageByName(name, pageNo, pageSize);
+        req.setAttribute("page", page);
+        
+        StringBuilder url =new StringBuilder("customerFurnServlet?action=pageByName");
+        if (!"".equals(name)) {
+            url.append("&name=").append(name);
+        }
+        page.setUrl(url.toString());
+
+        req.getRequestDispatcher("/views/customer/index.jsp").forward(req, resp);
+    }
+}
+```
+
+```html
+<!--  Pagination Area Start -->
+<div class="pro-pagination-style text-center mb-md-30px mb-lm-30px mt-6" data-aos="fade-up">
+    <ul>
+        <%--首页--%>
+        <%--上一页:如果当前页大于1，就显示上一页--%>
+        <c:if test="${requestScope.page.pageNo > 1}">
+                <li><a href="customerFurnServlet?action=pageByName&pageNo=1&name=${param.name}">首页</a></li>
+                <li><a href="customerFurnServlet?action=pageByName&pageNo=${requestScope.page.pageNo-1}&name=${param.name}">上页</a></li>
+        </c:if>
+
+        <%--显示所有的分页数，先易后难
+        先确定开始页数 begin 第1页
+        再确定结束页数 end 末页
+        问题：如果页数很多，如何处理？ => 通过算法最多显示5页
+        --%>
+        <c:set var="begin" value="1"/>
+        <c:set var="end" value="${requestScope.page.pageTotalCount}"/>
+        <c:forEach begin="${begin}" end="${end}" var="i">
+            <%--如果i是当前页，就使用class="active"修饰--%>
+            <c:if test="${i == requestScope.page.pageNo}">
+                <%--<li><a class="active" href="customerFurnServlet?action=pageByName&pageNo=${i}&name=${param.name}">${i}</a></li>--%>
+                <li><a class="active" href="${requestScope.page.url}&pageNo=${i}">${i}</a></li>
+            </c:if>
+            <c:if test="${i != requestScope.page.pageNo}">
+                <%--<li><a href="customerFurnServlet?action=pageByName&pageNo=${i}&name=${param.name}">${i}</a></li>--%>
+                <li><a href="${requestScope.page.url}&pageNo=${i}">${i}</a></li>
+            </c:if>
+        </c:forEach>
+
+        <c:if test="${requestScope.page.pageNo < requestScope.page.pageTotalCount}">
+            <li><a href="customerFurnServlet?action=pageByName&pageNo=${requestScope.page.pageNo+1}&name=${param.name}">下页</a></li>
+            <li><a href="customerFurnServlet?action=pageByName&pageNo=${requestScope.page.pageTotalCount}&name=${param.name}">末页</a></li>
+        </c:if>
+        <li><a>共 ${requestScope.page.pageTotalCount} 页</a></li>
+        <li><a>共 ${requestScope.page.totalRow} 记录</a></li>
+    </ul>
+</div>
+<!--  Pagination Area End -->
+```
+
+> 首页搜索中遇到的奇怪问题：
+> 1. 图片src='#'会请求首页(web/index.jsp)，进而再去请求 `customerFrunServlet`
+
+```html
+<%--img src=# 会去请求当前页url，加上base标签参考即localhost:8080/jiaju_mall/#--%>
+<%--<img src="#" alt="">--%>
+```

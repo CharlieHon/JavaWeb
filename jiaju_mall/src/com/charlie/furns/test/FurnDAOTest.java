@@ -3,8 +3,6 @@ package com.charlie.furns.test;
 import com.charlie.furns.dao.FurnDAO;
 import com.charlie.furns.dao.impl.FurnDAOImpl;
 import com.charlie.furns.entity.Furn;
-import com.charlie.furns.entity.Page;
-import jdk.nashorn.internal.ir.LiteralNode;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -62,6 +60,21 @@ public class FurnDAOTest {
         List<Furn> pageItems = furnDAO.getPageItems(0, 3);
         for (Furn pageItem : pageItems) {
             System.out.println(pageItem);
+        }
+    }
+
+    @Test
+    public void getPageTotalCountByName() {
+        String name = "%" + "椅子" + "%";
+        System.out.println(furnDAO.getTotalRowByName(name));
+    }
+
+    @Test
+    public void getPageItemsByName() {
+        String name = "%" + "椅子" + "%";
+        List<Furn> furns = furnDAO.getPageItemsByName(name, 0, 3);
+        for (Furn furn : furns) {
+            System.out.println(furn);
         }
     }
 }

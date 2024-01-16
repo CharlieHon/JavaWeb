@@ -1,7 +1,6 @@
 package com.charlie.furns.dao;
 
 import com.charlie.furns.entity.Furn;
-import com.charlie.furns.entity.Page;
 
 import java.util.List;
 
@@ -31,4 +30,9 @@ public interface FurnDAO {
     // begin： 表示从第几条记录开始获取，从0开始计算
     // pageSize：表示取出多少条记录
     public List<Furn> getPageItems(int begin, int pageSize);
+
+    // 根据家具名获取记录数
+    public int getTotalRowByName(String name);
+
+    public List<Furn> getPageItemsByName(String name, int begin, int pageSize);
 }

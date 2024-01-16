@@ -55,4 +55,13 @@
         <servlet-name>AdminServlet</servlet-name>
         <url-pattern>/adminServlet</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>CustomerFurnServlet</servlet-name>
+        <servlet-class>com.charlie.furns.web.CustomerFurnServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CustomerFurnServlet</servlet-name>
+        <url-pattern>/customerFurnServlet</url-pattern>
+    </servlet-mapping>
 </web-app>
