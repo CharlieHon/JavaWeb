@@ -526,7 +526,7 @@ public class LoginServlet extends HttpServlet {
             // 页面转发-登录失败
             req.getRequestDispatcher("/views/member/login.jsp").forward(req, resp);
         } else {
-            req.getRequestDispatcher("/views/member/login_ok.html").forward(req, resp);
+            req.getRequestDispatcher("/views/member/login_ok.jsp").forward(req, resp);
         }
     }
 
@@ -570,7 +570,7 @@ public class LoginServlet extends HttpServlet {
             // 页面转发-登录失败
             req.getRequestDispatcher("/views/member/login.jsp").forward(req, resp);
         } else {
-            req.getRequestDispatcher("/views/member/login_ok.html").forward(req, resp);
+            req.getRequestDispatcher("/views/member/login_ok.jsp").forward(req, resp);
         }
     }
 }
@@ -702,7 +702,7 @@ public class MemberServlet extends HttpServlet {
             // 页面转发-登录失败
             req.getRequestDispatcher("/views/member/login2.jsp").forward(req, resp);
         } else {
-            req.getRequestDispatcher("/views/member/login_ok.html").forward(req, resp);
+            req.getRequestDispatcher("/views/member/login_ok.jsp").forward(req, resp);
         }
     }
 }
@@ -818,7 +818,7 @@ public class MemberServlet2 extends BasicServlet {
             // 页面转发-登录失败
             req.getRequestDispatcher("/views/member/login2.jsp").forward(req, resp);
         } else {
-            req.getRequestDispatcher("/views/member/login_ok.html").forward(req, resp);
+            req.getRequestDispatcher("/views/member/login_ok.jsp").forward(req, resp);
         }
     }
 }
@@ -1479,4 +1479,118 @@ public class CustomerFurnServlet extends BasicServlet {
 ```html
 <%--img src=# 会去请求当前页url，加上base标签参考即localhost:8080/jiaju_mall/#--%>
 <%--<img src="#" alt="">--%>
+```
+
+## 实现功能15-显示登录名
+
+- ![需求分析](img_50.png)
+- ![程序思路](img_51.png)
+
+```java
+package com.charlie.furns.web;
+
+import com.charlie.furns.entity.Member;
+import com.charlie.furns.service.MemberService;
+import com.charlie.furns.service.impl.MemberServiceImpl;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+
+/**
+ * 该servlet处理和Member相关的请求
+ */
+public class MemberServlet2 extends BasicServlet {
+
+    private MemberService memberService = new MemberServiceImpl();
+    
+    // 处理会员登录
+    protected void login(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 如果在登录界面，用户没有输入内容就直接提交，后台接收到的就是空串 ""
+        String username = req.getParameter("username");
+        String password = req.getParameter("password");
+        Member member = new Member(null, username, password, null);
+        if (memberService.login(member) == null) {
+            // 把登录错误信息，放入到request域
+            req.setAttribute("username", username);
+            req.setAttribute("msg", "用户名或密码错误");
+            // 页面转发-登录失败
+            req.getRequestDispatcher("/views/member/login2.jsp").forward(req, resp);
+        } else {
+            // 将得到的member对象放入到session
+            req.getSession().setAttribute("member", member);
+            req.getRequestDispatcher("/views/member/login_ok.jsp").forward(req, resp);
+        }
+    }
+}
+```
+
+```html
+<!-- web/views/customer/index.jsp -->
+<%--根据用户的登录状态，显示不同的菜单
+思路：根据session中有误member对象，来判断
+    ${empty xxx} 如xxx为null，返回true，否则返回false
+--%>
+<c:if test="${empty sessionScope.member}">
+    <div class="header-bottom-set dropdown">
+        <a href="views/member/login2.jsp">登录|注册</a>
+    </div>
+</c:if>
+<c:if test="${not empty sessionScope.member}">
+    <div class="header-bottom-set dropdown">
+        <a>欢迎：${sessionScope.member.username}</a>
+    </div>
+    <div class="header-bottom-set dropdown">
+        <a href="#">订单管理</a>
+    </div>
+    <div class="header-bottom-set dropdown">
+        <a href="#">安全退出</a>
+    </div>
+</c:if>
+<!-- Single Wedge End -->
+```
+
+## 实现功能16-注销功能
+
+- ![需求分析](img_52.png)
+- ![程序思路](img_53.png)
+
+```java
+package com.charlie.furns.web;
+
+import com.charlie.furns.entity.Member;
+import com.charlie.furns.service.MemberService;
+import com.charlie.furns.service.impl.MemberServiceImpl;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+
+/**
+ * 该servlet处理和Member相关的请求
+ */
+public class MemberServlet2 extends BasicServlet {
+
+    private MemberService memberService = new MemberServiceImpl();
+
+    // 注销登录
+    protected void logout(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 销毁当前用户的session
+        req.getSession().invalidate();
+        // 重定向到网站首页->刷新首页
+        resp.sendRedirect(req.getContextPath() + "/index.jsp");
+    }
+}
+```
+
+```html
+<div class="header-bottom-set dropdown">
+    <a href="memberServlet?action=logout">安全退出</a>
+</div>
 ```

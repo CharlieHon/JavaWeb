@@ -25,7 +25,7 @@ public class LoginServlet extends HttpServlet {
             // 页面转发-登录失败
             req.getRequestDispatcher("/views/member/login.jsp").forward(req, resp);
         } else {
-            req.getRequestDispatcher("/views/member/login_ok.html").forward(req, resp);
+            req.getRequestDispatcher("/views/member/login_ok.jsp").forward(req, resp);
         }
     }
 

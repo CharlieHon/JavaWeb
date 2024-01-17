@@ -44,12 +44,26 @@
                             </div>
                         </div>
                         <!-- Single Wedge Start -->
-                        <div class="header-bottom-set dropdown">
-                            <a href="views/member/login2.jsp">登录|注册</a>
-                        </div>
-                        <div class="header-bottom-set dropdown">
-                            <a href="views/manage/manage_login.jsp">后台管理</a>
-                        </div>
+                        <%--根据用户的登录状态，显示不同的菜单
+                        思路：根据session中有误member对象，来判断
+                            ${empty xxx} 如xxx为null，返回true，否则返回false
+                        --%>
+                        <c:if test="${empty sessionScope.member}">
+                            <div class="header-bottom-set dropdown">
+                                <a href="views/member/login2.jsp">登录|注册</a>
+                            </div>
+                        </c:if>
+                        <c:if test="${not empty sessionScope.member}">
+                            <div class="header-bottom-set dropdown">
+                                <a>欢迎：${sessionScope.member.username}</a>
+                            </div>
+                            <div class="header-bottom-set dropdown">
+                                <a href="#">订单管理</a>
+                            </div>
+                            <div class="header-bottom-set dropdown">
+                                <a href="memberServlet2?action=logout">安全退出</a>
+                            </div>
+                        </c:if>
                         <!-- Single Wedge End -->
                         <a href="#offcanvas-cart"
                            class="header-action-btn header-action-btn-cart offcanvas-toggle pr-0">
