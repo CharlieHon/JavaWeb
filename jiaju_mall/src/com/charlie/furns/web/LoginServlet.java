@@ -8,6 +8,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.IOException;
 
+@Deprecated
 public class LoginServlet extends HttpServlet {
 
     private MemberService memberService = new MemberServiceImpl();

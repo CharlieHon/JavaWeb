@@ -479,9 +479,9 @@ public class RegisterServlet extends HttpServlet {
             Member member = new Member(null, username, password, email);
             if (memberService.registerMember(member)) { // 注册成功
                 // 请求转发
-                req.getRequestDispatcher("/views/member/register_ok.html").forward(req, resp);
+                req.getRequestDispatcher("/views/member/register_ok.jsp").forward(req, resp);
             } else {    // 注册失败
-                req.getRequestDispatcher("/views/member/register_fail.html").forward(req, resp);
+                req.getRequestDispatcher("/views/member/register_fail.jsp").forward(req, resp);
             }
         } else {
             // 用户名不可用
@@ -677,9 +677,9 @@ public class MemberServlet extends HttpServlet {
             Member member = new Member(null, username, password, email);
             if (memberService.registerMember(member)) { // 注册成功
                 // 请求转发
-                req.getRequestDispatcher("/views/member/register_ok.html").forward(req, resp);
+                req.getRequestDispatcher("/views/member/register_ok.jsp").forward(req, resp);
             } else {    // 注册失败
-                req.getRequestDispatcher("/views/member/register_fail.html").forward(req, resp);
+                req.getRequestDispatcher("/views/member/register_fail.jsp").forward(req, resp);
             }
         } else {
             // 用户名不可用
@@ -793,9 +793,9 @@ public class MemberServlet2 extends BasicServlet {
             Member member = new Member(null, username, password, email);
             if (memberService.registerMember(member)) { // 注册成功
                 // 请求转发
-                req.getRequestDispatcher("/views/member/register_ok.html").forward(req, resp);
+                req.getRequestDispatcher("/views/member/register_ok.jsp").forward(req, resp);
             } else {    // 注册失败
-                req.getRequestDispatcher("/views/member/register_fail.html").forward(req, resp);
+                req.getRequestDispatcher("/views/member/register_fail.jsp").forward(req, resp);
             }
         } else {
             // 用户名不可用
@@ -1593,4 +1593,224 @@ public class MemberServlet2 extends BasicServlet {
 <div class="header-bottom-set dropdown">
     <a href="memberServlet?action=logout">安全退出</a>
 </div>
+```
+
+## 实现功能17-注册验证码
+
+- ![需求分析](img_54.png)
+- ![程序框架](img_55.png)
+- ![谷歌的验证码jar包](img_60.png)
+- ![img_56.png](img_56.png)
+- ![Kaptcha常量](img_57.png)
+
+> 表单重复提交情况：
+> 1. 提交完表单，服务器使用请求转发进行页面跳转。用户刷新 `F5`，会发起最后一次请求，造成表单重复提交问题。解决：使用重定向
+> 2. 用户正常提交，由于网络延迟等原因，未收到服务器的响应，这时用户着急多点了几次提交操作，也会造成表单重复提交。解决：验证码
+> 3. 用户正常提交，由于服务器也没有延迟，但是提交完成后，用户回退浏览器，重新提交，也会造成表单重复提交。解决：验证码
+
+```java
+package com.google.code.kaptcha.servlet;
+
+import com.google.code.kaptcha.Producer;
+import com.google.code.kaptcha.util.Config;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Properties;
+import javax.imageio.ImageIO;
+import javax.servlet.Servlet;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class KaptchaServlet extends HttpServlet implements Servlet {
+    private Properties props = new Properties();
+    private Producer kaptchaProducer = null;
+    private String sessionKeyValue = null;
+    private String sessionKeyDateValue = null;
+    
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setDateHeader("Expires", 0L);
+        resp.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+        resp.addHeader("Cache-Control", "post-check=0, pre-check=0");
+        resp.setHeader("Pragma", "no-cache");
+        resp.setContentType("image/jpeg");
+        String capText = this.kaptchaProducer.createText();
+        // this.sessionKeyValue: KAPTCHA_SESSION_KEY
+        req.getSession().setAttribute(this.sessionKeyValue, capText);
+        // this.sessionKeyDataValue: KAPTCHA_SESSION_DATE
+        req.getSession().setAttribute(this.sessionKeyDateValue, new Date());
+        BufferedImage bi = this.kaptchaProducer.createImage(capText);
+        ServletOutputStream out = resp.getOutputStream();
+        ImageIO.write(bi, "jpg", out);
+    }
+}
+```
+
+```html
+<!--给验证码图片绑定一个点击事件，使得每点击一次都可以刷新图片-->
+<script type="text/javascript">
+    $(function () { // 页面加载完毕后执行function
+
+        /*
+        模拟一个点击事件，选中注册
+        决定是显示登录还是注册的tab "" 不能少
+        如果注册失败，显示注册tab，而不是默认的登录tab
+         */
+        if ("${requestScope.active}" === "register") {
+            $("#register_tab")[0].click();  // 模拟点击
+        }
+        
+        // 对验证码图片进行处理，绑定一个点击事件，可以获取新的验证码
+        $("#codeImg").click(function () {
+            // 有的浏览器在url没有变化的时候，图片不会发出新的请求
+            // 为了防止不请求不刷新，可以携带一个变化的参数
+            // this.src = "http://localhost:8080//jiaju_mall/kaptchaServlet?d=" + new Date();
+            this.src = "<%=request.getContextPath()%>/kaptchaServlet?d=" + new Date();
+        })
+        
+        // 前端验证码校验，不能为空
+        var codeText = $("#code").val();    // 获取验证码输入框输入的值
+        codeText = $.trim(codeText);        // 去除字符串前后的空格
+        if (codeText == null || codeText === "") {
+            $("span.errorMsg").val("验证码不能为空");
+            return false;
+        }
+    })
+</script>
+<!--将验证码图片的src设置为KaptchaServlet即可-->
+<img id="codeImg" alt="" src="kaptchaServlet" style="width: 120px;height: 50px">
+```
+
+```java
+package com.charlie.furns.web;
+
+import com.charlie.furns.entity.Member;
+import com.charlie.furns.service.MemberService;
+import com.charlie.furns.service.impl.MemberServiceImpl;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+
+import static com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY;
+
+public class MemberServlet2 extends BasicServlet {
+
+    private MemberService memberService = new MemberServiceImpl();
+
+    // 处理会员注册
+    protected void register(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // System.out.println("RegisterServlet 被调用...");
+        // 接收用户注册信息->一定要看前端代码
+        String username = req.getParameter("username");
+        String password = req.getParameter("password");
+        String email = req.getParameter("email");
+
+        // 获取用户提交的验证码
+        String code = req.getParameter("code");
+        // 从session中获取到KaptchaServlet创建的验证码
+        String token = (String) req.getSession().getAttribute(KAPTCHA_SESSION_KEY);
+        // 立即删除session中的验证码，防止该验证码被重复使用
+        req.getSession().removeAttribute(KAPTCHA_SESSION_KEY);
+        // 如果token不为null，并且和用户提交的验证码一致，就继续
+        if (token != null && token.equalsIgnoreCase(code)) {
+            // 判断用户名是否可用
+            if (!memberService.isExistsUsername(username)) {
+                // 用户名不存在-注册
+                Member member = new Member(null, username, password, email);
+                if (memberService.registerMember(member)) { // 注册成功
+                    // 请求转发
+                    req.getRequestDispatcher("/views/member/register_ok.jsp").forward(req, resp);
+                } else {    // 注册失败
+                    req.getRequestDispatcher("/views/member/register_fail.jsp").forward(req, resp);
+                }
+            } else {
+                // 用户名不可用
+                req.getRequestDispatcher("/views/member/login2.jsp").forward(req, resp);
+            }
+        } else {    // 验证码不正确
+            // 待会一个信息，要求显示到注册选项页
+            req.setAttribute("active", "register");
+            req.setAttribute("msg", "验证码有误~");
+            req.getRequestDispatcher("/views/member/login2.jsp").forward(req, resp);
+        }
+    }
+}
+```
+
+## 实现功能18-购物车
+
+- ![img_58.png](img_58.png)
+- ![img_59.png](img_59.png)
+- ![session结构](img_61.png)
+
+```html
+<!--以下是添加到购物车的按键-->
+<button title="Add To Cart" class="add-to-cart" furnId="${furn.id}">Add To Cart</button>
+<!--以下是对添加按键的处理-->
+<script type="text/javascript">
+    $(function () {
+        // 给 add to cart 按键绑定事件 jquery
+        $(".add-to-cart").click(function () {
+            // 获取到点击的furn的-id
+            var furnId = $(this).attr("furnId");
+            // 发出一个请求添加家具 => ajax
+            location.href = "cartServlet?action=addItem&id=" + furnId;
+        })
+    })
+</script>
+<!--servlet处理...-->
+<!--购物车图标显示商品总数目-->
+<a href="#offcanvas-cart"
+   class="header-action-btn header-action-btn-cart offcanvas-toggle pr-0">
+    <i class="icon-handbag"> 购物车</i>
+    <%--${sessionScope.cart.totalCount}的本质是调用cart的getTotalCount()方法
+    因此，可以不在cart中添加属性totalCount，而是直接写方法
+    --%>
+    <span class="header-action-num">${sessionScope.cart.totalCount}</span>
+</a>
+```
+
+```java
+package com.charlie.furns.web;
+
+public class CartServlet extends BasicServlet {
+
+    // 增加一个属性
+    private FurnService furnService = new FurnServiceImpl();
+
+    // 增加一个添加家具数据到购物车的方法
+    protected void addItem(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 先得到添加的家具id
+        int id = DataUtils.parseInt(req.getParameter("id"), 0);
+        // 获取到id对应的furn对象
+        Furn furn = furnService.queryFurnById(id);
+
+        // TODO: 判断家具是否为空。以下先把正常的逻辑走完，再处理异常情况
+
+        // 根据furn构建cartItem
+        CartItem item = new CartItem(furn.getId(), furn.getName(), 1, furn.getPrice(), furn.getPrice());
+        // 从session中获取cart对象
+        Cart cart = (Cart) req.getSession().getAttribute("cart");
+        if (null == cart) { // 说明当前用户的session中没有cart
+            cart = new Cart();
+            req.getSession().setAttribute("cart", cart);
+        }
+        // 将cartItem加入到cart对象
+        cart.addItem(item);
+        System.out.println("cart=" + cart);
+
+        // 添加完毕后，需要返回到 /* 添加家具的页面 */
+        // 请求头中的字段 Referer 保存着发送请求的地址
+        resp.sendRedirect(req.getHeader("Referer"));
+    }
+}
 ```

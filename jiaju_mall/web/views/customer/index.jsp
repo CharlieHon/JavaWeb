@@ -11,6 +11,19 @@
     <link rel="stylesheet" href="assets/css/vendor/vendor.min.css"/>
     <link rel="stylesheet" href="assets/css/plugins/plugins.min.css"/>
     <link rel="stylesheet" href="assets/css/style.min.css">
+    <%--引入jquery--%>
+    <script type="text/javascript" src="script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            // 给 add to cart 按键绑定事件 jquery
+            $(".add-to-cart").click(function () {
+                // 获取到点击的furn的-id
+                var furnId = $(this).attr("furnId");
+                // 发出一个请求添加家具 => ajax
+                location.href = "cartServlet?action=addItem&id=" + furnId;
+            })
+        })
+    </script>
 </head>
 
 <body>
@@ -68,7 +81,8 @@
                         <a href="#offcanvas-cart"
                            class="header-action-btn header-action-btn-cart offcanvas-toggle pr-0">
                             <i class="icon-handbag"> 购物车</i>
-                            <span class="header-action-num">88</span>
+                            <%--${sessionScope.cart.totalCount}的本质是调用cart的getTotalCount()方法--%>
+                            <span class="header-action-num">${sessionScope.cart.totalCount}</span>
                         </a>
                         <a href="#offcanvas-mobile-menu"
                            class="header-action-btn header-action-btn-menu offcanvas-toggle d-lg-none">
@@ -136,9 +150,7 @@
                                                    title="Quick view" data-bs-toggle="modal" data-bs-target="#exampleModal"><i
                                                         class="icon-size-fullscreen"></i></a>
                                             </div>
-                                            <button title="Add To Cart" class=" add-to-cart">Add
-                                                To Cart
-                                            </button>
+                                            <button title="Add To Cart" class="add-to-cart" furnId="${furn.id}">Add To Cart</button>
                                         </div>
                                         <div class="content">
                                             <h5 class="title">

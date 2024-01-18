@@ -13,6 +13,7 @@ import java.io.IOException;
 /**
  * 该servlet处理和Member相关的请求
  */
+@Deprecated
 public class MemberServlet extends HttpServlet {
 
     private MemberService memberService = new MemberServiceImpl();
@@ -51,9 +52,9 @@ public class MemberServlet extends HttpServlet {
             Member member = new Member(null, username, password, email);
             if (memberService.registerMember(member)) { // 注册成功
                 // 请求转发
-                req.getRequestDispatcher("/views/member/register_ok.html").forward(req, resp);
+                req.getRequestDispatcher("/views/member/register_ok.jsp").forward(req, resp);
             } else {    // 注册失败
-                req.getRequestDispatcher("/views/member/register_fail.html").forward(req, resp);
+                req.getRequestDispatcher("/views/member/register_fail.jsp").forward(req, resp);
             }
         } else {
             // 用户名不可用

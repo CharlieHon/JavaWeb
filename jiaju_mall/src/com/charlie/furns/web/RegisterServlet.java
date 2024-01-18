@@ -8,6 +8,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.IOException;
 
+@Deprecated
 public class RegisterServlet extends HttpServlet {
 
     // 定义一个属性MemberService
@@ -26,9 +27,9 @@ public class RegisterServlet extends HttpServlet {
             Member member = new Member(null, username, password, email);
             if (memberService.registerMember(member)) { // 注册成功
                 // 请求转发
-                req.getRequestDispatcher("/views/member/register_ok.html").forward(req, resp);
+                req.getRequestDispatcher("/views/member/register_ok.jsp").forward(req, resp);
             } else {    // 注册失败
-                req.getRequestDispatcher("/views/member/register_fail.html").forward(req, resp);
+                req.getRequestDispatcher("/views/member/register_fail.jsp").forward(req, resp);
             }
         } else {
             // 用户名不可用

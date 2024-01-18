@@ -17,6 +17,24 @@
     <script type="text/javascript" src="script/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
         $(function () { // 页面加载完毕后执行function
+
+            /*
+            模拟一个点击事件，选中注册
+            决定是显示登录还是注册的tab "" 不能少
+            如果注册失败，显示注册tab，而不是默认的登录tab
+             */
+            if ("${requestScope.active}" === "register") {
+                $("#register_tab")[0].click();  // 模拟点击
+            }
+
+            // 对验证码图片进行处理，绑定一个点击事件，可以获取新的验证码
+            $("#codeImg").click(function () {
+                // 有的浏览器在url没有变化的时候，图片不会发出新的请求
+                // 为了防止不请求不刷新，可以携带一个变化的参数
+                // this.src = "http://localhost:8080//jiaju_mall/kaptchaServlet?d=" + new Date();
+                this.src = "<%=request.getContextPath()%>/kaptchaServlet?d=" + new Date();
+            })
+
             // 注册-绑定点击事件
             $("#sub-btn").click(function () {
 
@@ -59,13 +77,20 @@
                     return false;
                 }
 
-                $("span[class='errorMsg']").text("通过验证！");
-                // 写完后端后，直接提交表单
+                // 5. 验证码校验，不能为空
+                var codeText =  $("#code").val();
+                // 去掉验证码前后的可供
+                codeText = $.trim(codeText);
+                if (codeText == null || codeText === "") {
+                    // 提示
+                    $("span.errorMsg").text("验证码不能为空");
+                    return false;
+                }
+
+                // $("span[class='errorMsg']").text("通过验证！");
+                // 完成前端验证后，直接提交表单
                 return true;
             })
-
-            // 登录-绑定点击事件
-
         })
     </script>
 </head>
@@ -119,7 +144,7 @@
                         <a class="active" data-bs-toggle="tab" href="#lg1">
                             <h4>会员登录</h4>
                         </a>
-                        <a data-bs-toggle="tab" href="#lg2">
+                        <a id="register_tab" data-bs-toggle="tab" href="#lg2">
                             <h4>会员注册</h4>
                         </a>
                     </div>
@@ -161,12 +186,12 @@
                                     <form action="memberServlet2" method="post">
                                         <%--增加隐藏域表示register请求--%>
                                         <input type="hidden" name="action" value="register"/>
-                                        <input type="text" id="username" name="username" placeholder="Username"/>
-                                        <input type="password" id="password" name="password" placeholder="输入密码"/>
-                                        <input type="password" id="repwd" name="repassword" placeholder="确认密码"/>
-                                        <input name="email" id="email" placeholder="电子邮件" type="email"/>
-                                        <input type="text" id="code" name="user-name" style="width: 50%" id="code"
-                                               placeholder="验证码"/>　　<img alt="" src="assets/images/code/code.bmp">
+                                        <input type="text" id="username" name="username" value="${param.username}" placeholder="Username"/>
+                                        <input type="password" id="password" name="password" value="${param.password}" placeholder="输入密码"/>
+                                        <input type="password" id="repwd" name="repassword" value="${param.password}" placeholder="确认密码"/>
+                                        <input name="email" id="email" placeholder="电子邮件" value="${param.email}" type="email"/>
+                                        <input type="text" id="code" name="code" style="width: 50%" placeholder="验证码"/>
+                                            <img id="codeImg" alt="" src="kaptchaServlet" style="width: 120px;height: 50px">
                                         <div class="button-box">
                                             <button type="submit" id="sub-btn"><span>会员注册</span></button>
                                         </div>
