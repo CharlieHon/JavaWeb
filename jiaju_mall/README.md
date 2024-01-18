@@ -1907,3 +1907,124 @@ public class Cart {
 }
 ```
 
+## 实现功能20-修改/删除/清空购物车
+
+- ![需求分析](img_65.png)
+- ![思路分析](img_66.png)
+
+```html
+<!--对应的js代码-->
+<script type="text/javascript">
+    $(function () {
+        /*
+        - 这里是通过在全部文件中查找 cart-plus-minus 后在 main.js 中找到的处理商品数量+/-的操作
+        - 将代码粘贴到cart.jsp中增加自己对商品数量+-的操作，同时将原main.js中代码注释掉，否则会点1次，而操作2次
+         */
+        var CartPlusMinus = $(".cart-plus-minus");
+        CartPlusMinus.prepend('<div class="dec qtybutton">-</div>');
+        CartPlusMinus.append('<div class="inc qtybutton">+</div>');
+        $(".qtybutton").on("click", function () {
+            var $button = $(this);
+            var oldValue = $button.parent().find("input").val();
+            if ($button.text() === "+") {
+                var newVal = parseFloat(oldValue) + 1;
+            } else {
+                // Don't allow decrementing below zero
+                if (oldValue > 1) {
+                    var newVal = parseFloat(oldValue) - 1;
+                } else {
+                    newVal = 1;
+                }
+            }
+            $button.parent().find("input").val(newVal);
+            // 这里参考了上一行的写法，发现它能够获取 input标签中的新值，所以有了如下获取 cartItemId属性的值
+            var cartItemId = $button.parent().find("input").attr("cartItemId");
+            // 在这里发出修改购物车的请求
+            location.href = "cartServlet?action=updateCount&count=" + newVal + "&id=" + cartItemId;
+        });
+
+        // 对删除某项或清空购物车的提示
+        $("i.icon-close").click(function () {
+            var cartItemName = $(this).parent().parent().parent().find("td:eq(1)").text();
+            return confirm("请确认是否删除【 " + cartItemName + " 】")
+        })
+        $("#clearCart").click(function () {
+            return confirm("请确认是否清空购物车？");
+        })
+    })
+</script>
+
+<!--显示购物车清单-->
+<c:if test="${not empty sessionScope.cart.items}">
+    <c:forEach items="${sessionScope.cart.items}" var="entry">
+        <tr>
+            <td class="product-thumbnail">
+                <a href=""><img class="img-responsive ml-3"
+                                src="assets/images/product-image/1.jpg" alt=""/></a>
+            </td>
+            <td class="product-name"><a href="#">${entry.value.name}</a></td>
+            <td class="product-price-cart"><span class="amount">$${entry.value.price}</span>
+            </td>
+            <td class="product-quantity">
+                <div class="cart-plus-minus">
+                    <input cartItemId="${entry.key}" class="cart-plus-minus-box" type="text"
+                           name="qtybutton" value="${entry.value.count}"/>
+                </div>
+            </td>
+            <td class="product-subtotal">$${entry.value.totalPrice}</td>
+            <td class="product-remove">
+                <a href="cartServlet?action=deleteItem&id=${entry.key}"><i
+                        class="icon-close"></i></a>
+            </td>
+        </tr>
+    </c:forEach>
+</c:if>
+
+<!--清空购物车-->
+<div class="cart-clear">
+    <button>继 续 购 物</button>
+    <a id="clearCart" href="cartServlet?action=clear">清 空 购 物 车</a>
+</div>
+```
+
+```java
+package com.charlie.furns.web;
+
+public class CartServlet extends BasicServlet {
+
+    // 增加一个属性
+    private FurnService furnService = new FurnServiceImpl();
+
+    // 更新某个CartItem的数量，即更新购物车
+    protected void updateCount(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int id = DataUtils.parseInt(req.getParameter("id"), 0);
+        int count = DataUtils.parseInt(req.getParameter("count"), 1);
+        // 获取session中的购物车cart
+        Cart cart =  (Cart) req.getSession().getAttribute("cart");
+        if (cart != null) {
+            cart.updateCount(id, count);
+        }
+        // 回到请求更新购物车的页面
+        resp.sendRedirect(req.getHeader("Referer"));
+    }
+
+    // 根据id，删除购物车中的某项家具
+    protected void deleteItem(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int id = DataUtils.parseInt(req.getParameter("id"), 0);
+        Cart cart = (Cart) req.getSession().getAttribute("cart");
+        if (null != cart) {
+            cart.deleteItem(id);
+        }
+        resp.sendRedirect(req.getHeader("Referer"));
+    }
+
+    // 清空购物车
+    protected void clear(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Cart cart = (Cart) req.getSession().getAttribute("cart");
+        if (cart != null) {
+            cart.clear();
+        }
+        resp.sendRedirect(req.getHeader("Referer"));
+    }
+}
+```

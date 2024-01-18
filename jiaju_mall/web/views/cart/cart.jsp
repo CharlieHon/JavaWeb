@@ -11,6 +11,47 @@
     <link rel="stylesheet" href="assets/css/plugins/plugins.min.css"/>
     <link rel="stylesheet" href="assets/css/style.min.css"/>
     <script type="text/javascript" src="script/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            /*
+            - 这里是通过在全部文件中查找 cart-plus-minus 后在 main.js 中找到的处理商品数量+/-的操作
+            - 将代码粘贴到cart.jsp中增加自己对商品数量+-的操作，同时将原main.js中代码注释掉，否则会点1次，而操作2次
+             */
+            var CartPlusMinus = $(".cart-plus-minus");
+            CartPlusMinus.prepend('<div class="dec qtybutton">-</div>');
+            CartPlusMinus.append('<div class="inc qtybutton">+</div>');
+            $(".qtybutton").on("click", function () {
+                var $button = $(this);
+                var oldValue = $button.parent().find("input").val();
+                if ($button.text() === "+") {
+                    var newVal = parseFloat(oldValue) + 1;
+                } else {
+                    // Don't allow decrementing below zero
+                    if (oldValue > 1) {
+                        var newVal = parseFloat(oldValue) - 1;
+                    } else {
+                        newVal = 1;
+                    }
+                }
+                $button.parent().find("input").val(newVal);
+                // 这里参考了上一行的写法，发现它能够获取 input标签中的新值，所以有了如下获取 cartItemId属性的值
+                var cartItemId = $button.parent().find("input").attr("cartItemId");
+                // 在这里发出修改购物车的请求
+                location.href = "cartServlet?action=updateCount&count=" + newVal + "&id=" + cartItemId;
+            });
+
+            // 给删除/清空购物车添加提示
+            $("i.icon-close").click(function () {
+                // 通过jquery找到标签上级...，进而找到家具名
+                var cartItemName = $(this).parent().parent().parent().find("td:eq(1)").text();
+                // 弹出确认弹窗，返回true/false
+                return confirm("请确认是否删除【" + cartItemName + "】");
+            })
+            $("a.clearCart").click(function () {
+                return confirm("请确认是否清空购物车？");
+            })
+        })
+    </script>
 </head>
 
 <body>
@@ -119,18 +160,22 @@
                                 <c:forEach items="${sessionScope.cart.items}" var="entry">
                                     <tr>
                                         <td class="product-thumbnail">
-                                            <a href=""><img class="img-responsive ml-3" src="assets/images/product-image/1.jpg" alt=""/></a>
+                                            <a href=""><img class="img-responsive ml-3"
+                                                            src="assets/images/product-image/1.jpg" alt=""/></a>
                                         </td>
                                         <td class="product-name"><a href="#">${entry.value.name}</a></td>
-                                        <td class="product-price-cart"><span class="amount">$${entry.value.price}</span></td>
+                                        <td class="product-price-cart"><span class="amount">$${entry.value.price}</span>
+                                        </td>
                                         <td class="product-quantity">
                                             <div class="cart-plus-minus">
-                                                <input class="cart-plus-minus-box" type="text" name="qtybutton" value="${entry.value.count}"/>
+                                                <input cartItemId="${entry.key}" class="cart-plus-minus-box" type="text"
+                                                       name="qtybutton" value="${entry.value.count}"/>
                                             </div>
                                         </td>
                                         <td class="product-subtotal">$${entry.value.totalPrice}</td>
                                         <td class="product-remove">
-                                            <a href=""><i class="icon-close"></i></a>
+                                            <a href="cartServlet?action=deleteItem&id=${entry.key}"><i
+                                                    class="icon-close"></i></a>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -141,13 +186,14 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="cart-shiping-update-wrapper">
-                                <h4>共${sessionScope.cart.totalCount}件商品 总价${sessionScope.cart.cartTotalPrice}元</h4>
+                                <h4>共${sessionScope.cart.totalCount}件商品
+                                    总价${sessionScope.cart.cartTotalPrice}元</h4>
                                 <div class="cart-shiping-update">
                                     <a href="#">购 物 车 结 账</a>
                                 </div>
                                 <div class="cart-clear">
                                     <button>继 续 购 物</button>
-                                    <a href="#">清 空 购 物 车</a>
+                                    <a class="clearCart" href="cartServlet?action=clear">清 空 购 物 车</a>
                                 </div>
                             </div>
                         </div>
@@ -178,7 +224,8 @@
                                     <ul class="align-items-center">
                                         <li class="li"><a class="single-link" href="about.html">关于我们</a></li>
                                         <li class="li"><a class="single-link" href="#">交货信息</a></li>
-                                        <li class="li"><a class="single-link" href="privacy-policy.html">隐私与政策</a></li>
+                                        <li class="li"><a class="single-link" href="privacy-policy.html">隐私与政策</a>
+                                        </li>
                                         <li class="li"><a class="single-link" href="#">条款和条件</a></li>
                                         <li class="li"><a class="single-link" href="#">制造</a></li>
                                     </ul>
@@ -197,7 +244,8 @@
                                         <li class="li"><a class="single-link" href="my-account.html">我的账号</a>
                                         </li>
                                         <li class="li"><a class="single-link" href="cart.jsp">我的购物车</a></li>
-                                        <li class="li"><a class="single-link" href="views/member/login2.jsp">登录</a></li>
+                                        <li class="li"><a class="single-link" href="views/member/login2.jsp">登录</a>
+                                        </li>
                                         <li class="li"><a class="single-link" href="wishlist.html">感兴趣的</a></li>
                                         <li class="li"><a class="single-link" href="checkout.html">结账</a></li>
                                     </ul>

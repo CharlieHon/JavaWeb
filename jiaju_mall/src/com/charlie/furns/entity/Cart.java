@@ -50,6 +50,28 @@ public class Cart {
         return cartTotalPrice;
     }
 
+    // 更新购物车中对应id家具的数量
+    public void updateCount(Integer id, Integer count) {
+        CartItem cartItem = items.get(id);
+        if (null == cartItem) {
+            return;
+        }
+        // 更新数量
+        cartItem.setCount(count);
+        // 更新总价
+        cartItem.setTotalPrice(cartItem.getTotalPrice().multiply(new BigDecimal(cartItem.getCount())));
+    }
+
+    // 根据id删除购物车中的家具
+    public void deleteItem(Integer id) {
+        items.remove(id);
+    }
+
+    // 清空购物车
+    public void clear() {
+        items.clear();
+    }
+
     @Override
     public String toString() {
         return "Cart{" +
