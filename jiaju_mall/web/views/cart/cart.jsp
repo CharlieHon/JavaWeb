@@ -10,8 +10,9 @@
     <link rel="stylesheet" href="assets/css/vendor/vendor.min.css"/>
     <link rel="stylesheet" href="assets/css/plugins/plugins.min.css"/>
     <link rel="stylesheet" href="assets/css/style.min.css"/>
-
+    <script type="text/javascript" src="script/jquery-3.6.0.min.js"></script>
 </head>
+
 <body>
 <!-- Header Area start  -->
 <div class="header section">
@@ -28,33 +29,28 @@
                     </div>
                 </div>
                 <!-- Header Logo End -->
-
                 <!-- Header Action Start -->
                 <div class="col align-self-center">
                     <div class="header-actions">
-                        <div class="header-bottom-set dropdown">
-                            <a>欢迎：${sessionScope.member.username}</a>
-                        </div>
-                        <div class="header-bottom-set dropdown">
-                            <a href="views/manage/manage_login.jsp">订单管理</a>
-                        </div>
-                        <div class="header-bottom-set dropdown">
-                            <a href="memberServlet2?action=logout">安全退出</a>
-                        </div>
-                        <!-- Single Wedge End -->
-                        <a href="views/customer/cart.jsp"
-                           class="header-action-btn header-action-btn-cart offcanvas-toggle pr-0">
-                            <i class="icon-handbag"> 购物车</i>
-                            <span class="header-action-num">88</span>
-                        </a>
-                        <a href="#offcanvas-mobile-menu"
-                           class="header-action-btn header-action-btn-menu offcanvas-toggle d-lg-none">
-                            <i class="icon-menu"></i>
-                        </a>
+                        <c:if test="${empty sessionScope.member}">
+                            <div class="header-bottom-set dropdown">
+                                <a href="views/member/login2.jsp">登录|注册</a>
+                            </div>
+                        </c:if>
+                        <c:if test="${not empty sessionScope.member}">
+                            <div class="header-bottom-set dropdown">
+                                <a>欢迎: ${sessionScope.member.username}</a>
+                            </div>
+                            <div class="header-bottom-set dropdown">
+                                <a href="#">订单管理</a>
+                            </div>
+                            <div class="header-bottom-set dropdown">
+                                <a href="memberServlet2?action=logout">安全退出</a>
+                            </div>
+                        </c:if>
                     </div>
                 </div>
                 <!-- Header Action End -->
-
             </div>
         </div>
     </div>
@@ -65,8 +61,8 @@
                 <!-- Header Logo Start -->
                 <div class="col-auto align-self-center">
                     <div class="header-logo">
-                        <a href="index.jsp"><img width="280px" src="assets/images/logo/logo.png"
-                                                  alt="Site Logo"/></a>
+                        <a href="../customer/index.jsp"><img width="280px" src="assets/images/logo/logo.png"
+                                                             alt="Site Logo"/></a>
                     </div>
                 </div>
                 <!-- Header Logo End -->
@@ -78,24 +74,91 @@
     <!-- Main Menu End -->
 </div>
 <!-- Header Area End  -->
-<!-- login area start -->
-<div class="login-register-area pt-70px pb-100px">
+
+<!-- OffCanvas Cart Start -->
+
+<!-- OffCanvas Cart End -->
+
+<!-- OffCanvas Menu Start -->
+
+<!-- OffCanvas Menu End -->
+
+
+<!-- breadcrumb-area start -->
+
+
+<!-- breadcrumb-area end -->
+
+<!-- Cart Area Start -->
+<div class="cart-main-area pt-100px pb-100px">
     <div class="container">
+        <h3 class="cart-page-title">Your cart items</h3>
         <div class="row">
-            <div class="col-lg-7 col-md-12 ml-auto mr-auto">
-                <div class="login-register-wrapper">
-                    <div class="login-register-tab-list nav">
-                        <%--这里要走网站首页--%>
-                        <a class="active"  href="index.jsp">
-                            <h4>登录成功, 返回首页</h4>
-                        </a>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                <form action="#">
+                    <div class="table-content table-responsive cart-table-content">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>图片</th>
+                                <th>家居名</th>
+                                <th>单价</th>
+                                <th>数量</th>
+                                <th>金额</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <%--显示购物车项，进行循环的地方
+                            1. sessionScope.cart.items 取出的是 private Map<Integer, CartItem> items = new HashMap<>();
+                            2. 所以通过foreach取出的每一个对象是 HashMap<Integer, CartItem> 的 k-v
+                            3. var 取出的是 entry
+                            4. 所以要取出cartItem对象，要通过 entry.value
+                            --%>
+                            <c:if test="${not empty sessionScope.cart.items}">
+                                <c:forEach items="${sessionScope.cart.items}" var="entry">
+                                    <tr>
+                                        <td class="product-thumbnail">
+                                            <a href=""><img class="img-responsive ml-3" src="assets/images/product-image/1.jpg" alt=""/></a>
+                                        </td>
+                                        <td class="product-name"><a href="#">${entry.value.name}</a></td>
+                                        <td class="product-price-cart"><span class="amount">$${entry.value.price}</span></td>
+                                        <td class="product-quantity">
+                                            <div class="cart-plus-minus">
+                                                <input class="cart-plus-minus-box" type="text" name="qtybutton" value="${entry.value.count}"/>
+                                            </div>
+                                        </td>
+                                        <td class="product-subtotal">$${entry.value.totalPrice}</td>
+                                        <td class="product-remove">
+                                            <a href=""><i class="icon-close"></i></a>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </c:if>
+                            </tbody>
+                        </table>
                     </div>
-                </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="cart-shiping-update-wrapper">
+                                <h4>共${sessionScope.cart.totalCount}件商品 总价${sessionScope.cart.cartTotalPrice}元</h4>
+                                <div class="cart-shiping-update">
+                                    <a href="#">购 物 车 结 账</a>
+                                </div>
+                                <div class="cart-clear">
+                                    <button>继 续 购 物</button>
+                                    <a href="#">清 空 购 物 车</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
             </div>
         </div>
     </div>
 </div>
-<!-- login area end -->
+<!-- Cart Area End -->
 
 <!-- Footer Area Start -->
 <div class="footer-area">
@@ -133,8 +196,8 @@
                                     <ul class="align-items-center">
                                         <li class="li"><a class="single-link" href="my-account.html">我的账号</a>
                                         </li>
-                                        <li class="li"><a class="single-link" href="cart.html">我的购物车</a></li>
-                                        <li class="li"><a class="single-link" href="login.jsp">登录</a></li>
+                                        <li class="li"><a class="single-link" href="cart.jsp">我的购物车</a></li>
+                                        <li class="li"><a class="single-link" href="views/member/login2.jsp">登录</a></li>
                                         <li class="li"><a class="single-link" href="wishlist.html">感兴趣的</a></li>
                                         <li class="li"><a class="single-link" href="checkout.html">结账</a></li>
                                     </ul>

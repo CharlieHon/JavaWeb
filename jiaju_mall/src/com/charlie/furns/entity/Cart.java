@@ -1,9 +1,7 @@
 package com.charlie.furns.entity;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,6 +32,22 @@ public class Cart {
             // item.getPrice() -> Big Decimal 不能直接相加/减/乘/除
             item.setTotalPrice(item.getPrice().multiply(new BigDecimal(item.getCount())));
         }
+    }
+
+    public Map<Integer, CartItem> getItems() {
+        return items;
+    }
+
+    // 返回购物车中所有商品的总价
+    public BigDecimal getCartTotalPrice() {
+        BigDecimal cartTotalPrice = new BigDecimal(0);
+        // 遍历items
+        Set<Integer> keys = items.keySet();
+        for (Integer id : keys) {
+            // 注意：一定要把add后的值重新赋给 cartTotalPrice，这样才能累加
+            cartTotalPrice = cartTotalPrice.add(items.get(id).getTotalPrice());
+        }
+        return cartTotalPrice;
     }
 
     @Override

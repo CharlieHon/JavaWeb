@@ -1746,7 +1746,7 @@ public class MemberServlet2 extends BasicServlet {
 }
 ```
 
-## 实现功能18-购物车
+## 实现功能18-添加家具到购物车
 
 - ![img_58.png](img_58.png)
 - ![img_59.png](img_59.png)
@@ -1814,3 +1814,96 @@ public class CartServlet extends BasicServlet {
     }
 }
 ```
+
+## 实现功能19-显示购物车
+
+- ![需求分析](img_62.png)
+- ![思路分析](img_63.png)
+- ![img_64.png](img_64.png)
+
+> 注意：
+> 
+> 1. sessionScope.cart.items 取出的是 private Map<Integer, CartItem> items = new HashMap<>();
+> 2. 所以通过foreach取出的每一个对象是 HashMap<Integer, CartItem> 的 k-v
+> 3. var 取出的是 entry
+> 4. 所以要取出cartItem对象，要通过 entry.value
+> 
+> `BigDecimal`的add方法返回一个新值，而调用者的值不发生改变，因此需要将add的返回结果重新赋给。
+> 如 `cartTotalPrice = cartTotalPrice.add(items.get(id).getTotalPrice());`
+
+```html
+<%--
+1. 通过分析发现 offcanvas-toggle 会在 main.js 中做处理，阻止超链接本身的调转
+2. 所以可以将该 class 先去掉，恢复超链接的本身机制
+--%>
+<a href="views/cart/cart.jsp"
+   class="header-action-btn header-action-btn-cart pr-0">
+    <i class="icon-handbag">购物车</i>
+    <%--${sessionScope.cart.totalCount}的本质是调用cart的getTotalCount()方法--%>
+    <span class="header-action-num">${sessionScope.cart.totalCount}</span>
+</a>
+<a href="#offcanvas-mobile-menu"
+   class="header-action-btn header-action-btn-menu offcanvas-toggle d-lg-none">
+    <i class="icon-menu"></i>
+</a>
+
+<!--显示购物车中的商品-->
+<tbody>
+<%--显示购物车项，进行循环的地方
+1. sessionScope.cart.items 取出的是 private Map<Integer, CartItem> items = new HashMap<>();
+2. 所以通过foreach取出的每一个对象是 HashMap<Integer, CartItem> 的 k-v
+3. var 取出的是 entry
+4. 所以要取出cartItem对象，要通过 entry.value
+--%>
+<c:if test="${not empty sessionScope.cart.items}">
+    <c:forEach items="${sessionScope.cart.items}" var="entry">
+        <tr>
+            <td class="product-thumbnail">
+                <a href=""><img class="img-responsive ml-3" src="assets/images/product-image/1.jpg" alt=""/></a>
+            </td>
+            <td class="product-name"><a href="#">${entry.value.name}</a></td>
+            <td class="product-price-cart"><span class="amount">$${entry.value.price}</span></td>
+            <td class="product-quantity">
+                <div class="cart-plus-minus">
+                    <input class="cart-plus-minus-box" type="text" name="qtybutton" value="${entry.value.count}"/>
+                </div>
+            </td>
+            <td class="product-subtotal">$${entry.value.totalPrice}</td>
+            <td class="product-remove">
+                <a href=""><i class="icon-close"></i></a>
+            </td>
+        </tr>
+    </c:forEach>
+</c:if>
+</tbody>
+
+<!--显示商品的总数和总价-->
+<h4>共${sessionScope.cart.totalCount}件商品 总价${sessionScope.cart.cartTotalPrice}元</h4>
+```
+
+```java
+package com.charlie.furns.entity;
+
+// Cart就是购物车，可以存放多个CartItem对象
+public class Cart {
+    // 家具id -> 购物车项
+    private Map<Integer, CartItem> items = new HashMap<>();
+
+    public Map<Integer, CartItem> getItems() {
+        return items;
+    }
+
+    // 返回购物车中所有商品的总价
+    public BigDecimal getCartTotalPrice() {
+        BigDecimal cartTotalPrice = new BigDecimal(0);
+        // 遍历items
+        Set<Integer> keys = items.keySet();
+        for (Integer id : keys) {
+            // 注意：一定要把add后的值重新赋给 cartTotalPrice，这样才能累加
+            cartTotalPrice = cartTotalPrice.add(items.get(id).getTotalPrice());
+        }
+        return cartTotalPrice;
+    }
+}
+```
+
