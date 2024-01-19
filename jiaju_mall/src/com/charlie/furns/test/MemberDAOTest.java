@@ -32,8 +32,8 @@ public class MemberDAOTest {
 
     @Test
     public void queryMemberByUsernameAndPassword() {
-        String username = "admin";
-        String password = "admin";
+        String username = "charlie";
+        String password = "charlie";
         Member member = memberDAO.queryMemberByUsernameAndPassword(username, password);
         if (member != null) {
             System.out.println("登录成功！");

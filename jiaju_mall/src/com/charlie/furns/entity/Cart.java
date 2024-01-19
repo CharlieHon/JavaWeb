@@ -10,6 +10,11 @@ public class Cart {
     // 家具id -> 购物车项
     private Map<Integer, CartItem> items = new HashMap<>();
 
+    // 判断购物车是否为空
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
+
     // 获取购物车商品的总数量
     public int getTotalCount() {
         int totalCount = 0;

@@ -64,7 +64,8 @@ public class MemberServlet2 extends BasicServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         Member member = new Member(null, username, password, null);
-        if (memberService.login(member) == null) {
+        // 在这里对member重新赋值了，这样id和email就是从db中拿出来的
+        if ((member = memberService.login(member)) == null) {
             // 把登录错误信息，放入到request域
             req.setAttribute("username", username);
             req.setAttribute("msg", "用户名或密码错误");

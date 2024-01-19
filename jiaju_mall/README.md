@@ -2028,3 +2028,155 @@ public class CartServlet extends BasicServlet {
     }
 }
 ```
+
+## 实现功能21-生成订单
+
+- ![需求分析](img_67.png)
+- ![思路分析](img_68.png)
+
+```mysql
+-- 订单表 order
+-- 参考界面来写订单表
+-- 每个字段都都是用 not null 来约束
+-- 字段类型的设计，应当和相关的表的字段相对应
+-- 外键是否必要？
+-- 1.需要[可以从db层保证数据的一致性]——(以前) FOREIGN KEY(`member_id`) REFERENCES `member`(`id`)	
+-- 2.不需要[外键对效率有影响，应当从程序的业务保证一致性]——(现在/推荐)	
+CREATE TABLE IF NOT EXISTS `order`(
+	id VARCHAR(64) PRIMARY KEY,		-- 订单号
+	`create_time` DATETIME NOT NULL,	-- 订单生成事件
+	price DECIMAL(11,2) NOT NULL,		-- 订单金额
+	`status` TINYINT NOT NULL,		-- 状态0未发货，1已发货，2已结账
+	`member_id` INT UNSIGNED NOT NULL	-- 该订单属于某个用户/会员
+)CHARSET utf8 ENGINE INNODB;
+
+# 创建订单项
+CREATE TABLE IF NOT EXISTS `order_item`(
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,	-- 订单项的id
+    `name` VARCHAR(64) NOT NULL,			-- 家具名
+    `price` DECIMAL(12, 2) NOT NULL,		-- 单价
+    `count` INT UNSIGNED NOT NULL,			-- 数量
+    `total_price` DECIMAL(11, 2) NOT NULL,		-- 订单项的总价
+    `order_id` VARCHAR(64) NOT NULL		-- 关联的订单
+)CHARSET utf8 ENGINE INNODB;
+```
+
+```java
+// OrderDAOImpl实现将订单order保存到数据库表order
+package com.charlie.furns.dao.impl;
+
+import com.charlie.furns.dao.BasicDAO;
+import com.charlie.furns.dao.OrderDAO;
+import com.charlie.furns.entity.Order;
+
+public class OrderDAOImpl extends BasicDAO<Order> implements OrderDAO {
+    @Override
+    public int saveOrder(Order order) {
+        String sql = "INSERT INTO `order`(`id`, `create_time`, `price`, `status`, `member_id`) " +
+                "VALUES(?, ?, ?, ?, ?);";
+        return update(sql, order.getId(), order.getCreateTime(), order.getPrice(), order.getStatus(), order.getMemberId());
+    }
+}
+```
+
+```java
+// OrderServiceImpl，saveOrder接收传来的购物车cart和会员id，保存数据到order表
+package com.charlie.furns.service.impl;
+
+public class OrderServiceImpl implements OrderService {
+
+    // 这里体现javaee分层的优点，在service层通过组合多个dao的方法，完成某个业务
+    private OrderDAO orderDAO = new OrderDAOImpl();
+    private OrderItemDAO orderItemDAO = new OrderItemDAOImpl();
+    private FurnDAO furnDAO = new FurnDAOImpl();
+
+    @Override
+    public String saveOrder(Cart cart, int memberId) {
+        // 这里的业务逻辑相对复杂
+        // 完成的任务是将 cart 购物车中的数据，以order和orderItem形式保存到db
+        /*
+        TODO 因为生成订单会操作多表，因此会涉及到多表事务问题 ThreadLocal+Mysql事务机制+过滤器
+        关于事务的处理，考虑的点比较多，后面专门处理
+         */
+        // 1. 通过cart对象，构建对应的Order对象
+        // 先生成一个UUID，表示当前的订单号，订单号是唯一的
+        String orderId = System.currentTimeMillis() + "" + memberId;
+        Order order = new Order(orderId, new Date(), cart.getCartTotalPrice(), 0, memberId);
+        // 保存order到数据表
+        orderDAO.saveOrder(order);
+
+        // 2. 通过cart对象，遍历出cartItem，保存到orderItem
+
+        // 1> 通过keySet遍历cart
+        //Map<Integer, CartItem> items = cart.getItems();
+        //Set<Integer> keys = items.keySet();
+        //for (Integer id : keys) {
+        //    CartItem cartItem = items.get(id);
+        //    // 保存
+        //    orderItemDAO.saveOrderItem(new OrderItem(null, cartItem.getName(), cartItem.getPrice(),
+        //            cartItem.getCount(), cartItem.getTotalPrice(), orderId));
+        //    // 更新一下furn表的sales的销量，stock存量
+        //    // 1) 获取到furn对象
+        //    Fur n furn = furnDAO.queryFurnById(id);
+        //    // 2) 更新一下这个furn的sales销量，stock库存
+        //    furn.setSales(furn.getSales() + cartItem.getCount());
+        //    furn.setStock(furn.getStock() - cartItem.getCount());
+        //    // 3) 更新到数据库的furn表
+        //    furnDAO.updateFurn(furn);
+        //}
+
+        // 2> 通过entrySet的方式遍历cart
+        for (Map.Entry<Integer, CartItem> entry : cart.getItems().entrySet()) {
+            CartItem cartItem = entry.getValue();
+            // 保存
+            orderItemDAO.saveOrderItem(new OrderItem(null, cartItem.getName(), cartItem.getPrice(),
+                    cartItem.getCount(), cartItem.getTotalPrice(), orderId));
+            // 更新一下furn表的sales的销量，stock存量
+            // 1) 获取到furn对象
+            Furn furn = furnDAO.queryFurnById(entry.getKey());
+            // 2) 更新一下这个furn的sales销量，stock库存
+            furn.setSales(furn.getSales() + cartItem.getCount());
+            furn.setStock(furn.getStock() - cartItem.getCount());
+            // 3) 更新到数据库的furn表
+            furnDAO.updateFurn(furn);
+        }
+
+        // 清空购物车
+        cart.clear();
+        return orderId;
+    }
+}
+```
+
+```java
+package com.charlie.furns.web;
+
+public class OrderServlet extends BasicServlet {
+
+    private OrderService orderService = new OrderServiceImpl();
+
+    protected void saveOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 业务代码
+        Member member = (Member) req.getSession().getAttribute("member");
+        if (member == null) {
+            // 说明该用户没有登录，将其转发到登录页面
+            //resp.sendRedirect(req.getContextPath() + "/views/member/login2.jsp");
+            req.getRequestDispatcher("/views/member/login2.jsp").forward(req, resp);
+            return; // 直接返回
+        }
+        Cart cart = (Cart) req.getSession().getAttribute("cart");
+        if (null == cart || cart.getTotalCount() == 0) {
+            //resp.sendRedirect(req.getContextPath() + "/index.jsp");
+            req.getRequestDispatcher("/index.jsp").forward(req, resp);
+            return; // 直接返回
+        }
+        // 到此，购物车不为空，且已经登录
+        Integer memberId = member.getId();
+        String orderId = orderService.saveOrder(cart, memberId);
+        // 返回的订单，交给前端显示
+        req.getSession().setAttribute("orderId", orderId);
+        // 使用重定向方式，请求到 checkout.jsp
+        resp.sendRedirect(req.getContextPath() + "/views/order/checkout.jsp");
+    }
+}
+```
