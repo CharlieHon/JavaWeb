@@ -3,6 +3,38 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
+    <!--过滤器一般配置在最上面-->
+    <filter>
+        <filter-name>AuthFilter</filter-name>
+        <filter-class>com.charlie.furns.filter.AuthFilter</filter-class>
+        <init-param>
+            <!--被拦截的目录中，需要放行的资源
+            这里配置后，还需要在过滤器中处理
+            -->
+            <param-name>excludedUrls</param-name>
+            <param-value>/views/manage/manage_login.jsp, /views/member/login2.jsp</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthFilter</filter-name>
+        <!--这里配置要进行验证的url
+            1. 在filter-mapping中url配置要拦截/过滤的url
+            2. 对于不需要拦截/过滤的url，就不配置
+            3. 对于要拦截的目录的某些要放行的资源，在配置参数中指定放行
+        -->
+        <!--配置要拦截的web资源-->
+        <url-pattern>/views/manage/*</url-pattern>
+        <url-pattern>/views/cart/*</url-pattern>
+        <url-pattern>/views/member/*</url-pattern>
+        <url-pattern>/views/order/*</url-pattern>
+        <!--配置要拦截的servlet-->
+        <url-pattern>/cartServlet</url-pattern>
+        <url-pattern>/manage/furnServlet</url-pattern>
+        <url-pattern>/orderServlet</url-pattern>
+    </filter-mapping>
+
+
+    <!--配置servlet-->
     <servlet>
         <servlet-name>RegisterServlet</servlet-name>
         <servlet-class>com.charlie.furns.web.RegisterServlet</servlet-class>

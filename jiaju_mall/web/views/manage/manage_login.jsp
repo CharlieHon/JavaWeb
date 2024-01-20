@@ -68,7 +68,8 @@
                                     <span style="font-size: 18pt;font-weight: bold;float: right;color: gainsboro">
                                         ${requestScope.msg}
                                     </span>
-                                    <form action="adminServlet" method="post">
+                                    <%--把管理员看作一个普通的会员--%>
+                                    <form action="memberServlet2" method="post">
                                         <input type="hidden" name="action" value="login">
                                         <input type="text" name="username" value="${requestScope.username}" placeholder="Username"/>
                                         <input type="password" name="password" placeholder="Password"/>

@@ -2255,3 +2255,100 @@ public class OrderServlet extends BasicServlet {
     }
 }
 ```
+
+## 实现功能23-过滤权限验证
+
+- ![需求分析](img_71.png)
+- ![思路分析](img_72.png)
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>
+    <!--过滤器一般配置在最上面-->
+    <filter>
+        <filter-name>AuthFilter</filter-name>
+        <filter-class>com.charlie.furns.filter.AuthFilter</filter-class>
+        <init-param>
+            <!--被拦截的目录中，需要放行的资源
+            这里配置后，还需要在过滤器中处理-->
+            <param-name>excludedUrls</param-name>
+            <param-value>/views/manage/manage_login.jsp, /views/member/login2.jsp</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthFilter</filter-name>
+        <!--这里配置要进行验证的url
+            1. 在filter-mapping中url配置要拦截/过滤的url
+            2. 对于不需要拦截/过滤的url，就不配置
+            3. 对于要拦截的目录的某些要放行的资源，在配置参数中指定放行
+        -->
+        <!--配置要拦截的web资源-->
+        <url-pattern>/views/manage/*</url-pattern>
+        <url-pattern>/views/cart/*</url-pattern>
+        <url-pattern>/views/member/*</url-pattern>
+        <url-pattern>/views/order/*</url-pattern>
+        <!--配置要拦截的servlet-->
+        <url-pattern>/cartServlet</url-pattern>
+        <url-pattern>/manage/furnServlet</url-pattern>
+        <url-pattern>/orderServlet</url-pattern>
+    </filter-mapping>
+</web-app>
+```
+
+```java
+package com.charlie.furns.filter;
+
+import com.charlie.furns.entity.Member;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * 这是用于权限验证的过滤器，对指定的url进行检验
+ * 如果登录过，就放行；如果没有登录，就返回到登录页面
+ */
+public class AuthFilter implements Filter {
+
+    // 把要排除的url放入到excludedUrls
+    private List<String> excludedUrls;
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        // 获取到配置的 excludedUrls
+        String strExcludedUrls = filterConfig.getInitParameter("excludedUrls");
+        String[] splitUrl = strExcludedUrls.split(",");
+        // 将 String[] 转成 List<String>
+        excludedUrls = Arrays.asList(splitUrl);
+        //System.out.println("excludedUrls=" + excludedUrls); // [/views/manage/manage_login.jsp,  /views/member/login2.jsp]
+    }
+
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest req = (HttpServletRequest) servletRequest;
+        // 等到用户请求的url
+        String url = req.getServletPath();
+        //System.out.println("url=" + url);   // url=/views/member/login2.jsp
+
+        // 判断是否需要验证，如果请求的url不在排除范围，则走过滤的逻辑
+        if (!excludedUrls.contains(url)) {
+            // 得到session中的member对象
+            Member member = (Member) req.getSession().getAttribute("member");
+            if (null == member) {   // 如果成立，说明未登录
+                // 请求转发到登录页面，请求转发不走过滤器！
+                req.getRequestDispatcher("/views/member/login2.jsp").forward(servletRequest, servletResponse);
+                // 如果这里使用重定向，就会导致无限请求...
+                // 直接返回，后面的语句不再执行
+                return;
+            }
+        }
+        // 到这里说明用户已登录 或者 在排除范围内，则继续访问资源
+        filterChain.doFilter(servletRequest, servletResponse);
+    }
+
+    @Override
+    public void destroy() {}
+}
+```
