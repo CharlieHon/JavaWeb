@@ -18,4 +18,10 @@ public class OrderDAOTest {
                 0, 3);
         System.out.println(orderDAO.saveOrder(order));
     }
+
+    @Test
+    public void totalCount() {
+        String orderId = "17057322770543";
+        System.out.println(orderDAO.totalCount(orderId));
+    }
 }

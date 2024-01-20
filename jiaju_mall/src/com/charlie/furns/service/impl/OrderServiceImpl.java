@@ -9,7 +9,9 @@ import com.charlie.furns.dao.impl.OrderItemDAOImpl;
 import com.charlie.furns.entity.*;
 import com.charlie.furns.service.OrderService;
 
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -74,5 +76,25 @@ public class OrderServiceImpl implements OrderService {
         // 清空购物车
         cart.clear();
         return orderId;
+    }
+
+    @Override
+    public List<Order> showOrders(int memberId) {
+        return orderDAO.queryOrderByMemberId(memberId);
+    }
+
+    @Override
+    public List<OrderItem> showOrderItemsByOrderId(String orderId) {
+        return orderItemDAO.list(orderId);
+    }
+
+    @Override
+    public BigDecimal totalCount(String orderId) {
+        return orderDAO.totalCount(orderId);
+    }
+
+    @Override
+    public BigDecimal totalPrice(String orderId) {
+        return orderDAO.totalPrice(orderId);
     }
 }

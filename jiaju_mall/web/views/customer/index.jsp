@@ -71,7 +71,7 @@
                                 <a>欢迎：${sessionScope.member.username}</a>
                             </div>
                             <div class="header-bottom-set dropdown">
-                                <a href="#">订单管理</a>
+                                <a href="orderServlet?action=list&memberId=${sessionScope.member.id}">订单管理</a>
                             </div>
                             <div class="header-bottom-set dropdown">
                                 <a href="memberServlet2?action=logout">安全退出</a>
@@ -154,7 +154,15 @@
                                                    title="Quick view" data-bs-toggle="modal" data-bs-target="#exampleModal"><i
                                                         class="icon-size-fullscreen"></i></a>
                                             </div>
-                                            <button title="Add To Cart" class="add-to-cart" furnId="${furn.id}">Add To Cart</button>
+                                            <%--添加家具到购物车按钮，这里加上校验：当家具库存为0时，前台显示“暂时缺货”
+                                            后台也加上校验，只有在库存>0时，才能添加到购物车
+                                            --%>
+                                            <c:if test="${furn.stock > 0}">
+                                                <button title="Add To Cart" class="add-to-cart" furnId="${furn.id}">Add To Cart</button>
+                                            </c:if>
+                                            <c:if test="${furn.stock == 0}">
+                                                <button title="Add To Cart" class="add-to-cart" furnId="${furn.id}">【暂时缺货】</button>
+                                            </c:if>
                                         </div>
                                         <div class="content">
                                             <h5 class="title">

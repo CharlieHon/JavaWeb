@@ -4,13 +4,17 @@ import com.charlie.furns.dao.BasicDAO;
 import com.charlie.furns.entity.Cart;
 import com.charlie.furns.entity.Member;
 import com.charlie.furns.entity.Order;
+import com.charlie.furns.entity.OrderItem;
 import com.charlie.furns.service.OrderService;
 import com.charlie.furns.service.impl.OrderServiceImpl;
+import com.charlie.furns.utils.DataUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
+import javax.xml.crypto.Data;
 import java.io.IOException;
+import java.util.List;
 
 public class OrderServlet extends BasicServlet {
 
@@ -38,5 +42,23 @@ public class OrderServlet extends BasicServlet {
         req.getSession().setAttribute("orderId", orderId);
         // 使用重定向方式，请求到 checkout.jsp
         resp.sendRedirect(req.getContextPath() + "/views/order/checkout.jsp");
+    }
+
+    // 订单管理，显示出用户的所有订单
+    protected void list(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int memberId = DataUtils.parseInt(req.getParameter("memberId"), 0);
+        List<Order> orders = orderService.showOrders(memberId);
+        req.getSession().setAttribute("orders", orders);
+        req.getRequestDispatcher("/views/order/order.jsp").forward(req, resp);
+    }
+
+    // 订单详情，显示该订单的所有订单项
+    protected void detail(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String orderId = req.getParameter("orderId");
+        List<OrderItem> orderItems = orderService.showOrderItemsByOrderId(orderId);
+        req.getSession().setAttribute("orderItems", orderItems);
+        req.getSession().setAttribute("totalPrice", orderService.totalPrice(orderId));
+        req.getSession().setAttribute("totalCount", orderService.totalCount(orderId));
+        req.getRequestDispatcher("/views/order/order_detail.jsp").forward(req, resp);
     }
 }

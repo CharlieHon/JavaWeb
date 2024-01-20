@@ -2180,3 +2180,78 @@ public class OrderServlet extends BasicServlet {
     }
 }
 ```
+
+## 实现功能22-订单管理
+
+### 课后作业01-添加购物车按钮动态处理
+
+- ![需求分析](img_69.png)
+
+```html
+<%--添加家具到购物车按钮，这里加上校验：当家具库存为0时，前台显示“暂时缺货”
+后台也加上校验，只有在库存>0时，才能添加到购物车
+--%>
+<c:if test="${furn.stock > 0}">
+    <button title="Add To Cart" class="add-to-cart" furnId="${furn.id}">Add To Cart</button>
+</c:if>
+<c:if test="${furn.stock == 0}">
+    <button title="Add To Cart" class="add-to-cart" furnId="${furn.id}">【暂时缺货】</button>
+</c:if>
+```
+
+### 课后作业02-订单管理
+
+- ![需求分析](img_70.png)
+
+```java
+package com.charlie.furns.dao.impl;
+
+public class OrderDAOImpl extends BasicDAO<Order> implements OrderDAO {
+
+    @Override
+    public List<Order> queryOrderByMemberId(int memberId) {
+        String sql = "SELECT `id`, `create_time` AS `createTime`, `price`, `status`, `member_id` AS `memberId` " +
+                "FROM `order` WHERE `member_id`=?";
+        return queryMulti(sql, Order.class, memberId);
+    }
+
+    @Override
+    public BigDecimal totalCount(String orderId) {
+        String sql = "SELECT SUM(`count`) FROM `order_item` WHERE `order_id`=?";
+        return (BigDecimal) queryScalar(sql, orderId);
+    }
+
+    @Override
+    public BigDecimal totalPrice(String orderId) {
+        String sql = "SELECT SUM(`total_price`) FROM `order_item` WHERE `order_id`=?";
+        return (BigDecimal) queryScalar(sql, orderId);
+    }
+}
+```
+
+```java
+package com.charlie.furns.web;
+
+public class OrderServlet extends BasicServlet {
+
+    private OrderService orderService = new OrderServiceImpl();
+
+    // 订单管理，显示出用户的所有订单
+    protected void list(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int memberId = DataUtils.parseInt(req.getParameter("memberId"), 0);
+        List<Order> orders = orderService.showOrders(memberId);
+        req.getSession().setAttribute("orders", orders);
+        req.getRequestDispatcher("/views/order/order.jsp").forward(req, resp);
+    }
+
+    // 订单详情，显示该订单的所有订单项
+    protected void detail(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String orderId = req.getParameter("orderId");
+        List<OrderItem> orderItems = orderService.showOrderItemsByOrderId(orderId);
+        req.getSession().setAttribute("orderItems", orderItems);
+        req.getSession().setAttribute("totalPrice", orderService.totalPrice(orderId));
+        req.getSession().setAttribute("totalCount", orderService.totalCount(orderId));
+        req.getRequestDispatcher("/views/order/order_detail.jsp").forward(req, resp);
+    }
+}
+```

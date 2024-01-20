@@ -23,7 +23,12 @@ public class CartServlet extends BasicServlet {
         // 获取到id对应的furn对象
         Furn furn = furnService.queryFurnById(id);
 
-        // TODO: 判断家具是否为空。以下先把正常的逻辑走完，再处理异常情况
+        // 添加家具到购物车，先判断该家具的库存是否为0，如果为0表示缺货，不能再添加到购物车
+        int stock = furn.getStock();
+        if (stock == 0) {
+            resp.sendRedirect(req.getHeader("Referer"));
+            return;
+        }
 
         // 根据furn构建cartItem
         CartItem item = new CartItem(furn.getId(), furn.getName(), 1, furn.getPrice(), furn.getPrice());

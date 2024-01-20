@@ -10,8 +10,8 @@
     <link rel="stylesheet" href="assets/css/vendor/vendor.min.css"/>
     <link rel="stylesheet" href="assets/css/plugins/plugins.min.css"/>
     <link rel="stylesheet" href="assets/css/style.min.css"/>
-
 </head>
+
 <body>
 <!-- Header Area start  -->
 <div class="header section">
@@ -28,12 +28,11 @@
                     </div>
                 </div>
                 <!-- Header Logo End -->
-
                 <!-- Header Action Start -->
                 <div class="col align-self-center">
                     <div class="header-actions">
                         <div class="header-bottom-set dropdown">
-                            <a>欢迎：${sessionScope.member.username}</a>
+                            <a>欢迎: ${sessionScope.member.username}</a>
                         </div>
                         <div class="header-bottom-set dropdown">
                             <a href="orderServlet?action=list&memberId=${sessionScope.member.id}">订单管理</a>
@@ -41,20 +40,9 @@
                         <div class="header-bottom-set dropdown">
                             <a href="memberServlet2?action=logout">安全退出</a>
                         </div>
-                        <!-- Single Wedge End -->
-                        <a href="views/cart/cart.jsp"
-                           class="header-action-btn header-action-btn-cart pr-0">
-                            <i class="icon-handbag"> 购物车</i>
-                            <span class="header-action-num">${sessionScope.cart.totalCount}</span>
-                        </a>
-                        <a href="#offcanvas-mobile-menu"
-                           class="header-action-btn header-action-btn-menu offcanvas-toggle d-lg-none">
-                            <i class="icon-menu"></i>
-                        </a>
                     </div>
                 </div>
                 <!-- Header Action End -->
-
             </div>
         </div>
     </div>
@@ -78,24 +66,67 @@
     <!-- Main Menu End -->
 </div>
 <!-- Header Area End  -->
-<!-- login area start -->
-<div class="login-register-area pt-70px pb-100px">
+
+<!-- OffCanvas Cart Start -->
+
+<!-- OffCanvas Cart End -->
+
+<!-- OffCanvas Menu Start -->
+
+<!-- OffCanvas Menu End -->
+
+
+<!-- breadcrumb-area start -->
+
+
+<!-- breadcrumb-area end -->
+
+<!-- Cart Area Start -->
+<div class="cart-main-area pt-100px pb-100px">
     <div class="container">
+        <h3 class="cart-page-title">${param.orderId}</h3>
         <div class="row">
-            <div class="col-lg-7 col-md-12 ml-auto mr-auto">
-                <div class="login-register-wrapper">
-                    <div class="login-register-tab-list nav">
-                        <%--这里要走网站首页--%>
-                        <a class="active"  href="index.jsp">
-                            <h4>登录成功, 返回首页</h4>
-                        </a>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                <form action="#">
+                    <div class="table-content table-responsive cart-table-content">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>家居名</th>
+                                <th>单价</th>
+                                <th>数量</th>
+                                <th>金额</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <c:forEach items="${sessionScope.orderItems}" var="orderItem">
+                                <tr>
+                                    <td class="product-name"><a href="#">${orderItem.name}</a></td>
+                                    <td class="product-price-cart"><span class="amount">$${orderItem.price}</span></td>
+                                    <td class="product-quantity">${orderItem.count}</td>
+                                    <td class="product-subtotal">$${orderItem.totalPrice}</td>
+                                </tr>
+                            </c:forEach>
+                            </tbody>
+                        </table>
                     </div>
-                </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="cart-shiping-update-wrapper">
+                                <h4>共 ${sessionScope.totalCount} 件商品 总价 ${sessionScope.totalPrice} 元</h4>
+                                <div class="cart-clear">
+                                    <a href="index.jsp">继 续 购 物</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
             </div>
         </div>
     </div>
 </div>
-<!-- login area end -->
+<!-- Cart Area End -->
 
 <!-- Footer Area Start -->
 <div class="footer-area">
@@ -134,7 +165,7 @@
                                         <li class="li"><a class="single-link" href="my-account.html">我的账号</a>
                                         </li>
                                         <li class="li"><a class="single-link" href="cart.html">我的购物车</a></li>
-                                        <li class="li"><a class="single-link" href="login.jsp">登录</a></li>
+                                        <li class="li"><a class="single-link" href="login.html">登录</a></li>
                                         <li class="li"><a class="single-link" href="wishlist.html">感兴趣的</a></li>
                                         <li class="li"><a class="single-link" href="checkout.html">结账</a></li>
                                     </ul>

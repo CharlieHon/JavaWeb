@@ -6,16 +6,16 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge"/>
     <title>韩顺平教育-家居网购</title>
     <base href="<%=request.getContextPath() + "/"%>">
+    <!-- 移动端适配 -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <link rel="stylesheet" href="assets/css/vendor/vendor.min.css"/>
     <link rel="stylesheet" href="assets/css/plugins/plugins.min.css"/>
-    <link rel="stylesheet" href="assets/css/style.min.css"/>
-
+    <link rel="stylesheet" href="assets/css/style.min.css">
 </head>
+
 <body>
 <!-- Header Area start  -->
 <div class="header section">
-    <!-- Header Top Message Start -->
     <!-- Header Top  End -->
     <!-- Header Bottom  Start -->
     <div class="header-bottom d-none d-lg-block">
@@ -28,36 +28,32 @@
                     </div>
                 </div>
                 <!-- Header Logo End -->
-
                 <!-- Header Action Start -->
+                <%--订单右上角用户信息--%>
                 <div class="col align-self-center">
-                    <div class="header-actions">
-                        <div class="header-bottom-set dropdown">
-                            <a>欢迎：${sessionScope.member.username}</a>
+                    <c:if test="${not empty sessionScope.member}">
+                        <div class="header-actions">
+                            <div class="header-bottom-set dropdown">
+                                <a>欢迎: ${sessionScope.member.username}</a>
+                            </div>
+                            <div class="header-bottom-set dropdown">
+                                <a href="memberServlet2?action=logout">安全退出</a>
+                            </div>
                         </div>
-                        <div class="header-bottom-set dropdown">
-                            <a href="orderServlet?action=list&memberId=${sessionScope.member.id}">订单管理</a>
+                    </c:if>
+                    <c:if test="${empty sessionScope.member}">
+                        <div class="header-actions">
+                            <div class="header-bottom-set dropdown">
+                                <a href="views/member/login2.jsp">登录|注册</a>
+                            </div>
                         </div>
-                        <div class="header-bottom-set dropdown">
-                            <a href="memberServlet2?action=logout">安全退出</a>
-                        </div>
-                        <!-- Single Wedge End -->
-                        <a href="views/cart/cart.jsp"
-                           class="header-action-btn header-action-btn-cart pr-0">
-                            <i class="icon-handbag"> 购物车</i>
-                            <span class="header-action-num">${sessionScope.cart.totalCount}</span>
-                        </a>
-                        <a href="#offcanvas-mobile-menu"
-                           class="header-action-btn header-action-btn-menu offcanvas-toggle d-lg-none">
-                            <i class="icon-menu"></i>
-                        </a>
-                    </div>
+                    </c:if>
                 </div>
                 <!-- Header Action End -->
-
             </div>
         </div>
     </div>
+    <!-- Header Bottom  End -->
     <!-- Header Bottom  Start 手机端的header -->
     <div class="header-bottom d-lg-none sticky-nav bg-white">
         <div class="container position-relative">
@@ -65,8 +61,7 @@
                 <!-- Header Logo Start -->
                 <div class="col-auto align-self-center">
                     <div class="header-logo">
-                        <a href="index.jsp"><img width="280px" src="assets/images/logo/logo.png"
-                                                  alt="Site Logo"/></a>
+                        <a href="index.jsp"><img width="280px" src="assets/images/logo/logo.png" alt="Site Logo"/></a>
                     </div>
                 </div>
                 <!-- Header Logo End -->
@@ -77,25 +72,53 @@
     <div style="width: 100%;height: 50px;background-color: black"></div>
     <!-- Main Menu End -->
 </div>
-<!-- Header Area End  -->
-<!-- login area start -->
-<div class="login-register-area pt-70px pb-100px">
+<!-- Cart Area Start -->
+<div class="cart-main-area pt-70px pb-100px">
     <div class="container">
+        <h3 class="cart-page-title">订单管理</h3>
         <div class="row">
-            <div class="col-lg-7 col-md-12 ml-auto mr-auto">
-                <div class="login-register-wrapper">
-                    <div class="login-register-tab-list nav">
-                        <%--这里要走网站首页--%>
-                        <a class="active"  href="index.jsp">
-                            <h4>登录成功, 返回首页</h4>
-                        </a>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                <form action="#">
+                    <div class="table-content table-responsive cart-table-content">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>订单</th>
+                                <th>日期</th>
+                                <th>金额</th>
+                                <th>状态</th>
+                                <th>详情</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <c:forEach items="${sessionScope.orders}" var="order">
+                                <tr>
+                                    <td class="product-name">${order.id}</td>
+                                    <td class="product-name">${order.createTime}</td>
+                                    <td class="product-price-cart"><span class="amount">${order.price}</span></td>
+                                    <c:if test="${order.status == 0}">
+                                        <td class="product-name"><a href="#">未发货</a></td>
+                                    </c:if>
+                                    <c:if test="${order.status == 1}">
+                                        <td class="product-name"><a href="#">已发货</a></td>
+                                    </c:if>
+                                    <c:if test="${order.status == 2}">
+                                        <td class="product-name"><a href="#">已收货</a></td>
+                                    </c:if>
+                                    <td class="product-remove">
+                                        <a href="orderServlet?action=detail&orderId=${order.id}"><i class="icon-eye"></i></a>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                            </tbody>
+                        </table>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
-<!-- login area end -->
+<!-- Cart Area End -->
 
 <!-- Footer Area Start -->
 <div class="footer-area">
@@ -115,7 +138,8 @@
                                     <ul class="align-items-center">
                                         <li class="li"><a class="single-link" href="about.html">关于我们</a></li>
                                         <li class="li"><a class="single-link" href="#">交货信息</a></li>
-                                        <li class="li"><a class="single-link" href="privacy-policy.html">隐私与政策</a></li>
+                                        <li class="li"><a class="single-link" href="privacy-policy.html">隐私与政策</a>
+                                        </li>
                                         <li class="li"><a class="single-link" href="#">条款和条件</a></li>
                                         <li class="li"><a class="single-link" href="#">制造</a></li>
                                     </ul>
@@ -134,7 +158,7 @@
                                         <li class="li"><a class="single-link" href="my-account.html">我的账号</a>
                                         </li>
                                         <li class="li"><a class="single-link" href="cart.html">我的购物车</a></li>
-                                        <li class="li"><a class="single-link" href="login.jsp">登录</a></li>
+                                        <li class="li"><a class="single-link" href="login.html">登录</a></li>
                                         <li class="li"><a class="single-link" href="wishlist.html">感兴趣的</a></li>
                                         <li class="li"><a class="single-link" href="checkout.html">结账</a></li>
                                     </ul>
