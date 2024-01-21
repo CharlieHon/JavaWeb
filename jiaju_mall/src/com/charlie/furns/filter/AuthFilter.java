@@ -1,12 +1,16 @@
 package com.charlie.furns.filter;
 
 import com.charlie.furns.entity.Member;
+import com.charlie.furns.utils.WebUtils;
+import com.google.gson.Gson;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 这是用于权限验证的过滤器，对指定的url进行检验
@@ -39,9 +43,17 @@ public class AuthFilter implements Filter {
             // 得到session中的member对象
             Member member = (Member) req.getSession().getAttribute("member");
             if (null == member) {   // 如果成立，说明未登录
-                // 请求转发到登录页面，请求转发不走过滤器！
-                req.getRequestDispatcher("/views/member/login2.jsp").forward(servletRequest, servletResponse);
-                // 如果这里使用重定向，就会导致无限请求...
+                // 判断是否为Ajax请求
+                if (!WebUtils.isAjaxRequest(req)) { // 不是Ajax请求
+                    // 请求转发到登录页面，请求转发不走过滤器！
+                    req.getRequestDispatcher("/views/member/login2.jsp").forward(servletRequest, servletResponse);
+                    // 如果这里使用重定向，就会导致无限请求...
+                } else {    // 是Ajax请求
+                    // 返回一个url，以json格式返回
+                    Map<String, Object> resultMap = new HashMap<>();
+                    resultMap.put("url", "views/member/login2.jsp");
+                    servletResponse.getWriter().write(new Gson().toJson(resultMap));
+                }
                 // 直接返回，后面的语句不再执行
                 return;
             }

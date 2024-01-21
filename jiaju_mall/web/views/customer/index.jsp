@@ -20,7 +20,27 @@
                 // 获取到点击的furn的-id
                 var furnId = $(this).attr("furnId");
                 // 发出一个请求添加家具 => ajax
-                location.href = "cartServlet?action=addItem&id=" + furnId;
+                // location.href = "cartServlet?action=addItem&id=" + furnId;
+
+                // 这里使用jquery发出ajax请求，得到数据进行局部刷新，解决刷新页面的效率低的问题
+                $.getJSON(
+                    "cartServlet",
+                    {   // 这里通过json方式，传入ajax请求要携带的数据
+                        "action": "addItemByAjax",
+                        "id": furnId,
+                        "date": new Date()
+                    },
+                    function (data) {
+                        // console.log("data=", data); // cartTotalCount: 12
+                        if (data.url === undefined) {   // 用户已经登录，没有返回跳转到登录页面的url
+                            // 更新购物车商品数量
+                            $("span.header-action-num").text(data.cartTotalCount);
+                        } else {
+                            // 到这里说明当前服务器返回url，需要跳转到登录页面
+                            location.href = data.url;
+                        }
+                    }
+                )
             })
         })
     </script>
@@ -86,7 +106,7 @@
                            class="header-action-btn header-action-btn-cart pr-0">
                             <i class="icon-handbag">购物车</i>
                             <%--${sessionScope.cart.totalCount}的本质是调用cart的getTotalCount()方法--%>
-                            <span class="header-action-num">${sessionScope.cart.totalCount}</span>
+                            <span class="header-action-num"></span>
                         </a>
                         <a href="#offcanvas-mobile-menu"
                            class="header-action-btn header-action-btn-menu offcanvas-toggle d-lg-none">

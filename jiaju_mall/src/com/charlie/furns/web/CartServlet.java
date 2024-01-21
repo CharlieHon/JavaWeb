@@ -6,17 +6,44 @@ import com.charlie.furns.entity.Furn;
 import com.charlie.furns.service.FurnService;
 import com.charlie.furns.service.impl.FurnServiceImpl;
 import com.charlie.furns.utils.DataUtils;
+import com.google.gson.Gson;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CartServlet extends BasicServlet {
 
     // 增加一个属性
     private FurnService furnService = new FurnServiceImpl();
 
-    // 增加一个添加家具数据到购物车的方法
+    // 处理Ajax发出的添加商品到购物车的请求
+    protected void addItemByAjax(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int id = DataUtils.parseInt(req.getParameter("id"), 0);
+        Furn furn = furnService.queryFurnById(id);
+        int stock = furn.getStock();
+        if (stock == 0) {
+            return;
+        }
+        CartItem cartItem = new CartItem(furn.getId(), furn.getName(), 1, furn.getPrice(), furn.getPrice());
+        Cart cart = (Cart) req.getSession().getAttribute("cart");
+        if (cart == null) {
+            cart = new Cart();
+            req.getSession().setAttribute("cart", cart);
+        }
+        cart.addItem(cartItem);
+        // 添加完毕后，返回json数据给前端，前端得到json数据后进行局部刷新即可
+        // 1. 规定json格式 {"cartTotalCount": 3}
+        // 2. 创建map
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("cartTotalCount", cart.getTotalCount());
+        // 3. 转成json并返回
+        resp.getWriter().write(new Gson().toJson(resultMap));
+    }
+
+     //增加一个添加家具数据到购物车的方法
     protected void addItem(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // 先得到添加的家具id
         int id = DataUtils.parseInt(req.getParameter("id"), 0);

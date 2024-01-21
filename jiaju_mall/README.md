@@ -2684,3 +2684,165 @@ public class MemberServlet2 extends BasicServlet {
     )
 </script>
 ```
+
+## 实现功能27-Ajax添加购物车
+
+- ![需求分析](img_82.png)
+- ![思路分析](img_83.png)
+
+```java
+package com.charlie.furns.web;
+
+public class CartServlet extends BasicServlet {
+
+    // 增加一个属性
+    private FurnService furnService = new FurnServiceImpl();
+
+    // 处理Ajax发出的添加商品到购物车的请求
+    protected void addItemByAjax(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int id = DataUtils.parseInt(req.getParameter("id"), 0);
+        Furn furn = furnService.queryFurnById(id);
+        int stock = furn.getStock();
+        if (stock == 0) {
+            return;
+        }
+        CartItem cartItem = new CartItem(furn.getId(), furn.getName(), 1, furn.getPrice(), furn.getPrice());
+        Cart cart = (Cart) req.getSession().getAttribute("cart");
+        if (cart == null) {
+            cart = new Cart();
+            req.getSession().setAttribute("cart", cart);
+        }
+        cart.addItem(cartItem);
+        // 添加完毕后，返回json数据给前端，前端得到json数据后进行局部刷新即可
+        // 1. 规定json格式 {"cartTotalCount": 3}
+        // 2. 创建map
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("cartTotalCount", cart.getTotalCount());
+        // 3. 转成json并返回
+        resp.getWriter().write(new Gson().toJson(resultMap));
+    }
+}
+```
+
+```html
+<script type="text/javascript">
+    $(function () {
+        // 给 add to cart 按键绑定事件 jquery
+        $(".add-to-cart").click(function () {
+            // 获取到点击的furn的-id
+            var furnId = $(this).attr("furnId");
+            // 发出一个请求添加家具 => ajax
+            // location.href = "cartServlet?action=addItem&id=" + furnId;
+
+            // 这里使用jquery发出ajax请求，得到数据进行局部刷新，解决刷新页面的效率低的问题
+            $.getJSON(
+                "cartServlet",
+                {   // 这里通过json方式，传入ajax请求要携带的数据
+                    "action": "addItemByAjax",
+                    "id": furnId,
+                    "date": new Date()
+                },
+                function (data) {
+                    // console.log("data=", data); // cartTotalCount: 12
+                    // 更新购物车商品数量
+                    $("span.header-action-num").text(data.cartTotalCount);
+                }
+            )
+        })
+    })
+</script>
+```
+
+> 出现问题：在未登录时，点击"add to cart"不会经过过滤器跳转到会员登录页面！
+> 1. 主要是因为服务器得到的是ajax发送过来的request请求，也就是说这个请求不是浏览器请求，而是ajax请求。
+>   所以，servlet对request进行请求转发/重定向都不能影响浏览器的跳转
+> 2. 解决方案：如果要想实现跳转，可以返回`url`，在浏览器执行`window.location(url);`
+
+- ![ajax请求](img_84.png)
+
+```java
+package com.charlie.furns.utils;
+
+import javax.servlet.http.HttpServletRequest;
+
+public class WebUtils {
+    // 判断请求是否为Ajax请求，根据请求头字段X-Requested-With判断
+    public static boolean isAjaxRequest(HttpServletRequest request) {
+        return "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
+    }
+}
+```
+
+```java
+package com.charlie.furns.filter;
+
+/**
+ * 这是用于权限验证的过滤器，对指定的url进行检验
+ * 如果登录过，就放行；如果没有登录，就返回到登录页面
+ */
+public class AuthFilter implements Filter {
+
+    // 把要排除的url放入到excludedUrls
+    private List<String> excludedUrls;
+
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        HttpServletRequest req = (HttpServletRequest) servletRequest;
+        // 等到用户请求的url
+        String url = req.getServletPath();
+        //System.out.println("url=" + url);   // url=/views/member/login2.jsp
+
+        // 判断是否需要验证，如果请求的url不在排除范围，则走过滤的逻辑
+        if (!excludedUrls.contains(url)) {
+            // 得到session中的member对象
+            Member member = (Member) req.getSession().getAttribute("member");
+            if (null == member) {   // 如果成立，说明未登录
+                // 判断是否为Ajax请求
+                if (!WebUtils.isAjaxRequest(req)) { // 不是Ajax请求
+                    // 请求转发到登录页面，请求转发不走过滤器！
+                    req.getRequestDispatcher("/views/member/login2.jsp").forward(servletRequest, servletResponse);
+                    // 如果这里使用重定向，就会导致无限请求...
+                } else {    // 是Ajax请求
+                    // 返回一个url，以json格式返回
+                    Map<String, Object> resultMap = new HashMap<>();
+                    resultMap.put("url", "views/member/login2.jsp");
+                    servletResponse.getWriter().write(new Gson().toJson(resultMap));
+                }
+                // 直接返回，后面的语句不再执行
+                return;
+            }
+        }
+        // 到这里说明用户已登录 或者 在排除范围内，则继续访问资源
+        filterChain.doFilter(servletRequest, servletResponse);
+    }
+}
+```
+
+```html
+$(".add-to-cart").click(function () {
+    // 获取到点击的furn的-id
+    var furnId = $(this).attr("furnId");
+    // 发出一个请求添加家具 => ajax
+    // location.href = "cartServlet?action=addItem&id=" + furnId;
+
+    // 这里使用jquery发出ajax请求，得到数据进行局部刷新，解决刷新页面的效率低的问题
+    $.getJSON(
+        "cartServlet",
+        {   // 这里通过json方式，传入ajax请求要携带的数据
+            "action": "addItemByAjax",
+            "id": furnId,
+            "date": new Date()
+        },
+        function (data) {
+            // console.log("data=", data); // cartTotalCount: 12
+            if (data.url === undefined) {   // 用户已经登录，没有返回跳转到登录页面的url
+                // 更新购物车商品数量
+                $("span.header-action-num").text(data.cartTotalCount);
+            } else {
+                // 到这里说明当前服务器返回url，需要跳转到登录页面
+                location.href = data.url;
+            }
+        }
+    )
+})
+```
