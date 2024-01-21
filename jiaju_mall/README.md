@@ -2352,3 +2352,206 @@ public class AuthFilter implements Filter {
     public void destroy() {}
 }
 ```
+
+## 实现功能24-事务管理
+
+- ![需求分析](img_74.png)
+- ![思路分析](img_73.png)
+- ![程序思路](img_75.png)
+
+```java
+package com.charlie.furns.utils;
+
+// 基于druid数据库连接池的工具类
+// 为了进行事务管理，增加ThreadLocal
+public class JDBCUtilsByDruid {
+
+    private static DataSource ds;
+    // 定义属性ThreadLocal。这里存放一个Connection
+    private static ThreadLocal<Connection> threadLocalConn = new ThreadLocal<>();
+
+    //在静态代码块完成 ds初始化
+    static {
+        Properties properties = new Properties();
+        try {
+            // 因为是web项目，工作目录在out，文件的加载需要使用类加载器
+            // 找到我们的工作目录
+            properties.load(JDBCUtilsByDruid.class.getClassLoader().getResourceAsStream("druid.properties"));
+//            properties.load(new FileInputStream("src\\druid.properties"));
+            ds = DruidDataSourceFactory.createDataSource(properties);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    // 从ThreadLocal获取Connection，从而保证在同一个线程中，获取的是同一个Connection
+    public static Connection getConnection() {
+        Connection connection = threadLocalConn.get();
+        if (connection == null) {   // 说明当前的threadLocalConn没有连接
+            // 就从数据库连接池中，取出一个连接放入
+            try {
+                connection = ds.getConnection();
+                // 将连接设置为手动提交，即取消自动提交，默认每执行一次数据库操作都会自动提交，
+                // 取消自动提交保证数据统一管理
+                connection.setAutoCommit(false);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            // 将连接与线程关联
+            threadLocalConn.set(connection);
+        }
+        return connection;
+    }
+
+    //原方法
+    //public static Connection getConnection() throws SQLException {
+    //    return ds.getConnection();
+    //}
+
+    // 提交事务(成功)
+    public static void commit() {
+        Connection connection = threadLocalConn.get();
+        if (connection != null) {   // 确保该链接非空/有效
+            try {
+                connection.commit();    // 事务提交
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    connection.close(); // 关闭连接
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        // 注意：
+        // 1. 当提交后，需要把connection从threadLocalConn中清除掉
+        // 2. 否则会造成threadLocalConn长时间持有该连接，会影响效率
+        // 3. 也因为Tomcat底层使用的线程池技术
+        threadLocalConn.remove();
+    }
+
+    // 事务回滚(失败)，所谓回滚是撤销和某个connection关联的操作
+    public static void rollback() {
+        Connection connection = threadLocalConn.get();
+        if (connection != null) {   // 保证当前连接有效
+            try {
+                connection.rollback();  // 回滚
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    connection.close(); // 关闭
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        threadLocalConn.remove();
+    }
+
+    //关闭连接, 强调： 在数据库连接池技术中，close 不是真的断掉连接
+    //而是把使用的Connection对象放回连接池
+    public static void close(ResultSet resultSet, Statement statement, Connection connection) {
+        try {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+```
+
+- 删除[BasicDAO](src/com/charlie/furns/dao/BasicDAO.java)中的finally关闭连接池连接操作
+
+```java
+package com.charlie.furns.web;
+
+public class OrderServlet extends BasicServlet {
+
+    private OrderService orderService = new OrderServiceImpl();
+
+    protected void saveOrder(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 业务代码
+        Member member = (Member) req.getSession().getAttribute("member");
+        if (member == null) {
+            // 说明该用户没有登录，将其转发到登录页面
+            //resp.sendRedirect(req.getContextPath() + "/views/member/login2.jsp");
+            req.getRequestDispatcher("/views/member/login2.jsp").forward(req, resp);
+            return; // 直接返回
+        }
+        Cart cart = (Cart) req.getSession().getAttribute("cart");
+        if (null == cart || cart.isEmpty()) {
+            //resp.sendRedirect(req.getContextPath() + "/index.jsp");
+            req.getRequestDispatcher("/index.jsp").forward(req, resp);
+            return; // 直接返回
+        }
+
+        /* 分析：
+        1. 如果只是希望对orderService.saveOrder方法进行事务控制
+        2. 可以不使用过滤器，直接在这里进行提交和回滚即可
+        3. 这里做了演示，后面将其提到filter中，控制更多类似的事务管理
+         */
+        //String orderId = null;
+        //try {
+        //    orderId = orderService.saveOrder(cart, member.getId());
+        //    JDBCUtilsByDruid.commit();      // 提交事务
+        //} catch (Exception e) {
+        //    JDBCUtilsByDruid.rollback();    // 出现异常，回滚事务
+        //    throw new RuntimeException(e);
+        //}
+
+        String orderId = orderService.saveOrder(cart, member.getId());
+        // 返回的订单，交给前端显示
+        req.getSession().setAttribute("orderId", orderId);
+        // 使用重定向方式，请求到 checkout.jsp
+        resp.sendRedirect(req.getContextPath() + "/views/order/checkout.jsp");
+    }
+}
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>
+    <!--配置管理事务的过滤器，在权限验证后，即先进行权限验证-->
+    <filter>
+        <filter-name>TransactionFilter</filter-name>
+        <filter-class>com.charlie.furns.filter.TransactionFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>TransactionFilter</filter-name>
+        <!--这里对所有请求都做处理，后续可以根据需求再调整-->
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+</web-app>
+```
+
+```java
+package com.charlie.furns.filter;
+
+// 管理事务的过滤器
+public class TransactionFilter implements Filter {
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        try {
+            // 放行
+            filterChain.doFilter(servletRequest, servletResponse);
+            JDBCUtilsByDruid.commit();      // 统一提交
+        } catch (Exception e) { // 出现异常
+            JDBCUtilsByDruid.rollback();    // 回滚事务
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+- ![异常机制参与业务逻辑](img_76.png)

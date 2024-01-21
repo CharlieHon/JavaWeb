@@ -4,6 +4,7 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
     <!--过滤器一般配置在最上面-->
+    <!--权限验证过滤器-->
     <filter>
         <filter-name>AuthFilter</filter-name>
         <filter-class>com.charlie.furns.filter.AuthFilter</filter-class>
@@ -31,6 +32,17 @@
         <url-pattern>/cartServlet</url-pattern>
         <url-pattern>/manage/furnServlet</url-pattern>
         <url-pattern>/orderServlet</url-pattern>
+    </filter-mapping>
+
+    <!--配置管理事务的过滤器，在权限验证后，即先进行权限验证-->
+    <filter>
+        <filter-name>TransactionFilter</filter-name>
+        <filter-class>com.charlie.furns.filter.TransactionFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>TransactionFilter</filter-name>
+        <!--这里对所有请求都做处理，后续可以根据需求再调整-->
+        <url-pattern>/*</url-pattern>
     </filter-mapping>
 
 

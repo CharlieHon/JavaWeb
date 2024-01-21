@@ -8,6 +8,7 @@ import com.charlie.furns.entity.OrderItem;
 import com.charlie.furns.service.OrderService;
 import com.charlie.furns.service.impl.OrderServiceImpl;
 import com.charlie.furns.utils.DataUtils;
+import com.charlie.furns.utils.JDBCUtilsByDruid;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -35,9 +36,22 @@ public class OrderServlet extends BasicServlet {
             req.getRequestDispatcher("/index.jsp").forward(req, resp);
             return; // 直接返回
         }
-        // 到此，购物车不为空，且已经登录
-        Integer memberId = member.getId();
-        String orderId = orderService.saveOrder(cart, memberId);
+
+        /* 分析：
+        1. 如果只是希望对orderService.saveOrder方法进行事务控制
+        2. 可以不使用过滤器，直接在这里进行提交和回滚即可
+        3. 这里做了演示，后面将其提到filter中，控制更多类似的事务管理
+         */
+        //String orderId = null;
+        //try {
+        //    orderId = orderService.saveOrder(cart, member.getId());
+        //    JDBCUtilsByDruid.commit();      // 提交事务
+        //} catch (Exception e) {
+        //    JDBCUtilsByDruid.rollback();    // 出现异常，回滚事务
+        //    throw new RuntimeException(e);
+        //}
+
+        String orderId = orderService.saveOrder(cart, member.getId());
         // 返回的订单，交给前端显示
         req.getSession().setAttribute("orderId", orderId);
         // 使用重定向方式，请求到 checkout.jsp

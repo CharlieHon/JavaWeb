@@ -11,9 +11,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-/**
- * 开发BasicDAO , 是其他DAO的父类
- */
+// 开发BasicDAO , 是其他DAO的父类
+// ThreadLocal+Mysql事务->删除每个操作后关闭连接的操作，因为已经交给JDBCUtilsByDruid的commit和rollback方法
 public class BasicDAO<T> { //泛型指定具体类型
 
     private QueryRunner qr =  new QueryRunner();
@@ -22,13 +21,17 @@ public class BasicDAO<T> { //泛型指定具体类型
     public int update(String sql, Object... parameters) {
         Connection connection = null;
         try {
+            /*
+            这里是从数据库连接池获取connection
+            每次从连接池中取出的Connection，不能保证是同一个，不是同一个的话无法使用事务管理
+            1. 目前已经是从当前线程相关联的ThreadLocal中获取的connection
+            2. 所有可以保证是同一个连接(在同一个线程/同一个请求)
+             */
             connection = JDBCUtilsByDruid.getConnection();
             int update = qr.update(connection, sql, parameters);
             return  update;
         } catch (SQLException e) {
            throw  new RuntimeException(e); //将编译异常->运行异常 ,抛出
-        } finally {
-            JDBCUtilsByDruid.close(null, null, connection);
         }
     }
 
@@ -47,8 +50,6 @@ public class BasicDAO<T> { //泛型指定具体类型
 
         } catch (SQLException e) {
             throw  new RuntimeException(e); //将编译异常->运行异常 ,抛出
-        } finally {
-            JDBCUtilsByDruid.close(null, null, connection);
         }
     }
 
@@ -60,8 +61,6 @@ public class BasicDAO<T> { //泛型指定具体类型
             return  qr.query(connection, sql, new BeanHandler<T>(clazz), parameters);
         } catch (SQLException e) {
             throw  new RuntimeException(e); //将编译异常->运行异常 ,抛出
-        } finally {
-            JDBCUtilsByDruid.close(null, null, connection);
         }
     }
 
@@ -73,8 +72,6 @@ public class BasicDAO<T> { //泛型指定具体类型
             return  qr.query(connection, sql, new ScalarHandler(), parameters);
         } catch (SQLException e) {
             throw  new RuntimeException(e); //将编译异常->运行异常 ,抛出
-        } finally {
-            JDBCUtilsByDruid.close(null, null, connection);
         }
     }
 }

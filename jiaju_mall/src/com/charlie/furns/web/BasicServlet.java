@@ -33,6 +33,9 @@ public abstract class BasicServlet extends HttpServlet {
             // 使用方法对象，进行反射调用
             declaredMethod.invoke(this, req, resp);
         } catch (Exception e) {
+            // 注意：异常机制是可以参与业务逻辑的
+            // 如果这里不抛出异常，而只是打印出来 e.printStackTrace();
+            // 事务过滤器就无法捕获事务提交异常，导致无法进行事务管理(提交/回滚操作)
             throw new RuntimeException(e);
         }
     }

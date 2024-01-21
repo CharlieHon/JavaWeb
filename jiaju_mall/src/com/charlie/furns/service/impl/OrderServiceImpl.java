@@ -22,14 +22,9 @@ public class OrderServiceImpl implements OrderService {
     private OrderItemDAO orderItemDAO = new OrderItemDAOImpl();
     private FurnDAO furnDAO = new FurnDAOImpl();
 
+    // 将 cart 购物车中的数据，以order和orderItem形式保存到db
     @Override
     public String saveOrder(Cart cart, int memberId) {
-        // 这里的业务逻辑相对复杂
-        // 完成的任务是将 cart 购物车中的数据，以order和orderItem形式保存到db
-        /*
-        TODO 因为生成订单会操作多表，因此会涉及到多表事务问题 ThreadLocal+Mysql事务机制+过滤器
-        关于事务的处理，考虑的点比较多，后面专门处理
-         */
         // 1. 通过cart对象，构建对应的Order对象
         // 先生成一个UUID，表示当前的订单号，订单号是唯一的
         String orderId = System.currentTimeMillis() + "" + memberId;
@@ -38,7 +33,6 @@ public class OrderServiceImpl implements OrderService {
         orderDAO.saveOrder(order);
 
         // 2. 通过cart对象，遍历出cartItem，保存到orderItem
-
         // 1> 通过keySet遍历cart
         //Map<Integer, CartItem> items = cart.getItems();
         //Set<Integer> keys = items.keySet();
