@@ -18,6 +18,51 @@
     <script type="text/javascript">
         $(function () { // 页面加载完毕后执行function
 
+            // 给用户名输入框绑定一个blur
+            $("#username").blur(function () {     // 失去焦点后触发
+                // 获取输入的用户名
+                var username = $(this).val();     // 或者 this.value
+                // 发出ajax请求
+                $.getJSON(
+                    "memberServlet2",
+                    // "action=isExistUsername&username=" + username,  // 发送的数据可以以字符串的形式，也可以以json的格式
+                    {   // 相当于发送的ajax请求，携带的数据是通过json对象放入
+                      "action": "isExistUsername",
+                      "username": username,
+                      "date": new Date()
+                    },
+                    function (data) {   // data是请求成功后返回的数据
+                        // console.log("data=", data);
+                        if (data.isExist) {
+                            $("span.errorMsg").text("用户名已存在~");
+                        } else {
+                            $("span.errorMsg").text("用户名可以使用！");
+                        }
+                    }
+                )
+            })
+
+            // 验证码ajax判断
+            $("#code").blur(function () {
+                var codeVal = this.value;
+                $.getJSON(
+                    "memberServlet2",
+                    {
+                        "action": "captcha",
+                        "code": codeVal,
+                        "date": new Date()
+                    },
+                    function (data) {
+                        // console.log("data=", data);
+                        if(data.code) {
+                            $("#recode").text("验证码正确！");
+                        } else {
+                            $("#recode").text("验证码有误~");
+                        }
+                    }
+                )
+            })
+
             /*
             模拟一个点击事件，选中注册
             决定是显示登录还是注册的tab "" 不能少
@@ -176,22 +221,23 @@
                         <div id="lg2" class="tab-pane">
                             <div class="login-form-container">
                                 <div class="login-register-form">
-                                    <span class="errorMsg"
-                                          style="float: right; font-weight: bold; font-size: 20pt; margin-left: 10px;">
-                                    </span>
-                                    <span style="font-size: 18pt;font-weight: bold;float: right;color: gainsboro">
+                                    <%--<span class="errorMsg"--%>
+                                    <%--      style="float: right; font-weight: bold; font-size: 20pt; margin-left: 10px;">--%>
+                                    <%--</span>--%>
+                                    <span class="errorMsg" style="font-size: 18pt;font-weight: bold;float: right;color: gainsboro">
                                         ${requestScope.msg}
                                     </span>
                                     <!--注册表单-->
                                     <form action="memberServlet2" method="post">
                                         <%--增加隐藏域表示register请求--%>
                                         <input type="hidden" name="action" value="register"/>
-                                        <input type="text" id="username" name="username" value="${param.username}" placeholder="Username"/>
+                                        <input type="text" id="username" name="username" value="${param.username}" placeholder="用户名"/>
                                         <input type="password" id="password" name="password" value="${param.password}" placeholder="输入密码"/>
                                         <input type="password" id="repwd" name="repassword" value="${param.password}" placeholder="确认密码"/>
                                         <input name="email" id="email" placeholder="电子邮件" value="${param.email}" type="email"/>
                                         <input type="text" id="code" name="code" style="width: 50%" placeholder="验证码"/>
                                             <img id="codeImg" alt="" src="kaptchaServlet" style="width: 120px;height: 50px">
+                                            <span style="border-width: 0;color: red; font-size: 15px" type="text" id="recode"></span>
                                         <div class="button-box">
                                             <button type="submit" id="sub-btn"><span>会员注册</span></button>
                                         </div>

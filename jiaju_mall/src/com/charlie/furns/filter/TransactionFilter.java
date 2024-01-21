@@ -18,7 +18,10 @@ public class TransactionFilter implements Filter {
             JDBCUtilsByDruid.commit();      // 统一提交
         } catch (Exception e) { // 出现异常
             JDBCUtilsByDruid.rollback();    // 回滚事务
-            e.printStackTrace();
+            // 这里只打印了异常，而没有将异常抛给tomcat
+            //e.printStackTrace();
+            // 这个filter是由tomcat创建的，异常也会抛给tomcat，进而会根据异常配置进行处理。体会异常参与业务逻辑
+            throw new RuntimeException(e);
         }
     }
 

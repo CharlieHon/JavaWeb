@@ -2555,3 +2555,132 @@ public class TransactionFilter implements Filter {
 ```
 
 - ![异常机制参与业务逻辑](img_76.png)
+
+## 完成功能25-统一错误提示页面
+
+- ![需求分析](img_77.png)
+- ![思路分析](img_78.png)
+- ![img_79.png](img_79.png)
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>
+    <!--404:NOT FOUND 错误提示页面-->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/views/error/404.jsp</location>
+    </error-page>
+    <!--500:服务器内部错误 错误提示页面-->
+    <error-page>
+        <error-code>500</error-code>
+        <location>/views/error/500.jsp</location>
+    </error-page>
+</web-app>
+```
+
+## 实现功能26-Ajax检验注册名
+
+- ![需求分析](img_80.png)
+- ![思路分析](img_81.png)
+
+```java
+package com.charlie.furns.web;
+
+import static com.google.code.kaptcha.Constants.KAPTCHA_SESSION_KEY;
+
+/**
+ * 该servlet处理和Member相关的请求
+ */
+public class MemberServlet2 extends BasicServlet {
+
+    private MemberService memberService = new MemberServiceImpl();
+
+    // 验证某个用户名是否已经存在
+    protected void isExistUsername(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // 1. 获取用户名
+        String username = req.getParameter("username");
+        // 2. 调用service
+        boolean isExist = memberService.isExistsUsername(username);
+        /* 3. 思路
+        1) 如何返回json格式(根据前端需求来写)
+        2) {"isExist": false};
+         */
+        // 4. 先使用最简单的拼接 -> 后续改进
+        //String resultJson = "{\"isExist\": " + isExist + "}";
+        // => 将要返回的数据=>map=>json
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("isExist", isExist);
+        String resultJson = new Gson().toJson(resultMap);
+        // 5. 返回
+        // 这里前端是ajax发出的请求，返回的数据也是交给ajax处理的
+        // 不需要设置resp.setContextType("text/json")，这是让浏览器处理
+        resp.getWriter().write(resultJson);
+    }
+
+    // 验证码校验
+    protected void captcha(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String code = req.getParameter("code");
+        // 从session中获取到KaptchaServlet创建的验证码
+        String token = (String) req.getSession().getAttribute(KAPTCHA_SESSION_KEY);
+        Map<String, Object> codeMap = new HashMap<>();
+        if (token != null && token.equalsIgnoreCase(code)) {
+            codeMap.put("code", true);
+        } else {
+            codeMap.put("code", false);
+        }
+        resp.getWriter().write(new Gson().toJson(codeMap));
+    }
+}
+```
+
+```html
+<script type="text/javascript">
+    $(function () { // 页面加载完毕后执行function
+
+        // 给用户名输入框绑定一个blur
+        $("#username").blur(function () {     // 失去焦点后触发
+            // 获取输入的用户名
+            var username = $(this).val();     // 或者 this.value
+            // 发出ajax请求
+            $.getJSON(
+                "memberServlet2",
+                // "action=isExistUsername&username=" + username,  // 发送的数据可以以字符串的形式，也可以以json的格式
+                {   // 相当于发送的ajax请求，携带的数据是通过json对象放入
+                  "action": "isExistUsername",
+                  "username": username,
+                  "date": new Date()
+                },
+                function (data) {   // data是请求成功后返回的数据
+                    // console.log("data=", data);
+                    if (data.isExist) {
+                        $("span.errorMsg").text("用户名已存在~");
+                    } else {
+                        $("span.errorMsg").text("用户名可以使用！");
+                    }
+                }
+            )
+        })
+
+        // 验证码ajax判断
+        $("#code").blur(function () {
+            var codeVal = this.value;
+            $.getJSON(
+                "memberServlet2",
+                {
+                    "action": "captcha",
+                    "code": codeVal,
+                    "date": new Date()
+                },
+                function (data) {
+                    // console.log("data=", data);
+                    if(data.code) {
+                        $("#recode").text("验证码正确！");
+                    } else {
+                        $("#recode").text("验证码有误~");
+                    }
+                }
+            )
+        })
+    )
+</script>
+```
