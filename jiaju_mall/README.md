@@ -3010,3 +3010,48 @@ public class FurnServlet extends BasicServlet {
     //}
 }
 ```
+
+## 实现功能29-分页导航条
+
+- ![需求分析](img_87.png)
+
+```html
+<c:choose>
+    <%--总页数<=5，显示全部页数--%>
+    <c:when test="${requestScope.page.pageTotalCount <= 5}">
+        <c:set var="begin" value="1"/>
+        <c:set var="end" value="${requestScope.page.pageTotalCount}"/>
+    </c:when>
+    <%--总页数>5--%>
+    <c:when test="${requestScope.page.pageTotalCount > 5}">
+        <c:choose>
+            <%--当前页在前3页，则显示前5页--%>
+            <c:when test="${requestScope.page.pageNo <= 3}">
+                <c:set var="begin" value="1"/>
+                <c:set var="end" value="5"/>
+            </c:when>
+            <%--当前页在后3页，则显示后5页--%>
+            <c:when test="${requestScope.page.pageNo > requestScope.page.pageTotalCount-3}">
+                <c:set var="begin" value="${requestScope.page.pageTotalCount-4}"/>
+                <c:set var="end" value="${requestScope.page.pageTotalCount}"/>
+            </c:when>
+            <%--当前页在中间页，则显示前后2页+本页的内容--%>
+            <c:otherwise>
+                <c:set var="begin" value="${requestScope.page.pageNo-2}"/>
+                <c:set var="end" value="${requestScope.page.pageNo+2}"/>
+            </c:otherwise>
+        </c:choose>
+    </c:when>
+</c:choose>
+<c:forEach begin="${begin}" end="${end}" var="i">
+    <%--如果i是当前页，就使用class="active"修饰--%>
+    <c:if test="${i == requestScope.page.pageNo}">
+        <%--<li><a class="active" href="customerFurnServlet?action=pageByName&pageNo=${i}&name=${param.name}">${i}</a></li>--%>
+        <li><a class="active" href="${requestScope.page.url}&pageNo=${i}">${i}</a></li>
+    </c:if>
+    <c:if test="${i != requestScope.page.pageNo}">
+        <%--<li><a href="customerFurnServlet?action=pageByName&pageNo=${i}&name=${param.name}">${i}</a></li>--%>
+        <li><a href="${requestScope.page.url}&pageNo=${i}">${i}</a></li>
+    </c:if>
+</c:forEach>
+```

@@ -3,11 +3,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge"/>
     <title>韩顺平教育-家居网购~</title>
     <base href="<%=request.getContextPath() + "/"%>">
     <!-- 移动端适配 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <link rel="stylesheet" href="assets/css/vendor/vendor.min.css"/>
     <link rel="stylesheet" href="assets/css/plugins/plugins.min.css"/>
     <link rel="stylesheet" href="assets/css/style.min.css">
@@ -71,7 +71,8 @@
                             <div class="dropdown_search">
                                 <form class="action-form" action="customerFurnServlet">
                                     <input type="hidden" name="action" value="pageByName">
-                                    <input class="form-control" name="name" value="${param.name}" placeholder="请输入家具名搜索" type="text">
+                                    <input class="form-control" name="name" value="${param.name}"
+                                           placeholder="请输入家具名搜索" type="text">
                                     <button class="submit" type="submit"><i class="icon-magnifier"></i></button>
                                 </form>
                             </div>
@@ -126,7 +127,7 @@
                 <!-- Header Logo Start -->
                 <div class="col-auto align-self-center">
                     <div class="header-logo">
-                        <a href="index.jsp"><img width="280px" src="assets/images/logo/logo.png" alt="Site Logo" /></a>
+                        <a href="index.jsp"><img width="280px" src="assets/images/logo/logo.png" alt="Site Logo"/></a>
                     </div>
                 </div>
                 <!-- Header Logo End -->
@@ -171,17 +172,22 @@
                                             </span>
                                             <div class="actions">
                                                 <a href="#" class="action wishlist" data-link-action="quickview"
-                                                   title="Quick view" data-bs-toggle="modal" data-bs-target="#exampleModal"><i
+                                                   title="Quick view" data-bs-toggle="modal"
+                                                   data-bs-target="#exampleModal"><i
                                                         class="icon-size-fullscreen"></i></a>
                                             </div>
-                                            <%--添加家具到购物车按钮，这里加上校验：当家具库存为0时，前台显示“暂时缺货”
-                                            后台也加上校验，只有在库存>0时，才能添加到购物车
-                                            --%>
+                                                <%--添加家具到购物车按钮，这里加上校验：当家具库存为0时，前台显示“暂时缺货”
+                                                后台也加上校验，只有在库存>0时，才能添加到购物车
+                                                --%>
                                             <c:if test="${furn.stock > 0}">
-                                                <button title="Add To Cart" class="add-to-cart" furnId="${furn.id}">Add To Cart</button>
+                                                <button title="Add To Cart" class="add-to-cart" furnId="${furn.id}">Add
+                                                    To Cart
+                                                </button>
                                             </c:if>
                                             <c:if test="${furn.stock == 0}">
-                                                <button title="Add To Cart" class="add-to-cart" furnId="${furn.id}">【暂时缺货】</button>
+                                                <button title="Add To Cart" class="add-to-cart" furnId="${furn.id}">
+                                                    【暂时缺货】
+                                                </button>
                                             </c:if>
                                         </div>
                                         <div class="content">
@@ -222,17 +228,38 @@
         <%--首页--%>
         <%--上一页:如果当前页大于1，就显示上一页--%>
         <c:if test="${requestScope.page.pageNo > 1}">
-                <li><a href="customerFurnServlet?action=pageByName&pageNo=1&name=${param.name}">首页</a></li>
-                <li><a href="customerFurnServlet?action=pageByName&pageNo=${requestScope.page.pageNo-1}&name=${param.name}">上页</a></li>
+            <li><a href="customerFurnServlet?action=pageByName&pageNo=1&name=${param.name}">首页</a></li>
+            <li><a href="customerFurnServlet?action=pageByName&pageNo=${requestScope.page.pageNo-1}&name=${param.name}">上页</a>
+            </li>
         </c:if>
 
-        <%--显示所有的分页数，先易后难
-        先确定开始页数 begin 第1页
-        再确定结束页数 end 末页
-        问题：如果页数很多，如何处理？ => 通过算法最多显示5页
-        --%>
-        <c:set var="begin" value="1"/>
-        <c:set var="end" value="${requestScope.page.pageTotalCount}"/>
+        <c:choose>
+            <%--总页数<=5，显示全部页数--%>
+            <c:when test="${requestScope.page.pageTotalCount <= 5}">
+                <c:set var="begin" value="1"/>
+                <c:set var="end" value="${requestScope.page.pageTotalCount}"/>
+            </c:when>
+            <%--总页数>5--%>
+            <c:when test="${requestScope.page.pageTotalCount > 5}">
+                <c:choose>
+                    <%--当前页在前3页，则显示前5页--%>
+                    <c:when test="${requestScope.page.pageNo <= 3}">
+                        <c:set var="begin" value="1"/>
+                        <c:set var="end" value="5"/>
+                    </c:when>
+                    <%--当前页在后3页，则显示后5页--%>
+                    <c:when test="${requestScope.page.pageNo > requestScope.page.pageTotalCount-3}">
+                        <c:set var="begin" value="${requestScope.page.pageTotalCount-4}"/>
+                        <c:set var="end" value="${requestScope.page.pageTotalCount}"/>
+                    </c:when>
+                    <%--当前页在中间页，则显示前后2页+本页的内容--%>
+                    <c:otherwise>
+                        <c:set var="begin" value="${requestScope.page.pageNo-2}"/>
+                        <c:set var="end" value="${requestScope.page.pageNo+2}"/>
+                    </c:otherwise>
+                </c:choose>
+            </c:when>
+        </c:choose>
         <c:forEach begin="${begin}" end="${end}" var="i">
             <%--如果i是当前页，就使用class="active"修饰--%>
             <c:if test="${i == requestScope.page.pageNo}">
@@ -246,8 +273,11 @@
         </c:forEach>
 
         <c:if test="${requestScope.page.pageNo < requestScope.page.pageTotalCount}">
-            <li><a href="customerFurnServlet?action=pageByName&pageNo=${requestScope.page.pageNo+1}&name=${param.name}">下页</a></li>
-            <li><a href="customerFurnServlet?action=pageByName&pageNo=${requestScope.page.pageTotalCount}&name=${param.name}">末页</a></li>
+            <li><a href="customerFurnServlet?action=pageByName&pageNo=${requestScope.page.pageNo+1}&name=${param.name}">下页</a>
+            </li>
+            <li>
+                <a href="customerFurnServlet?action=pageByName&pageNo=${requestScope.page.pageTotalCount}&name=${param.name}">末页</a>
+            </li>
         </c:if>
         <li><a>共 ${requestScope.page.pageTotalCount} 页</a></li>
         <li><a>共 ${requestScope.page.totalRow} 记录</a></li>
@@ -298,7 +328,8 @@
                                     <ul class="align-items-center">
                                         <li class="li"><a class="single-link" href="about.html">关于我们</a></li>
                                         <li class="li"><a class="single-link" href="#">交货信息</a></li>
-                                        <li class="li"><a class="single-link" href="privacy-policy.html">隐私与政策</a></li>
+                                        <li class="li"><a class="single-link" href="privacy-policy.html">隐私与政策</a>
+                                        </li>
                                         <li class="li"><a class="single-link" href="#">条款和条件</a></li>
                                         <li class="li"><a class="single-link" href="#">制造</a></li>
                                     </ul>
