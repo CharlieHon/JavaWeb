@@ -2,11 +2,11 @@
 
 ## 分层思想
 
-- ![软件开发流程/阶段](img.png)
+- ![软件开发流程/阶段](imgs/img.png)
 
 > **分层模式**：分层的目的是为了解耦，降低代码的耦合度，有利于项目的维护和升级
 
-- ![JavaEE经典的三层架构](img_1.png)
+- ![JavaEE经典的三层架构](imgs/img_1.png)
 - 浏览器(`http://ip:port/工程路径/资源`)
   1. 浏览器返回的数据，进行解析，并展示数据
   2. 关联的技术(html,css,js,jquery,vue...)
@@ -43,7 +43,7 @@
 | 工具类      | `com.charlie.furns.utils`                          | 工具类              |
 | 测试包      | `com.charlie.furns.test`                           | 完成对dao/service测试 |
 
-- ![项目具体分层(不同包)方案](img_2.png)
+- ![项目具体分层(不同包)方案](imgs/img_2.png)
 
 ### MVC
 
@@ -56,21 +56,21 @@
 2. MVC是一种思想
    - **MVC的思想是将软件代码拆分成为组件，单独开发，组合使用(目的还是为了解耦合)，也有很多落地的框架比如SpringMVC**
 3. MVC示意图
-   - ![MVC示意图](img_3.png)
-4. ![img_4.png](img_4.png)
-5. ![分层思想](img_5.png)
+   - ![MVC示意图](imgs/img_3.png)
+4. ![img_4.png](imgs/img_4.png)
+5. ![分层思想](imgs/img_5.png)
 
 ## 实现功能01-创建项目，正确运行静态页面
 
 把前端人员给的静态页面拷贝到web路径下
-- ![img_6.png](img_6.png)
+- ![img_6.png](imgs/img_6.png)
 
 ## 实现功能02-会员注册前端JS校验
 
 | 需求分析                      | 思路分析                    |
 |---------------------------|-------------------------|
-| ![img_7.png](img_7.png)   | ![img_9.png](img_9.png) |
-| ![img_8.png](img_8.png)   |                         |
+| ![img_7.png](imgs/img_7.png)   | ![img_9.png](imgs/img_9.png) |
+| ![img_8.png](imgs/img_8.png)   |                         |
 
 ```html
 <!DOCTYPE html>
@@ -143,14 +143,14 @@
 
 ## 实现功能03-会员注册后端
 
-- ![会员注册后端](img_10.png)
-- ![会员注册程序框架图](img_11.png)
+- ![会员注册后端](imgs/img_10.png)
+- ![会员注册程序框架图](imgs/img_11.png)
 - 分析：从前端注册发出请求到后端处理
 - 实现：从底层数据库到上层调用，上层依赖下层
 
 ### 1. 创建数据库和表
 
-- ![img_12.png](img_12.png)
+- ![img_12.png](imgs/img_12.png)
 
 ```mysql
 # 创建家具网购需要的数据库和表
@@ -436,7 +436,7 @@ public class MemberDAOImpl extends BasicDAO<Member> implements MemberDAO {
 
 ### 6. web层
 
-- ![img_13.png](img_13.png)
+- ![img_13.png](imgs/img_13.png)
 
 > 在web层配置文件路径时和普通项目不同，web项目的工作目录在out，而src时JavaSE application上使用的路径。
 > 
@@ -498,8 +498,8 @@ public class RegisterServlet extends HttpServlet {
 
 ## 实现功能04-会员登录
 
-- ![会员登录需求](img_14.png)
-- ![会员登录程序框架图](img_15.png)
+- ![会员登录需求](imgs/img_14.png)
+- ![会员登录程序框架图](imgs/img_15.png)
 
 ```java
 package com.charlie.furns.web;
@@ -539,8 +539,8 @@ public class LoginServlet extends HttpServlet {
 
 ## 实现功能05-登录错误提示，表单回显
 
-- ![需求分析](img_16.png)
-- ![登录错误提示程序框架图](img_17.png)
+- ![需求分析](imgs/img_16.png)
+- ![登录错误提示程序框架图](imgs/img_17.png)
 
 ```java
 package com.charlie.furns.web;
@@ -602,8 +602,8 @@ public class LoginServlet extends HttpServlet {
 ## 实现功能06-web层servlet减肥
 
 方案1-if-else
-- ![问题分析](img_18.png)
-- ![解决思路](img_19.png)
+- ![问题分析](imgs/img_18.png)
+- ![解决思路](imgs/img_19.png)
 - [方案1-if-else](web/views/member/login2.jsp)
 
 ```html
@@ -709,9 +709,9 @@ public class MemberServlet extends HttpServlet {
 ```
 
 方案2-反射+模板设计模式+动态绑定
-- ![方案2思路](img_20.png)
-- ![img_22.png](img_22.png)
-- ![img_21.png](img_21.png)
+- ![方案2思路](imgs/img_20.png)
+- ![img_22.png](imgs/img_22.png)
+- ![img_21.png](imgs/img_21.png)
 
 ```java
 package com.charlie.furns.web;
@@ -826,10 +826,10 @@ public class MemberServlet2 extends BasicServlet {
 
 ## 实现功能07-后台管理-显示家具
 
-| ![img_23.png](img_23.png) | ![img_24.png](img_24.png) |
+| ![img_23.png](imgs/img_23.png) | ![img_24.png](imgs/img_24.png) |
 |---------------------------|---------------------------|
 
-- ![程序框架图](img_25.png)
+- ![程序框架图](imgs/img_25.png)
 
 ```mysql
 ### 设计furn表，家具表 需求-文档-界面
@@ -922,8 +922,8 @@ public class FurnServlet extends BasicServlet {
 
 ## 实现功能08-后台管理-添加家具
 
-- ![img_26.png](img_26.png)
-- ![img_27.png](img_27.png)
+- ![img_26.png](imgs/img_26.png)
+- ![img_27.png](imgs/img_27.png)
 
 > 1. 解决中文乱码问题：在 `BasicServlet` 的 `doPos()` 方法中设置 `req.setCharacterEncoding("utf-8");`
 > 2. 解决表单重复提交问题：当使用请求转发时，浏览器地址栏会停留在第一个servlet，如果刷新页面，会再次发出请求并提交数据，
@@ -1005,7 +1005,7 @@ public class FurnServlet extends BasicServlet {
 3. 需要导入jar包 `commons-beanutils-1.8.0.jar` 和 `commons-logging-1.1.1.jar`
 
 - 老韩小技巧：Debug时选中某个方法，右键->`Evaluate Expression` 能够得到表达式的值
-- ![img_28.png](img_28.png)
+- ![img_28.png](imgs/img_28.png)
 
 ```java
 package com.charlie.furns.utils;
@@ -1063,23 +1063,23 @@ public class FurnServlet extends BasicServlet {
 }
 ```
 
-- ![img_29.png](img_29.png)
+- ![img_29.png](imgs/img_29.png)
 
 ## 实现功能09-后台管理-删除家具
 
-- ![需求分析](img_30.png)
-- ![思路分析](img_31.png)
+- ![需求分析](imgs/img_30.png)
+- ![思路分析](imgs/img_31.png)
 
 | DAO层                      | Service层                   | Servlet层                   |
 |---------------------------|----------------------------|----------------------------|
-| ![img_32.png](img_32.png) | ![img_34.png](img_34.png)  | ![img_37.png](img_37.png)  |
-| ![img_33.png](img_33.png) | ![img_35.png](img_35.png)  | ![img_36.png](img_36.png)  |
+| ![img_32.png](imgs/img_32.png) | ![img_34.png](imgs/img_34.png)  | ![img_37.png](imgs/img_37.png)  |
+| ![img_33.png](imgs/img_33.png) | ![img_35.png](imgs/img_35.png)  | ![img_36.png](imgs/img_36.png)  |
 
 ## 实现功能10-后台管理-修改家具
 
-- ![需求分析](img_38.png)
-- ![需求分析](img_39.png)
-- ![思路分析](img_40.png)
+- ![需求分析](imgs/img_38.png)
+- ![需求分析](imgs/img_39.png)
+- ![思路分析](imgs/img_40.png)
 
 ```html
 <form action="manage/furnServlet" method="post">
@@ -1140,8 +1140,8 @@ public class FurnServlet extends BasicServlet {
 
 ## 实现功能11-后台分页(分页显示家具)
 
-- ![需求分析](img_41.png)
-- ![思路分析](img_42.png)
+- ![需求分析](imgs/img_41.png)
+- ![思路分析](imgs/img_42.png)
 
 > 数据模型：设计一个Page的JavaBean，包含要显示的页数和该页内的数据。设置为泛型类型，方便扩展。
 > 对于Page中不同的属性，其中能从数据库DB中直接获取的放大DAO中处理，从前端获取的放到service中处理
@@ -1281,7 +1281,7 @@ public class FurnServlet extends BasicServlet {
 
 ## 实现功能12-后台分页(分页导航)
 
-- ![需求分析](img_43.png)
+- ![需求分析](imgs/img_43.png)
 
 ```html
 <!--  Pagination Area Start -->
@@ -1325,7 +1325,7 @@ public class FurnServlet extends BasicServlet {
 ```
 
 - 如下处理修改/删除后返回对应的分页上
-- ![img_44.png](img_44.png)
+- ![img_44.png](imgs/img_44.png)
 
 > 注意:
 > - 在jsp中使用 `${requestScope.pageNo}` 获取的是 `Request`域中的数据,即通过 `req.setAttribute("pageNo", pageNo)` 添加的域数据
@@ -1352,8 +1352,8 @@ protected void showFurn(HttpServletRequest req, HttpServletResponse resp) throws
 
 ## 实现功能13-首页分页
 
-- ![img_45.png](img_45.png)
-- ![img_46.png](img_46.png)
+- ![img_45.png](imgs/img_45.png)
+- ![img_46.png](imgs/img_46.png)
 
 ```html
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -1366,9 +1366,9 @@ protected void showFurn(HttpServletRequest req, HttpServletResponse resp) throws
 
 ## 实现功能14-首页搜索
 
-- ![需求分析](img_47.png)
-- ![程序思路](img_48.png)
-- ![img_49.png](img_49.png)
+- ![需求分析](imgs/img_47.png)
+- ![程序思路](imgs/img_48.png)
+- ![img_49.png](imgs/img_49.png)
 
 点击分页条保持上次搜索记录的两种实现方法
 1. 使用 `${param.name}` 获取请求转发的搜索参数
@@ -1483,8 +1483,8 @@ public class CustomerFurnServlet extends BasicServlet {
 
 ## 实现功能15-显示登录名
 
-- ![需求分析](img_50.png)
-- ![程序思路](img_51.png)
+- ![需求分析](imgs/img_50.png)
+- ![程序思路](imgs/img_51.png)
 
 ```java
 package com.charlie.furns.web;
@@ -1555,8 +1555,8 @@ public class MemberServlet2 extends BasicServlet {
 
 ## 实现功能16-注销功能
 
-- ![需求分析](img_52.png)
-- ![程序思路](img_53.png)
+- ![需求分析](imgs/img_52.png)
+- ![程序思路](imgs/img_53.png)
 
 ```java
 package com.charlie.furns.web;
@@ -1597,11 +1597,11 @@ public class MemberServlet2 extends BasicServlet {
 
 ## 实现功能17-注册验证码
 
-- ![需求分析](img_54.png)
-- ![程序框架](img_55.png)
-- ![谷歌的验证码jar包](img_60.png)
-- ![img_56.png](img_56.png)
-- ![Kaptcha常量](img_57.png)
+- ![需求分析](imgs/img_54.png)
+- ![程序框架](imgs/img_55.png)
+- ![谷歌的验证码jar包](imgs/img_60.png)
+- ![img_56.png](imgs/img_56.png)
+- ![Kaptcha常量](imgs/img_57.png)
 
 > 表单重复提交情况：
 > 1. 提交完表单，服务器使用请求转发进行页面跳转。用户刷新 `F5`，会发起最后一次请求，造成表单重复提交问题。解决：使用重定向
@@ -1748,9 +1748,9 @@ public class MemberServlet2 extends BasicServlet {
 
 ## 实现功能18-添加家具到购物车
 
-- ![img_58.png](img_58.png)
-- ![img_59.png](img_59.png)
-- ![session结构](img_61.png)
+- ![img_58.png](imgs/img_58.png)
+- ![img_59.png](imgs/img_59.png)
+- ![session结构](imgs/img_61.png)
 
 ```html
 <!--以下是添加到购物车的按键-->
@@ -1817,9 +1817,9 @@ public class CartServlet extends BasicServlet {
 
 ## 实现功能19-显示购物车
 
-- ![需求分析](img_62.png)
-- ![思路分析](img_63.png)
-- ![img_64.png](img_64.png)
+- ![需求分析](imgs/img_62.png)
+- ![思路分析](imgs/img_63.png)
+- ![img_64.png](imgs/img_64.png)
 
 > 注意：
 > 
@@ -1909,8 +1909,8 @@ public class Cart {
 
 ## 实现功能20-修改/删除/清空购物车
 
-- ![需求分析](img_65.png)
-- ![思路分析](img_66.png)
+- ![需求分析](imgs/img_65.png)
+- ![思路分析](imgs/img_66.png)
 
 ```html
 <!--对应的js代码-->
@@ -2031,8 +2031,8 @@ public class CartServlet extends BasicServlet {
 
 ## 实现功能21-生成订单
 
-- ![需求分析](img_67.png)
-- ![思路分析](img_68.png)
+- ![需求分析](imgs/img_67.png)
+- ![思路分析](imgs/img_68.png)
 
 ```mysql
 -- 订单表 order
@@ -2185,7 +2185,7 @@ public class OrderServlet extends BasicServlet {
 
 ### 课后作业01-添加购物车按钮动态处理
 
-- ![需求分析](img_69.png)
+- ![需求分析](imgs/img_69.png)
 
 ```html
 <%--添加家具到购物车按钮，这里加上校验：当家具库存为0时，前台显示“暂时缺货”
@@ -2201,7 +2201,7 @@ public class OrderServlet extends BasicServlet {
 
 ### 课后作业02-订单管理
 
-- ![需求分析](img_70.png)
+- ![需求分析](imgs/img_70.png)
 
 ```java
 package com.charlie.furns.dao.impl;
@@ -2258,8 +2258,8 @@ public class OrderServlet extends BasicServlet {
 
 ## 实现功能23-过滤权限验证
 
-- ![需求分析](img_71.png)
-- ![思路分析](img_72.png)
+- ![需求分析](imgs/img_71.png)
+- ![思路分析](imgs/img_72.png)
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -2355,9 +2355,9 @@ public class AuthFilter implements Filter {
 
 ## 实现功能24-事务管理
 
-- ![需求分析](img_74.png)
-- ![思路分析](img_73.png)
-- ![程序思路](img_75.png)
+- ![需求分析](imgs/img_74.png)
+- ![思路分析](imgs/img_73.png)
+- ![程序思路](imgs/img_75.png)
 
 ```java
 package com.charlie.furns.utils;
@@ -2554,13 +2554,13 @@ public class TransactionFilter implements Filter {
 }
 ```
 
-- ![异常机制参与业务逻辑](img_76.png)
+- ![异常机制参与业务逻辑](imgs/img_76.png)
 
 ## 完成功能25-统一错误提示页面
 
-- ![需求分析](img_77.png)
-- ![思路分析](img_78.png)
-- ![img_79.png](img_79.png)
+- ![需求分析](imgs/img_77.png)
+- ![思路分析](imgs/img_78.png)
+- ![img_79.png](imgs/img_79.png)
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -2580,8 +2580,8 @@ public class TransactionFilter implements Filter {
 
 ## 实现功能26-Ajax检验注册名
 
-- ![需求分析](img_80.png)
-- ![思路分析](img_81.png)
+- ![需求分析](imgs/img_80.png)
+- ![思路分析](imgs/img_81.png)
 
 ```java
 package com.charlie.furns.web;
@@ -2687,8 +2687,8 @@ public class MemberServlet2 extends BasicServlet {
 
 ## 实现功能27-Ajax添加购物车
 
-- ![需求分析](img_82.png)
-- ![思路分析](img_83.png)
+- ![需求分析](imgs/img_82.png)
+- ![思路分析](imgs/img_83.png)
 
 ```java
 package com.charlie.furns.web;
@@ -2758,7 +2758,7 @@ public class CartServlet extends BasicServlet {
 >   所以，servlet对request进行请求转发/重定向都不能影响浏览器的跳转
 > 2. 解决方案：如果要想实现跳转，可以返回`url`，在浏览器执行`window.location(url);`
 
-- ![ajax请求](img_84.png)
+- ![ajax请求](imgs/img_84.png)
 
 ```java
 package com.charlie.furns.utils;
@@ -2849,8 +2849,8 @@ $(".add-to-cart").click(function () {
 
 ## 实现功能28-上传/更新家具图片
 
-- ![需求分析](img_85.png)
-- ![思路分析](img_86.png)
+- ![需求分析](imgs/img_85.png)
+- ![思路分析](imgs/img_86.png)
 
 ```html
 <style type="text/css">
@@ -3013,7 +3013,7 @@ public class FurnServlet extends BasicServlet {
 
 ## 实现功能29-分页导航条
 
-- ![需求分析](img_87.png)
+- ![需求分析](imgs/img_87.png)
 
 ```html
 <c:choose>
