@@ -5,46 +5,17 @@
     <meta charset="UTF-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge"/>
     <title>韩顺平教育-家居网购</title>
-    <%--记得加上base，不加的话会看到界面混乱--%>
     <base href="<%=request.getContextPath() + "/"%>">
-    <!-- 移动端适配 -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
     <link rel="stylesheet" href="assets/css/vendor/vendor.min.css"/>
     <link rel="stylesheet" href="assets/css/plugins/plugins.min.css"/>
-    <link rel="stylesheet" href="assets/css/style.min.css">
-    <style type="text/css">
-        #pic {
-            position: relative;
-        }
-        input[type="file"] {
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 150px;
-            opacity: 0;
-            cursor: pointer;
-        }
-    </style>
-    <script type="text/javascript">
-        function prev(event) {
-            // 获取展示图片的区域
-            var img = document.getElementById("preView");
-            // 获取文件对象
-            var file = event.files[0];
-            // 获取文件阅读器：JS的一个类，直接使用即可
-            var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function () {
-                // 给img的src设置图片的url
-                img.setAttribute("src", this.result);
-            }
-        }
-    </script>
-</head>
+    <link rel="stylesheet" href="assets/css/style.min.css"/>
 
+</head>
 <body>
 <!-- Header Area start  -->
 <div class="header section">
+    <!-- Header Top Message Start -->
     <!-- Header Top  End -->
     <!-- Header Bottom  Start -->
     <div class="header-bottom d-none d-lg-block">
@@ -57,17 +28,17 @@
                     </div>
                 </div>
                 <!-- Header Logo End -->
-
                 <!-- Header Action Start -->
                 <div class="col align-self-center">
                     <div class="header-actions">
-
-                        <!-- Single Wedge Start -->
                         <div class="header-bottom-set dropdown">
-                            <a href="manage/furnServlet?action=list">家居管理</a>
+                            <a>欢迎: ${sessionScope.member.username}</a>
                         </div>
                         <div class="header-bottom-set dropdown">
                             <a href="#">订单管理</a>
+                        </div>
+                        <div class="header-bottom-set dropdown">
+                            <a href="memberServlet?action=logout">安全退出</a>
                         </div>
                     </div>
                 </div>
@@ -75,7 +46,6 @@
             </div>
         </div>
     </div>
-    <!-- Header Bottom  End -->
     <!-- Header Bottom  Start 手机端的header -->
     <div class="header-bottom d-lg-none sticky-nav bg-white">
         <div class="container position-relative">
@@ -83,7 +53,8 @@
                 <!-- Header Logo Start -->
                 <div class="col-auto align-self-center">
                     <div class="header-logo">
-                        <a href="index.jsp"><img width="280px" src="assets/images/logo/logo.png" alt="Site Logo"/></a>
+                        <a href="index.jsp"><img width="280px" src="assets/images/logo/logo.png"
+                                                 alt="Site Logo"/></a>
                     </div>
                 </div>
                 <!-- Header Logo End -->
@@ -94,75 +65,26 @@
     <div style="width: 100%;height: 50px;background-color: black"></div>
     <!-- Main Menu End -->
 </div>
-<!-- Cart Area Start -->
-<div class="cart-main-area pt-100px pb-100px">
+<!-- Header Area End  -->
+<!-- login area start -->
+<div class="login-register-area pt-70px pb-100px">
     <div class="container">
-        <h3 class="cart-page-title">家居后台管理-修改家居</h3>
         <div class="row">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-12">
-                <%--需要上传文件数据，因此设置 enctype="multipart/form-data"--%>
-                <form action="manage/furnServlet?id=${requestScope.furn.id}&action=update&pageNo=${param.pageNo}&pageSize=${param.pageSize}"
-                      method="post" enctype="multipart/form-data">
-                    <%--因为是post方法，所以需要使用到隐藏域id和action--%>
-                    <%--但是，在使用multipart/form-data编码下，无法通过req.getParameter("id")获取参数，所以又放回去了--%>
-                    <%--<input type="hidden" name="action" value="update">--%>
-                    <%--<input type="hidden" name="id" value="${requestScope.furn.id}">--%>
-                    <%--<input type="hidden" name="pageNo" value="${param.pageNo}">--%>
-                    <%--<input type="hidden" name="pageSize" value="${param.pageSize}">--%>
-                    <div class="table-content table-responsive cart-table-content">
-                        <table>
-                            <thead>
-                            <tr>
-                                <th>图片</th>
-                                <th>家居名</th>
-                                <th>商家</th>
-                                <th>价格</th>
-                                <th>销量</th>
-                                <th>库存</th>
-                                <th>操作</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td class="product-thumbnail">
-                                    <div id="pic">
-                                        <img class="img-responsive ml-3" id="preView" src="${requestScope.furn.imgPath}"
-                                             alt=""/>
-                                        <input type="file" name="imgPath" id="" value="${requestScope.furn.imgPath}"
-                                               onchange="prev(this)">
-                                    </div>
-                                </td>
-                                <td class="product-name"><input name="name" style="width: 60%" type="text"
-                                                                value="${requestScope.furn.name}"/></td>
-                                <td class="product-name"><input name="maker" style="width: 90%" type="text"
-                                                                value="${requestScope.furn.maker}"/></td>
-                                <td class="product-price-cart"><input name="price" style="width: 90%" type="text"
-                                                                      value="${requestScope.furn.price}"/></td>
-                                <td class="product-quantity">
-                                    <input name="sales" style="width: 90%" type="text"
-                                           value="${requestScope.furn.sales}"/>
-                                </td>
-                                <td class="product-quantity">
-                                    <input name="stock" style="width: 90%" type="text"
-                                           value="${requestScope.furn.stock}"/>
-                                </td>
-                                <td>
-                                    <!--                                    <a href="#"><i class="icon-pencil"></i></a>-->
-                                    <!--                                    <a href="#"><i class="icon-close"></i></a>-->
-                                    <input type="submit"
-                                           style="width: 90%;background-color: silver;border: silver;border-radius: 20%;"
-                                           value="修改家居"/>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
+            <div class="col-lg-7 col-md-12 ml-auto mr-auto">
+                <div class="login-register-wrapper">
+                    <div class="login-register-tab-list nav">
+                        <%--当点击超链接时，可以显示订单信息--%>
+                        <a class="active"
+                           href="manage/furnServlet?action=page&pageNo=${param.pageNo}&pageSize=${param.pageSize}">
+                            <h4>家具修改成功, 点击返回管理页面</h4>
+                        </a>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
-<!-- Cart Area End -->
+<!-- login area end -->
 
 <!-- Footer Area Start -->
 <div class="footer-area">
@@ -228,7 +150,7 @@
                         </div>
                     </div>
                     <div class="col-md-6 text-left">
-                        <p class="copy-text">Copyright &copy; 2021 韩顺平教育~</p>
+                        <p class="copy-text">Copyright &copy; 2021 韩顺平教育</p>
                     </div>
                 </div>
             </div>

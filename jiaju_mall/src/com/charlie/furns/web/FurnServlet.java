@@ -5,15 +5,19 @@ import com.charlie.furns.entity.Page;
 import com.charlie.furns.service.FurnService;
 import com.charlie.furns.service.impl.FurnServiceImpl;
 import com.charlie.furns.utils.DataUtils;
-import org.apache.commons.beanutils.BeanUtils;
+import com.charlie.furns.utils.WebUtils;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.crypto.Data;
+import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 public class FurnServlet extends BasicServlet {
 
@@ -131,18 +135,97 @@ public class FurnServlet extends BasicServlet {
         req.getRequestDispatcher("/views/manage/furn_update.jsp").forward(req, resp);
     }
 
-    // 处理修改家具信息的请求
+    // 处理修改家具信息的请求，增加上传图片功能
     protected void update(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Furn furn = DataUtils.copyParamToBean(req.getParameterMap(), new Furn());
-        // 修改家具信息
+        // 提交的表单enctype="multipart/form-data"，此时如果前端使用<input name="id" value="">方式提交的数据不能在使用req.getParameter()获取
+        // 此时改为将数据直接放在url上，即前端表单 action="furnServlet?action=update&id=${requestScope.furn.id}"
+        int id = DataUtils.parseInt(req.getParameter("id"), 0);
+        Furn furn = furnService.queryFurnById(id);
+        if (furn == null) {
+            resp.sendRedirect(req.getHeader("Referer"));
+            return;
+        }
+        // 1.判断是不是文件表单(enctype="multipart/form-data")
+        if (ServletFileUpload.isMultipartContent(req)) {
+            // 2. 创建 DiskFileItemFactory对象，用于构建一个解析上传数据的工具对象
+            DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
+            // 3. 创建一个解析上传数据的工具对象
+            ServletFileUpload servletFileUpload = new ServletFileUpload(diskFileItemFactory);
+            // 解决接收到文件名是中文乱码的问题
+            servletFileUpload.setHeaderEncoding("utf-8");
+            // 4. 关键地方，servletFileUpload对象可以把表单提交的数据text/文件，封装到FileItem文件项中
+            try {
+                List<FileItem> list = servletFileUpload.parseRequest(req);
+                for (FileItem fileItem : list) {
+                    // 先判断是不是一个文件
+                    if (fileItem.isFormField()) {  // 如果是true，则不是文件
+                        if ("name".equals(fileItem.getFieldName())) {          // 家具名
+                            furn.setName(fileItem.getString("utf-8"));
+                        } else if ("maker".equals(fileItem.getFieldName())) {   // 制造商
+                            furn.setMaker(fileItem.getString("utf-8"));
+                        } else if ("price".equals(fileItem.getFieldName())) {   // 价格
+                            furn.setPrice(new BigDecimal(fileItem.getString()));
+                        } else if ("sales".equals(fileItem.getFieldName())) {   // 销量
+                            furn.setSales(new Integer(fileItem.getString()));
+                        } else if ("stock".equals(fileItem.getFieldName())) {   // 库存
+                            furn.setStock(new Integer(fileItem.getString()));
+                        }
+                    } else {    // 是文件
+                        // 获取文件名
+                        String name = fileItem.getName();
+                        // 如果用户没有选择新的图片，name=""
+                        if (!"".equals(name)) {
+                            // 1. 指定一个目录，就是我们网站工作目录下
+                            String filePath = WebUtils.FURN_IMG_DIRECTORY + WebUtils.getYearMonthDay();    // 保存到网站的目录
+                            // 2. 获取到完整目录
+                            String fileRealPath = req.getServletContext().getRealPath(filePath);
+                            // 3. 创建这个上传目录
+                            File fileRealPathDirectory = new File(fileRealPath);
+                            if (!fileRealPathDirectory.exists()) {
+                                fileRealPathDirectory.mkdirs();
+                            }
+                            // 4. 将文件拷贝到fileRealPathDirectory
+                            //      给文件名增加前缀，防止文件名重复导致的覆盖问题
+                            name = UUID.randomUUID() + "_" + System.currentTimeMillis() + "_" + name;
+                            String fileFullPath = fileRealPathDirectory + "/" + name;
+                            fileItem.write(new File(fileFullPath));
+                            fileItem.getOutputStream().close(); // 关闭流
+                            // 上传新图片后，删除旧图
+                            String oldImgPath = req.getServletContext().getRealPath(furn.getImgPath());
+                            File oldFile = new File(oldImgPath);
+                            if (oldFile.isFile() && oldFile.exists()) {
+                                oldFile.delete();
+                            }
+                            // 更新家具的图片路径
+                            furn.setImgPath(filePath + "/" + name); // /assets/images/product-image/文件名
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            System.out.println("不是文件表单...");
+        }
+        // 更新家具->DB
         furnService.updateFurn(furn);
-        // 重定向
-        //String url = req.getContextPath() + "/manage/furnServlet?action=list";
-        // 走分页显示的请求page
-        String url = req.getContextPath() + "/manage/furnServlet?action=page&pageNo=" +
-                req.getParameter("pageNo") + "&pageSize=" + req.getParameter("pageSize");
-        resp.sendRedirect(url);
+        // 请求转发到update_ok.jsp页面时，如果刷新的话会再次提交修改
+        req.getRequestDispatcher("/views/manage/update_ok.jsp").forward(req, resp);
+        //resp.sendRedirect(req.getContextPath() + "/views/manage/update_ok.jsp");
     }
+
+    // 处理修改家具信息的请求
+    //protected void update(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    //    Furn furn = DataUtils.copyParamToBean(req.getParameterMap(), new Furn());
+    //    // 修改家具信息
+    //    furnService.updateFurn(furn);
+    //    // 重定向
+    //    //String url = req.getContextPath() + "/manage/furnServlet?action=list";
+    //    // 走分页显示的请求page
+    //    String url = req.getContextPath() + "/manage/furnServlet?action=page&pageNo=" +
+    //            req.getParameter("pageNo") + "&pageSize=" + req.getParameter("pageSize");
+    //    resp.sendRedirect(url);
+    //}
 
     // 处理分页显示请求
     protected void page(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

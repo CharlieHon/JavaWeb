@@ -56,6 +56,10 @@ public class AuthFilter implements Filter {
                 }
                 // 直接返回，后面的语句不再执行
                 return;
+            } else if (!"admin".equals(member.getUsername())) {
+                if (url.contains("manage")) {   // 如果该用户不是admin，但是访问了后台，则转到首页
+                    req.getRequestDispatcher("/index.jsp").forward(servletRequest, servletResponse);
+                }
             }
         }
         // 到这里说明用户已登录 或者 在排除范围内，则继续访问资源
