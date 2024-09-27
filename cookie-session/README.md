@@ -5,19 +5,20 @@
 ### 基本介绍
 
 1. 什么是会话？
-   - **会话**可以简单理解为：用户开一个浏览器，点击多个超链接，访问服务器多个 web 资源，然
-   后关闭浏览器，整个过程称之为一个会话。
+    - **会话**可以简单理解为：用户开一个浏览器，点击多个超链接，访问服务器多个 web 资源，然
+      后关闭浏览器，整个过程称之为一个会话。
 2. 会话过程中要解决得一些问题？
-   - 每个用户在使用浏览器与服务器进行会话的过程中，不可避免各自会**产生一些数据**，服务器要想办法为**每个用户**保存这些数据
+    - 每个用户在使用浏览器与服务器进行会话的过程中，不可避免各自会**产生一些数据**，服务器要想办法为**每个用户**保存这些数据
 
-### 会话得两种技术
+### 会话的两种技术
 
 1. Session
 2. Cookie
 
 ## Cookie功能
 
-Cookie(曲奇)：是客户端技术，服务器把每个用户得数据以 cookie 得形式写给用户各自浏览器。当用户使用浏览器再去访问服务器的 web 资源时，
+Cookie(曲奇)：是客户端技术，服务器把每个用户得数据以 cookie 的形式写给用户各自浏览器。当用户使用浏览器再去访问服务器的 web
+资源时，
 就会带着各自的数据去。这样，web资源处理的就是用户各自的数据了。
 
 ![Cookie示意图](imgs/img.png)
@@ -31,7 +32,7 @@ Cookie(曲奇)：是客户端技术，服务器把每个用户得数据以 cooki
 2. cookie信息就像曲奇一样，数据量并不大，**服务端在需要的时候可以从客户端/浏览器读取(http协议)**
 
 | ![cookie1](imgs/img_1.png) | ![cookie2](imgs/img_2.png) |
-|-----------------------|-----------------------|
+|----------------------------|----------------------------|
 
 ### cookie可以用来做什么
 
@@ -45,28 +46,20 @@ Cookie(曲奇)：是客户端技术，服务器把每个用户得数据以 cooki
 
 ### cookie常用方法
 
-1. Cookie像一张表(k-v)，分两列，一列是名字一列是指，数据类型都是 `String`，如果所示
-   - ![cookie示意表](imgs/img_3.png)
+1. Cookie像一张表(k-v)，分两列，一列是名字一列是值，数据类型都是 `String`，如果所示
+    - ![cookie示意表](imgs/img_3.png)
 2. 如果创建一个 Cookie(**在服务端创建**)
-   - `Cookie c = new Cookie(String name, String val);`
-   - `c.setMaxAge();    // 保存时间`
+    - `Cookie c = new Cookie(String name, String val);`
+    - `c.setMaxAge(); // 保存时间`
 3. 如何将一个cookie**添加到客户端**
-   - `resp.addCookie(e);`
+    - `resp.addCookie(e);`
 4. 如何读取cookie(**在服务端读取到cookie信息**)
-   - `req.getCookies();`
+    - `req.getCookies();`
 
 ## cookie底层实现机制-创建和读取cookie
 
 ```java
 package com.charlie.cookie;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
  * 演示如何创建Cookie，并保存到浏览器
@@ -93,25 +86,11 @@ public class CreateCookie extends HttpServlet {
         writer.flush();
         writer.close();
     }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
-    }
 }
 ```
 
 ```java
 package com.charlie.cookie;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
  * 读取从浏览器发送来的cookie[底层仍然是http协议]
@@ -128,7 +107,7 @@ public class ReadCookies extends HttpServlet {
         if (cookies != null && cookies.length != 0) {
             for (Cookie cookie : cookies) {
                 System.out.println("name: " + cookie.getName()
-                + ", value: " + cookie.getValue());
+                        + ", value: " + cookie.getValue());
             }
         }
         // 3. 给浏览器返回信息
@@ -138,16 +117,11 @@ public class ReadCookies extends HttpServlet {
         writer.flush();
         writer.close();
     }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
-    }
 }
 ```
 
 | ![cookie](imgs/img_4.png) | ![cookie](imgs/img_5.png) |
-|----------------------|----------------------|
+|---------------------------|---------------------------|
 
 > 不同会话，`JSESSIONID`不同，需要关闭浏览器再重新打开才有效。
 
@@ -157,15 +131,6 @@ public class ReadCookies extends HttpServlet {
 
 ```java
 package com.charlie.cookie;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 @WebServlet(urlPatterns = {"/readCookieByNameServlet"})
 public class ReadCookieByNameServlet extends HttpServlet {
@@ -179,7 +144,7 @@ public class ReadCookieByNameServlet extends HttpServlet {
         Cookie emailcookie = CookieUtils.readCookieByName("email", cookies);
         if (emailcookie != null) {
             System.out.println("得到cookie name= " + emailcookie.getName()
-            + ", cookie value= " + emailcookie.getValue());
+                    + ", cookie value= " + emailcookie.getValue());
         } else {
             System.out.println("Sorry，没有找到这个cookie！");
         }
@@ -190,11 +155,6 @@ public class ReadCookieByNameServlet extends HttpServlet {
         writer.flush();
         writer.close();
     }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
-    }
 }
 ```
 
@@ -202,15 +162,6 @@ public class ReadCookieByNameServlet extends HttpServlet {
 
 ```java
 package com.charlie.cookie;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 @WebServlet(urlPatterns = {"/updateCookie"})
 public class UpdateCookie extends HttpServlet {
@@ -235,7 +186,7 @@ public class UpdateCookie extends HttpServlet {
         if (cookies != null && cookies.length != 0) {
             for (Cookie cookie1 : cookies) {
                 System.out.println("cookie1 name= " + cookie1.getName()
-                + ", value= " + cookie1.getValue());
+                        + ", value= " + cookie1.getValue());
             }
         }
         // 3. 给浏览器返回信息
@@ -255,34 +206,19 @@ public class UpdateCookie extends HttpServlet {
         writer.flush();
         writer.close();
     }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
-    }
 }
 ```
 
 ## Cookie生命周期
 
-1. Cookie的生命周期指的是如何管理 Cookie 什么时候被销毁/删除
+1. Cookie的生命周期指的是如何管理，Cookie 什么时候被销毁/删除
 2. `setMaxAge(-1)`
-   - 正数，表示在指定的秒数后国企
-   - 负数，表示浏览器关闭，Cookie就会被删除(默认值为-1)
-   - 0，表示立即删除Cookie
+    - 正数，表示在指定的**秒**数后过期
+    - 负数，表示浏览器关闭，Cookie就会被删除(默认值为-1)
+    - 0，表示立即删除Cookie
 
 ```java
 package com.charlie.cookie;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.InetAddress;
 
 @WebServlet(urlPatterns = {"/live"})
 public class CookieLiveServlet extends HttpServlet {
@@ -293,7 +229,7 @@ public class CookieLiveServlet extends HttpServlet {
         Cookie cookie = new Cookie("job", "java");
         // 1. 从创建该cookie开始计时，60s后无效
         // 2. 浏览器根据创建的时间计时，计时到60s后，就认为该cookie无效
-        // 3. 如果该cookie无效，那么浏览器在法http请求时，就不再携带该cookie
+        // 3. 如果该cookie无效，那么浏览器在发http请求时，就不再携带该cookie
         cookie.setMaxAge(60);
         // 将cookie保存到浏览器
         resp.addCookie(cookie);
@@ -319,11 +255,6 @@ public class CookieLiveServlet extends HttpServlet {
         writer.flush();
         writer.close();
     }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
-    }
 }
 ```
 
@@ -332,7 +263,7 @@ public class CookieLiveServlet extends HttpServlet {
 ### 有效路径规则
 
 1. Cookie有效路径path的设置
-2. Cookie的path属性可以有效地过滤哪些Cookie可以发送给服务器，哪些不发。path属性是通过请求的地址来进行有效的过滤的。
+2. **Cookie的path属性可以有效地过滤哪些Cookie可以发送给服务器，哪些不发。path属性是通过请求的地址来进行有效的过滤的**。
 3. 规则如下：
    > cookie1.setPath = /工程路径
    > 
@@ -353,15 +284,6 @@ public class CookieLiveServlet extends HttpServlet {
 ```java
 package com.charlie.cookie;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-
 @WebServlet(urlPatterns = {"/cookiePath"})
 public class CookiePath extends HttpServlet {
     @Override
@@ -376,7 +298,7 @@ public class CookiePath extends HttpServlet {
         // cookie2有效路径 /cs/aaa
         cookie2.setPath(getServletContext().getContextPath() + "/aaa");
 
-        /***   如果没有设置cookie路径，默认为 /cs 即 /构成路径          ****/
+        /***   如果没有设置cookie路径，默认为 /cs 即 /工程路径          ****/
 
         // 3. 保存到浏览器
         resp.addCookie(cookie);
@@ -388,35 +310,21 @@ public class CookiePath extends HttpServlet {
         writer.flush();
         writer.close();
     }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
-    }
 }
 ```
 
 ## Cookie注意事项和细节
 
 1. 一个Cookie只能标识一种信息，它至少含有一个标识该信息的名称(name)和设置值(value)
-2. 一个web长点可以给一个浏览器发送多个Cookie，一个浏览器也可以存储多个web站点提供的cookie
+2. 一个web站点可以给一个浏览器发送多个Cookie，一个浏览器也可以存储多个web站点提供的cookie
 3. cookie的总数量没有限制，但是每个域名的cookie数量和每个cookie的大小是有限制的(不同浏览器限制不同)，cookie不适合存放
    数据量大的信息。
 4. 注意：删除cookie时，path必须一致，否则不会删除
-5. Java Servlet中cookie中文乱码解决。如果存放中文的cookie，默认报错，可以通过URL编码和解码来解决(不建议存放中文的cookie信息)
+5. Java Servlet中cookie中文乱码解决。如果存放中文的cookie，默认报错，可以通过URL编码和解码来解决(
+   不建议存放中文的cookie信息)
 
 ```java
 package com.charlie.cookie;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URLEncoder;
 
 @WebServlet(urlPatterns = {"/encoder"})
 public class EncoderCookie extends HttpServlet {
@@ -442,27 +350,11 @@ public class EncoderCookie extends HttpServlet {
         writer.flush();
         writer.close();
     }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
-    }
 }
 ```
 
 ```java
 package com.charlie.cookie;
-
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 
 /**
  * 解码 url编码格式 的cookie内容
@@ -487,50 +379,49 @@ public class DecoderCookie extends HttpServlet {
         writer.flush();
         writer.close();
     }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
-    }
 }
 ```
 
 ## session
 
 > 问题：
-> 
-> - 不同的用户登录网站后，不管该用户浏览该网站的哪个页面，都可显示登录人的名字，还可以随时去查看自己的购物车中的商品, 是如何实现的?
+>
+> - 不同的用户登录网站后，不管该用户浏览该网站的哪个页面，都可显示登录人的名字，还可以随时去查看自己的购物车中的商品,
+    是如何实现的?
 
 1. `Session`是**服务器端技术**，服务器在运行时为每一个用户的浏览器创建一个其独享的session对象/集合
 2. 由于session为各个用户浏览器独享，所以用户在访问服务器的不同页面时，可以从各自的session中读取/添加数据，从而完成相应任务
 
 ## session基本原理
 
-| ![session原理示意图](imgs/img_6.png)    | ![session存储结构示意图](imgs/img_7.png) |
-|-------------------------------|------------------------------|
+| ![session原理示意图](imgs/img_6.png) | ![session存储结构示意图](imgs/img_7.png) |
+|---------------------------------|-----------------------------------|
 
 > session提供一种方式，跨多个页面请求或对 Web 站点的多次访问标识用户并存储有关该用户的信息。
 
-1. 当用户打开浏览器，访问某个网站, 操作session时，**服务器就会在内存(在服务端)为该浏览器分配一个session对象**，该session对象被这个浏览器独享，如上图所示。
-2. 这个session独享也可看作是一个容器/集合，session对象默认存在时间为30min(tomcat/conf/web.xml)，也可修改
+1. 当用户打开浏览器，访问某个网站, 操作session时，**服务器就会在内存(在服务端)为该浏览器分配一个session对象**
+   ，该session对象被这个浏览器独享，如上图所示。
+2. 这个session对象也可看作是一个容器/集合，session对象默认存在时间为30min(tomcat/conf/web.xml)，也可修改
 
 ```xml
   <!-- ==================== Default Session Configuration ================= -->
-  <!-- You can set the default session timeout (in minutes) for all newly   -->
-  <!-- created sessions by modifying the value below.                       -->
+<!-- You can set the default session timeout (in minutes) for all newly   -->
+<!-- created sessions by modifying the value below.                       -->
 
-    <session-config>
-        <session-timeout>30</session-timeout>
-    </session-config>
+<session-config>
+    <session-timeout>30</session-timeout>
+</session-config>
 ```
 
 **Session可以做什么**
+
 1. 网上商城中的购物车
 2. 保存登录用户的信息
 3. 将数据放入到session中，供用户在访问不同页面时，实现跨页面访问数据
 4. 防止用户非法登录到某个页面
 
 **如何理解Session**
+
 1. 可以把session看作是一个容器，类似HashMap，有两列(K-V)，每一行就是session的一个属性
 2. 每个属性包含两个部分，一个是该属性的名字(String)，另外一个是它的值(Object)
 
@@ -539,7 +430,7 @@ public class DecoderCookie extends HttpServlet {
 `参考文档：java_ee_api_中英文对照版.chm:HttpSession`
 
 1. 创建和获取Session `HttpSession hs = req.getSession();`
-   - 第1次调用是创建Session会话，之后调用是获取创建好的Session对象
+    - 第1次调用是创建Session会话，之后调用是获取创建好的Session对象
 2. 向session添加属性 `hs.setAttribute(String name, Object val)`
 3. 从session得到某个属性 `Object obj = hs.getAttribute(String name);`
 4. 从session删除某个属性 `hs.removeAttribute(String name);`
@@ -549,23 +440,26 @@ public class DecoderCookie extends HttpServlet {
 ## session底层实现机制
 
 | ![底层实现机制1](imgs/img_8.png) | ![底层实现机制2](imgs/img_9.png) |
-|-----------------------|-----------------------|
+|----------------------------|----------------------------|
 
 注意事项：
+
 1. 一次会话只能创建一个Session
-2. 当服务器携带 `jsessionid` 时，服务器会比对有无该sid对应的session，如果没有，服务器会创建，同时分配sid。此时会返回 `SetCookie` ，原cookie被修改。
+2. 当服务器携带 `jsessionid`
+   时，服务器会比对有无该sid对应的session，如果没有，服务器会创建，同时分配sid。此时会返回 `SetCookie` ，原cookie被修改。
 3. 只有在本次会话创建了Session时，才会返回 `SetCookie: jsessionid=xxx;` 添加/修改浏览器的cookie
 
 ## session生命周期
 
-1. `public viod setMaxInactiveInterval()` 设置session的超市时间(以秒为单位)，超过指定的时长，session就会销毁
+1. `public viod setMaxInactiveInterval()` 设置session的超时时间(以秒为单位)，超过指定的时长，session就会销毁
 2. 值为正数时，设定session的超时时长
 3. **负数表示永不超时**
 4. `public int getMaxInactivateInterval()` 获取session的超时时间
 5. `public void invalidate()` 让当前session会话立即无效
 6. 如果没有调用 `setMaxInactivateInterval()` 来指定session的生命时长，Tomcat会以session默认时长为准(30min)，可以
    在 `tomcat/conf/web.xml` 设置
-7. Session的生命周期指的是：客户端/浏览器两次请求**最大间隔时长**，而不是累计时长。即当客户端访问了自己的session(`getSession()`)，
+7. Session的生命周期指的是：客户端/浏览器两次请求**最大间隔时长**
+   ，而不是累计时长。即当客户端访问了自己的session(`getSession()`)，
    session的生命周期将从0开始重新计算
 8. 底层：Tomcat用一个线程来轮询会话状态，如果某个会话的空闲时长超过设定的最大值，则将该会话销毁
 
@@ -581,6 +475,7 @@ public class DecoderCookie extends HttpServlet {
 ![案例示意图](imgs/img_10.png)
 
 案例说明:
+
 1. 只要密码为666666且用户名不为空,就认为登录成功
 2. 如果验证成功,则进入管理页面 `ManageServlet.java`,否则进入 `error.html`
 3. 如果用户直接访问 `ManageServlet.java`,重定向到 `userlogin.html`
