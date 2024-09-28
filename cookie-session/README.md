@@ -61,31 +61,46 @@ Cookie(曲奇)：是客户端技术，服务器把每个用户得数据以 cooki
 ```java
 package com.charlie.cookie;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 /**
  * 演示如何创建Cookie，并保存到浏览器
  */
 public class CreateCookie extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("CreateCookie 被调用...");
-        // 1. 创建一个Cookie对象
+   @Override
+   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+      System.out.println("CreateCookie 被调用...");
+      // 1. 创建一个Cookie对象
         /*
         1) username 该cookie的名字，唯一，可以理解为 key
         2) charlie: 该coolie的值
         3) 可以创建多个cookie
         4) 此时cookie在服务器端，还没有到浏览器
          */
-        Cookie cookie = new Cookie("username", "charlie");
+      Cookie cookie = new Cookie("username", "charlie");
+      Cookie cookie2 = new Cookie("email", "charlie@qq.com");
 
-        resp.setContentType("text/html;charset=utf-8");
-        // 2. 将cookie发送给浏览器，让浏览器将该cookie保存
-        resp.addCookie(cookie);
+      resp.setContentType("text/html;charset=utf-8");
+      // 2. 将cookie发送给浏览器，让浏览器将该cookie保存
+      resp.addCookie(cookie);
+      resp.addCookie(cookie2);
 
-        PrintWriter writer = resp.getWriter();
-        writer.println("<h1>创建cookie成功~</h1>");
-        writer.flush();
-        writer.close();
-    }
+      PrintWriter writer = resp.getWriter();
+      writer.println("<h1>创建cookie成功~</h1>");
+      writer.flush();
+      writer.close();
+   }
+
+   @Override
+   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+      doGet(req, resp);
+   }
 }
 ```
 
@@ -445,8 +460,7 @@ public class DecoderCookie extends HttpServlet {
 注意事项：
 
 1. 一次会话只能创建一个Session
-2. 当服务器携带 `jsessionid`
-   时，服务器会比对有无该sid对应的session，如果没有，服务器会创建，同时分配sid。此时会返回 `SetCookie` ，原cookie被修改。
+2. 当客户端携带 `jsessionid`时，服务器会比对有无该sid对应的session，如果没有，服务器会创建，同时分配sid。此时会返回 `SetCookie` ，原cookie被修改。
 3. 只有在本次会话创建了Session时，才会返回 `SetCookie: jsessionid=xxx;` 添加/修改浏览器的cookie
 
 ## session生命周期
@@ -458,8 +472,7 @@ public class DecoderCookie extends HttpServlet {
 5. `public void invalidate()` 让当前session会话立即无效
 6. 如果没有调用 `setMaxInactivateInterval()` 来指定session的生命时长，Tomcat会以session默认时长为准(30min)，可以
    在 `tomcat/conf/web.xml` 设置
-7. Session的生命周期指的是：客户端/浏览器两次请求**最大间隔时长**
-   ，而不是累计时长。即当客户端访问了自己的session(`getSession()`)，
+7. **Session的生命周期指的是：客户端/浏览器两次请求最大间隔时长**，而不是累计时长。即当客户端访问了自己的session(`getSession()`)，
    session的生命周期将从0开始重新计算
 8. 底层：Tomcat用一个线程来轮询会话状态，如果某个会话的空闲时长超过设定的最大值，则将该会话销毁
 
@@ -484,3 +497,57 @@ public class DecoderCookie extends HttpServlet {
 - 验证Servlet:[LoginCheckServlet.java](src/com/charlie/session/homework/LoginCheckServlet.java)
 - 管理Servlet:[ManageServlet.java](src/com/charlie/session/homework/ManageServlet.java)
 - 登录失败界面:[error.html](web/error.html)
+
+```java
+@WebServlet(urlPatterns = {"/loginCheck"})
+public class LoginCheckServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("LoginCheckServlet 被调用...");
+        // 登录检测，只要用户名不为空，且密码为666666，就认为登录成功
+        String username = req.getParameter("username");
+        String pwd = req.getParameter("pwd");
+        HttpSession session = req.getSession();
+//        String contextPath = getServletContext().getContextPath();
+        if (username != null && !username.isEmpty() && "666666".equals(pwd)) {
+            session.setAttribute("check", "validate");
+//            resp.sendRedirect(contextPath + "/manageServlet");  // 重定向无法获取输入的参数
+            RequestDispatcher requestDispatcher = req.getRequestDispatcher("/manageServlet");
+            requestDispatcher.forward(req, resp);   // 请求转发
+
+        } else {
+            session.setAttribute("check", "invalidate");
+//            resp.sendRedirect(contextPath + "/error.html");
+            req.getRequestDispatcher("/error.html").forward(req, resp); // 这里也使用请求转发
+        }
+    }
+}
+```
+
+```java
+@WebServlet(urlPatterns = {"/manageServlet"})
+public class ManageServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("ManageServlet 被调用...");
+        HttpSession session = req.getSession();
+        String check = (String) session.getAttribute("check");
+        if ("validate".equals(check)) {
+            String username = req.getParameter("username");
+            resp.setContentType("text/html;charset=utf-8");
+            PrintWriter writer = resp.getWriter();
+            writer.println("<h1>用户管理页面</h1>");
+            writer.println("欢迎你：管理员 " + username);
+            writer.flush();
+            writer.close();
+        } else {
+            System.out.println("禁止直接访问 用户管理页面");
+            String contextPath = req.getContextPath();
+            resp.sendRedirect(contextPath + "/userlogin.html");
+        }
+        // 删除session中的check属性，这样即使一次登录成功，下次直接访问用户管理页面也不可以
+//        session.removeAttribute("check");
+        session.setAttribute("check", "invalidate");    // 设为无效,更合适
+    }
+}
+```
